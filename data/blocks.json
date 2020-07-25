@@ -1,0 +1,22 @@
+[
+	{
+		"id": 0,
+		"name": "Air",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 0,
+		"tilesetY": 0
+	},
+	{
+		"id": 1,
+		"name": "Dirt",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 1,
+		"tileset": "blocks1",
+		"tilesetX": 1,
+		"tilesetY": 0
+	}
+]
