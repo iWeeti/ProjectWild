@@ -1,9 +1,14 @@
-package com.projectwild.game.worlds;
+package com.projectwild.game.ingame;
 
-import com.projectwild.game.worlds.blocks.Block;
-import com.projectwild.game.worlds.blocks.BlockTypes;
-import com.projectwild.game.worlds.player.LocalPlayer;
-import com.projectwild.game.worlds.player.Player;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.projectwild.game.WildGame;
+import com.projectwild.game.ingame.blocks.Block;
+import com.projectwild.game.ingame.blocks.BlockTypes;
+import com.projectwild.game.ingame.player.LocalPlayer;
+import com.projectwild.game.ingame.player.Player;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.world.WorldDataPacket;
 import com.projectwild.shared.utils.Vector2;
@@ -18,11 +23,15 @@ public class World {
 
     public LocalPlayer localPlayer;
 
+    private String background;
+
     private Block[][][] blocks;
     private int width, height;
 
     public World(WorldDataPacket dataPacket) {
         players = new CopyOnWriteArrayList<>();
+
+        background = dataPacket.getBackground();
 
         width = dataPacket.getWidth();
         height = dataPacket.getHeight();
@@ -45,6 +54,58 @@ public class World {
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         e.printStackTrace();
                     }
+                }
+            }
+        }
+    }
+
+    public void renderWorld(SpriteBatch sb) {
+//        Texture bgTexture = WildGame.getAssetManager().getAsset(background);
+//        sb.draw(bgTexture, 0, 0, getWidth() * 32, getHeight() * 32);
+
+        // Render Blocks
+        for(int y = 0; y < getHeight(); y++) {
+            for(int x = 0; x < getWidth(); x++) {
+                for(int z = 0; z < 2; z++) {
+                    BlockPreset preset = blocks[y][x][z].getBlockPreset();
+
+                    TextureRegion tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX(), preset.getTilesetY());
+                    switch(preset.getRenderType()) {
+                        case 0:
+                            break;
+                        case 1:
+                            if(y == blocks.length-1)
+                                break;
+                            if(blocks[y+1][x][z].getBlockPreset().getId() == preset.getId())
+                                tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX()+1, preset.getTilesetY());
+                            break;
+                        case 2:
+
+                            break;
+                        default:
+                            continue;
+                    }
+                    sb.draw(tex, x*32, y*32);
+                }
+            }
+        }
+
+        // Render Players
+        for(Player ply : players) {
+            ply.render(sb);
+        }
+        localPlayer.render(sb);
+
+        // Render Blocks In Front Of Players
+        for(int y = 0; y < getHeight(); y++) {
+            for(int x = 0; x < getWidth(); x++) {
+                for(int z = 0; z < 2; z++) {
+                    BlockPreset preset = blocks[y][x][z].getBlockPreset();
+                    if(preset.getRenderType() != 3)
+                        continue;
+
+                    TextureRegion tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX(), preset.getTilesetY());
+                    sb.draw(tex, x*32, y*32);
                 }
             }
         }
@@ -104,6 +165,10 @@ public class World {
 
     public Block[][][] getBlocks() {
         return blocks;
+    }
+
+    public String getBackground() {
+        return background;
     }
 
 }

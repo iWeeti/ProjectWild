@@ -3,6 +3,7 @@ package com.projectwild.server.worlds.players;
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.World;
+import com.projectwild.server.worlds.commands.CommandHandler;
 import com.projectwild.shared.packets.player.UpdatePositionPacket;
 import com.projectwild.shared.packets.player.local.UpdatePlayerAttributesPacket;
 import com.projectwild.shared.utils.Vector2;
@@ -12,6 +13,7 @@ public class Player {
     private Client client;
     private World world;
 
+    private String nametag;
     private float speedMultiplier;
     private Vector2 position;
 
@@ -20,6 +22,17 @@ public class Player {
         this.world = world;
         this.position = position.copy();
         speedMultiplier = 1.0f;
+
+        if(client.getUserId() == world.getOwner()) {
+            nametag = String.format("[GREEN]%s", client.getUsername());
+        } else if(world.hasAccess(client) && world.getOwner() != -1) {
+            nametag = String.format("[#98ff73]%s", client.getUsername());
+        } else {
+            nametag = String.format("[WHITE]%s", client.getUsername());
+        }
+
+        if(CommandHandler.isAdmin(client))
+            nametag = String.format("[YELLOW][Mod] %s", nametag);
     }
 
     public void updateSpeedMultiplier(float speedMultiplier) {
@@ -51,6 +64,10 @@ public class Player {
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public String getNametag() {
+        return nametag;
     }
 
 }

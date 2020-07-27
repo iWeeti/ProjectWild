@@ -5,6 +5,9 @@ import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.server.WildServer;
 import com.projectwild.server.worlds.blocks.types.StaticBlock;
 import com.projectwild.shared.BlockPreset;
+import com.projectwild.shared.ItemPreset;
+import com.projectwild.shared.ItemStack;
+import com.projectwild.shared.ItemTypes;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
@@ -40,6 +43,9 @@ public class PlayerListener extends Listener {
             InteractBlockPacket packet = (InteractBlockPacket) obj;
             Player player = WildServer.getClientHandler().getClientBySocket(connection.getID()).getPlayer();
 
+            if(!player.getWorld().hasAccess(player.getClient()))
+                return;
+
             // Check If There Are Any Players There
             boolean isColliding = false;
             for(Player ply : player.getWorld().getPlayers()) {
@@ -64,21 +70,44 @@ public class PlayerListener extends Listener {
             if(isColliding)
                 return;
 
+            if(packet.getY() < 0 || packet.getX() < 0 || packet.getZ() < 0)
+                return;
+
+            if(packet.getY() > player.getWorld().getBlocks().length)
+                return;
+
+            if(packet.getX() > player.getWorld().getBlocks()[0].length)
+                return;
+
+            if(packet.getZ() > 2)
+                return;
+
             // Perform Interaction
             if(player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getId() == 0) {
-                StaticBlock block = new StaticBlock(BlockPreset.getPreset(1));
-                player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()] = block;
-                UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket(packet.getX(), packet.getY(), packet.getZ(), block.getBlockPreset().getId(), block.serialize());
-                for(Player ply : player.getWorld().getPlayers()) {
-                    WildServer.getServer().sendToTCP(ply.getClient().getSocket(), updateBlockPacket);
-                }
+                // Doing Inventory Stuff
+                if(packet.getSlot() >= 8)
+                    return;
+
+                ItemStack itemStack = player.getClient().getInventorySlot(packet.getSlot());
+                if(itemStack == null)
+                    return;
+
+                if(itemStack.getItemPreset().getItemType() != ItemTypes.BLOCK.getId())
+                    return;
+
+                player.getClient().changeItems(itemStack.getItemPreset(), -1);
+
+                // Placing Block
+                player.getWorld().setBlock(packet.getX(), packet.getY(), packet.getZ(), itemStack.getItemPreset().getBlockId());
             } else {
-                StaticBlock block = new StaticBlock(BlockPreset.getPreset(0));
-                player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()] = block;
-                UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket(packet.getX(), packet.getY(), packet.getZ(), block.getBlockPreset().getId(), block.serialize());
-                for(Player ply : player.getWorld().getPlayers()) {
-                    WildServer.getServer().sendToTCP(ply.getClient().getSocket(), updateBlockPacket);
+                // Doing Inventory Stuff
+                int blockId = player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getId();
+                for(ItemPreset preset : ItemPreset.getItemPresets()) {
+                    if(preset.getBlockId() == blockId)
+                        player.getClient().changeItems(preset, 1);
                 }
+
+                player.getWorld().setBlock(packet.getX(), packet.getY(), packet.getZ(), 0);
             }
         }
     }

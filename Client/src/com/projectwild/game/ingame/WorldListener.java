@@ -1,11 +1,14 @@
-package com.projectwild.game.worlds;
+package com.projectwild.game.ingame;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.projectwild.game.worlds.blocks.Block;
-import com.projectwild.game.worlds.blocks.BlockTypes;
-import com.projectwild.game.worlds.player.Player;
+import com.projectwild.game.ingame.blocks.Block;
+import com.projectwild.game.ingame.blocks.BlockTypes;
+import com.projectwild.game.ingame.player.Player;
 import com.projectwild.shared.BlockPreset;
+import com.projectwild.shared.packets.ChatMessagePacket;
+import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
+import com.projectwild.shared.packets.items.LoadInventoryPacket;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
@@ -83,6 +86,21 @@ public class WorldListener extends Listener {
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
             }
+        }
+
+        if(obj instanceof LoadInventoryPacket) {
+            LoadInventoryPacket packet = (LoadInventoryPacket) obj;
+            worldState.getInventoryHandler().updateInventory(packet.getInventory());
+        }
+
+        if(obj instanceof ChangeInventoryItemPacket) {
+            ChangeInventoryItemPacket packet = (ChangeInventoryItemPacket) obj;
+            worldState.getInventoryHandler().changeItems(packet.getSlot(), packet.getItemStack());
+        }
+
+        if(obj instanceof ChatMessagePacket) {
+            ChatMessagePacket packet = (ChatMessagePacket) obj;
+            worldState.getChatHandler().addMessage(packet.getMessage());
         }
     }
 

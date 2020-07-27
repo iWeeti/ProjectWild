@@ -1,6 +1,6 @@
-package com.projectwild.game.worlds.blocks;
+package com.projectwild.game.ingame.blocks;
 
-import com.projectwild.game.worlds.blocks.types.StaticBlock;
+import com.projectwild.game.ingame.blocks.types.StaticBlock;
 
 public enum BlockTypes {
     

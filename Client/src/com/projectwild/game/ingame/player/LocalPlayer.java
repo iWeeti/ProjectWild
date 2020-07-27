@@ -1,10 +1,10 @@
-package com.projectwild.game.worlds.player;
+package com.projectwild.game.ingame.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.worlds.World;
-import com.projectwild.game.worlds.WorldState;
+import com.projectwild.game.ingame.World;
+import com.projectwild.game.ingame.WorldState;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
 import com.projectwild.shared.utils.Utils;
@@ -27,6 +27,9 @@ public class LocalPlayer extends Player {
     public void handleInput() {
         // Save Velocity As Old Velocity
         oldVelocity.set(velocity);
+
+        if(((WorldState) WildGame.getState()).getChatHandler().isChatOpen())
+            return;
 
         // Handle Input
         if(Gdx.input.isKeyPressed(Input.Keys.A))
@@ -116,18 +119,16 @@ public class LocalPlayer extends Player {
             changeAnimation(oldVelocity.getX() > 0 ? PlayerAnimations.STAND_RIGHT : PlayerAnimations.STAND_LEFT);
 
         if(velocity.getY() > 0 && oldVelocity.getY() <= 0) {
-            changeAnimation(velocity.getX() > 0 ? PlayerAnimations.JUMP_RIGHT : PlayerAnimations.JUMP_LEFT);
-            frame = 1;
+            changeAnimation(velocity.getX() > 0 ? PlayerAnimations.JUMP_RIGHT_START : PlayerAnimations.JUMP_LEFT_START);
         }
 
         if(velocity.getY() < 0 && oldVelocity.getY() >= 0) {
-            changeAnimation(velocity.getX() > 0 ? PlayerAnimations.JUMP_RIGHT : PlayerAnimations.JUMP_LEFT);
-            frame = 3;
+            changeAnimation(velocity.getX() > 0 ? PlayerAnimations.JUMP_RIGHT_END : PlayerAnimations.JUMP_LEFT_END);
         }
 
         if(velocity.getY() == 0 && oldVelocity.getY() != 0) {
             if(velocity.getX() == 0) {
-                changeAnimation(getAnimation().getId() == PlayerAnimations.JUMP_RIGHT.getId() ? PlayerAnimations.STAND_RIGHT : PlayerAnimations.STAND_LEFT);
+                changeAnimation(getAnimation().getId() == PlayerAnimations.JUMP_RIGHT_END.getId() ? PlayerAnimations.STAND_RIGHT : PlayerAnimations.STAND_LEFT);
             } else {
                 changeAnimation(velocity.getX() > 0 ? PlayerAnimations.WALK_RIGHT : PlayerAnimations.WALK_LEFT);
             }

@@ -9,6 +9,7 @@ import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
+import com.projectwild.shared.packets.world.UpdateBlockPacket;
 import com.projectwild.shared.utils.Vector2;
 
 import java.io.IOException;
@@ -24,6 +25,8 @@ public class World {
     private String name;
     private Block[][][] blocks;
     private Vector2 spawnPosition;
+
+    private String background;
     
     private int owner;
     private ArrayList<Integer> trusted;
@@ -35,6 +38,7 @@ public class World {
         this.owner = -1;
         this.trusted = new ArrayList<>();
         this.players = new CopyOnWriteArrayList<>();
+        this.background = Math.random() > 0.5 ? "forest_bg" : "desert_bg";
         try {
             // World Loading
             ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(Paths.get(String.format("data/worlds/%s.world", this.name))));
@@ -43,6 +47,13 @@ public class World {
             for(int i = 0; i < buffer.getInt(); i++) {
                 trusted.add(buffer.getInt());
             }
+
+            int backgroundLength = buffer.getInt();
+            StringBuilder builder = new StringBuilder();
+            for(int i = 0; i < backgroundLength; i++) {
+                builder.append((char) buffer.get());
+            }
+            background = builder.toString();
 
             spawnPosition = new Vector2(buffer.getInt(), buffer.getInt());
         
@@ -86,12 +97,14 @@ public class World {
     }
     
     public void save() {
-        ByteBuffer buffer = ByteBuffer.allocate(trusted.size() * 4 + 16);
+        ByteBuffer buffer = ByteBuffer.allocate(trusted.size() * 4 + 28 + background.getBytes().length);
         buffer.putInt(owner);
         buffer.putInt(trusted.size());
         for(Integer integer : trusted) {
             buffer.putInt(integer);
         }
+        buffer.putInt(background.getBytes().length);
+        buffer.put(background.getBytes());
         buffer.putInt(spawnPosition.getXInt());
         buffer.putInt(spawnPosition.getYInt());
         buffer.putInt(blocks.length);
@@ -116,17 +129,17 @@ public class World {
         Player player = new Player(client, this, spawnPosition);
 
         // Sending Local Player To Client
-        PlayerSpawnPacket playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), client.getUsername(), spawnPosition, true);
+        PlayerSpawnPacket playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), player.getNametag(), spawnPosition, true);
         WildServer.getServer().sendToTCP(client.getSocket(), playerSpawnPacket);
 
         // Sending All Players To Client
         for(Player ply : players) {
-            playerSpawnPacket = new PlayerSpawnPacket(ply.getClient().getUserId(), ply.getClient().getUsername(), ply.getPosition(), false);
+            playerSpawnPacket = new PlayerSpawnPacket(ply.getClient().getUserId(), ply.getNametag(), ply.getPosition(), false);
             WildServer.getServer().sendToTCP(client.getSocket(), playerSpawnPacket);
         }
 
         // Broadcasting New Player With All Clients In The World
-        playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), client.getUsername(), spawnPosition, false);
+        playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), player.getNametag(), spawnPosition, false);
         for(Player ply : players)
             WildServer.getServer().sendToTCP(ply.getClient().getSocket(), playerSpawnPacket);
 
@@ -141,6 +154,9 @@ public class World {
         for(Player ply : players) {
             WildServer.getServer().sendToTCP(ply.getClient().getSocket(), playerRemovePacket);
         }
+
+        if(players.size() <= 0)
+            WildServer.getWorldHandler().unloadWorld(this);
     }
 
     public int pointCollisionType(Vector2 point) {
@@ -152,13 +168,81 @@ public class World {
 
         return blocks[blockY][blockX][1].getBlockPreset().getCollisionType();
     }
-    
+
+    public void setBlock(int x, int y, int z, int blockId) {
+        BlockPreset blockPreset = BlockPreset.getPreset(blockId);
+        try {
+            Block block = BlockTypes.getBlockClass(blockPreset.getBlockType()).getConstructor(BlockPreset.class).newInstance(blockPreset);
+            blocks[y][x][z] = block;
+
+            UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket(x, y, z, block.getBlockPreset().getId(), block.serialize());
+            for(Player ply : players) {
+                WildServer.getServer().sendToTCP(ply.getClient().getSocket(), updateBlockPacket);
+            }
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSpawnPosition(Vector2 position) {
+        spawnPosition = position.copy();
+    }
+
+    public boolean claimWorld(Client client) {
+        if(client == null) {
+            owner = -1;
+            trusted = new ArrayList<>();
+            return true;
+        } else {
+            if(owner == -1) {
+                owner = client.getUserId();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public boolean addTrusted(Client client) {
+        if(trusted.size() >= 10 || owner == -1)
+            return false;
+
+        trusted.add(client.getUserId());
+        return true;
+    }
+
+    public boolean removeTrusted(Client client) {
+        return trusted.remove((Object) client.getUserId());
+    }
+
+    public boolean hasAccess(Client client) {
+        if(owner == -1)
+            return true;
+
+        if(client.getUserId() == owner)
+            return true;
+
+        for(int i : trusted) {
+            if(client.getUserId() == i)
+                return true;
+        }
+        return false;
+    }
+
     public String getName() {
         return name;
     }
     
     public Block[][][] getBlocks() {
         return blocks;
+    }
+
+    public int getHeight() {
+        return blocks.length;
+    }
+
+    public int getWidth() {
+        return blocks[0].length;
     }
     
     public int getOwner() {
@@ -171,6 +255,14 @@ public class World {
 
     public CopyOnWriteArrayList<Player> getPlayers() {
         return players;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public Vector2 getSpawnPosition() {
+        return spawnPosition;
     }
 
 }

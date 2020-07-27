@@ -18,5 +18,205 @@
 		"tileset": "blocks1",
 		"tilesetX": 1,
 		"tilesetY": 0
+	},
+	{
+		"id": 2,
+		"name": "Rock",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 3,
+		"tilesetY": 0
+	},
+	{
+		"id": 3,
+		"name": "Lava Rock",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 4,
+		"tilesetY": 0
+	},
+	{
+		"id": 4,
+		"name": "Red Bricks",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 7,
+		"tilesetY": 0
+	},
+	{
+		"id": 5,
+		"name": "Sign",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 8,
+		"tilesetY": 0
+	},
+	{
+		"id": 6,
+		"name": "Street Sign",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 9,
+		"tilesetY": 0
+	},
+	{
+		"id": 7,
+		"name": "Log",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 0,
+		"tilesetY": 1
+	},
+	{
+		"id": 8,
+		"name": "Wood",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 1,
+		"tilesetY": 1
+	},
+	{
+		"id": 9,
+		"name": "Bricks",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 4,
+		"tilesetY": 1
+	},
+	{
+		"id": 10,
+		"name": "Glass",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 7,
+		"tilesetY": 1
+	},
+	{
+		"id": 11,
+		"name": "Flowers",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 3,
+		"tileset": "blocks1",
+		"tilesetX": 8,
+		"tilesetY": 1
+	},
+	{
+		"id": 12,
+		"name": "Dark Wood",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 9,
+		"tilesetY": 1
+	},
+	{
+		"id": 13,
+		"name": "Fancy Block",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 0,
+		"tilesetY": 2
+	},
+	{
+		"id": 14,
+		"name": "Character Block",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 1,
+		"tilesetY": 6
+	},
+	{
+		"id": 15,
+		"name": "Crate",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 3,
+		"tileset": "blocks1",
+		"tilesetX": 4,
+		"tilesetY": 6
+	},
+	{
+		"id": 16,
+		"name": "Bookshelf",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 5,
+		"tilesetY": 6
+	},
+	{
+		"id": 17,
+		"name": "Bed",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 6,
+		"tilesetY": 6
+	},
+	{
+		"id": 18,
+		"name": "Barrel",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 0,
+		"tilesetY": 7
+	},
+	{
+		"id": 19,
+		"name": "Vase",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 3,
+		"tileset": "blocks1",
+		"tilesetX": 1,
+		"tilesetY": 7
+	},
+	{
+		"id": 20,
+		"name": "Bush",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 3,
+		"tileset": "blocks1",
+		"tilesetX": 2,
+		"tilesetY": 7
+	},
+	{
+		"id": 21,
+		"name": "Cactus",
+		"blockType": 0,
+		"collisionType": 0,
+		"renderType": 3,
+		"tileset": "blocks1",
+		"tilesetX": 3,
+		"tilesetY": 7
 	}
 ]

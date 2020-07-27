@@ -1,5 +1,7 @@
-package com.projectwild.game.worlds.player;
+package com.projectwild.game.ingame.player;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.projectwild.game.WildGame;
@@ -35,6 +37,11 @@ public class Player {
 
         if(frame >= animation.getLength())
             frame = 0;
+
+        BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_10");
+        font.getData().markupEnabled = true;
+        GlyphLayout layout = new GlyphLayout(font, username);
+        font.draw(sb, layout, (int) position.getX() + 17 - layout.width / 2, (int) position.getY() + 40);
     }
 
     public int getUserId() {

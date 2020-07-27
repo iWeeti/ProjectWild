@@ -20,4 +20,9 @@ public class WorldHandler {
         return world;
     }
 
+    public void unloadWorld(World world) {
+        world.save();
+        worlds.remove(world);
+    }
+
 }

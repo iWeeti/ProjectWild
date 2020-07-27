@@ -5,6 +5,7 @@ import com.projectwild.server.clients.AuthListener;
 import com.projectwild.server.clients.ClientHandler;
 import com.projectwild.server.worlds.WorldHandler;
 import com.projectwild.server.worlds.WorldListener;
+import com.projectwild.server.worlds.commands.CommandHandler;
 import com.projectwild.server.worlds.players.PlayerListener;
 import com.projectwild.shared.PacketRegistry;
 
@@ -17,11 +18,13 @@ public class WildServer {
     
     private static ClientHandler clientHandler;
     private static WorldHandler worldHandler;
+    private static CommandHandler commandHandler;
     
     public static void main(String[] args) throws IOException {
         databaseController = new DatabaseController("data/projectwild.db");
         clientHandler = new ClientHandler();
         worldHandler = new WorldHandler();
+        commandHandler = new CommandHandler();
         
         server = new Server(10000000, 10000000);
         PacketRegistry.register(server.getKryo());
@@ -47,5 +50,9 @@ public class WildServer {
     public static WorldHandler getWorldHandler() {
         return worldHandler;
     }
-    
+
+    public static CommandHandler getCommandHandler() {
+        return commandHandler;
+    }
+
 }

@@ -21,13 +21,13 @@ public class WildGame extends ApplicationAdapter {
         client = new Client(10000000, 10000000);
         PacketRegistry.register(client.getKryo());
         client.start();
-        client.connect(5000, "127.0.0.1", 7707, 7707);
+        client.connect(5000, "78.27.101.11", 7707, 7707);
         
         changeState(new LoginState());
         
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 1920;
-        config.height = 1080;
+        config.width = 1280;
+        config.height = 720;
         config.resizable = false;
         config.vSyncEnabled = true;
         new LwjglApplication(new WildGame(), config);

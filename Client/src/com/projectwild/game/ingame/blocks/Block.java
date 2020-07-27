@@ -1,4 +1,4 @@
-package com.projectwild.game.worlds.blocks;
+package com.projectwild.game.ingame.blocks;
 
 import com.projectwild.shared.BlockPreset;
 

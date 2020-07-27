@@ -6,11 +6,18 @@ import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.blocks.Block;
 import com.projectwild.server.worlds.players.Player;
+import com.projectwild.shared.packets.ChatMessagePacket;
+import com.projectwild.shared.packets.LoginResponsePacket;
+import com.projectwild.shared.packets.items.LoadInventoryPacket;
+import com.projectwild.shared.packets.world.LeaveWorldPacket;
 import com.projectwild.shared.packets.world.RequestWorldPacket;
 import com.projectwild.shared.packets.world.RequestWorldResponsePacket;
 import com.projectwild.shared.packets.world.WorldDataPacket;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WorldListener extends Listener {
     
@@ -22,6 +29,25 @@ public class WorldListener extends Listener {
             Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
             if(client == null)
                 return;
+
+            if(packet.getWorld().equals("") || packet.getWorld() == null) {
+                connection.sendTCP(new RequestWorldResponsePacket(false, "Please Enter A World Name"));
+                return;
+            }
+
+            // Make World Name Only Alphanumeric Characters
+            String regex = "^[a-zA-Z0-9]+$";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(packet.getWorld());
+            if(!matcher.matches()) {
+                connection.sendTCP(new RequestWorldResponsePacket(false, "World Names Can Only Include Alphanumeric Characters"));
+                return;
+            }
+
+            if(packet.getWorld().length() > 10) {
+                connection.sendTCP(new RequestWorldResponsePacket(false, "World Names Can Only Be 10 Characters Long"));
+                return;
+            }
 
             connection.sendTCP(new RequestWorldResponsePacket(true, null));
             
@@ -38,9 +64,51 @@ public class WorldListener extends Listener {
                     }
                 }
             }
-            connection.sendTCP(new WorldDataPacket(blocks[0].length, blocks.length, buffer.array()));
+            connection.sendTCP(new WorldDataPacket(blocks[0].length, blocks.length, buffer.array(), world.getBackground()));
 
             client.setPlayer(world.createPlayer(client));
+
+            connection.sendTCP(new LoadInventoryPacket(client.getInventory()));
+        }
+
+        if(obj instanceof LeaveWorldPacket) {
+            Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
+            if(client == null)
+                return;
+
+            client.getPlayer().getWorld().destroyPlayer(client.getPlayer());
+        }
+
+        if(obj instanceof ChatMessagePacket) {
+            ChatMessagePacket packet = (ChatMessagePacket) obj;
+
+            Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
+            if(client == null)
+                return;
+
+            if(client.getPlayer() == null)
+                return;
+
+            if(packet.getMessage().startsWith("/")) {
+                String[] arr = packet.getMessage().split(" ");
+                String command = arr[0].substring(1);
+                String[] args = Arrays.copyOfRange(arr, 1, arr.length);
+                WildServer.getCommandHandler().executeCommand(command, client, args);
+                return;
+            }
+
+            if(packet.getMessage().replaceAll(" ", "").replaceAll("\n", "").replaceAll("\t", "").length() == 0)
+                return;
+
+
+            World world = client.getPlayer().getWorld();
+
+            ChatMessagePacket chatMessagePacket = new ChatMessagePacket(String.format("[YELLOW]%s >> [WHITE]%s", client.getUsername(), packet.getMessage()));
+
+            for(Player ply : world.getPlayers()) {
+                WildServer.getServer().sendToTCP(ply.getClient().getSocket(), chatMessagePacket);
+            }
+
         }
     }
     

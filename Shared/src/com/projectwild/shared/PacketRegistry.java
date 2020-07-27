@@ -1,8 +1,11 @@
 package com.projectwild.shared;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.projectwild.shared.packets.ChatMessagePacket;
 import com.projectwild.shared.packets.LoginDataPacket;
 import com.projectwild.shared.packets.LoginResponsePacket;
+import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
+import com.projectwild.shared.packets.items.LoadInventoryPacket;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
@@ -19,8 +22,13 @@ public class PacketRegistry {
         kryo.register(byte[].class);
         kryo.register(byte[][].class);
         kryo.register(byte[][][].class);
+
+        // Custom Classes
         kryo.register(Vector2.class);
-        
+        kryo.register(ItemStack.class);
+        kryo.register(ItemStack[].class);
+        kryo.register(ItemPreset.class);
+
         // Packets
         kryo.register(LoginDataPacket.class);
         kryo.register(LoginResponsePacket.class);
@@ -35,6 +43,11 @@ public class PacketRegistry {
         kryo.register(PlayerAnimationPacket.class);
         kryo.register(InteractBlockPacket.class);
         kryo.register(UpdateBlockPacket.class);
+        kryo.register(LoadInventoryPacket.class);
+        kryo.register(ChangeInventoryItemPacket.class);
+        kryo.register(ChatMessagePacket.class);
+        kryo.register(LeaveWorldPacket.class);
+        kryo.register(LeaveWorldPacket.class);
 
     }
     

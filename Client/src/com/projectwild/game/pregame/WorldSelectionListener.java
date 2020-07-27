@@ -3,9 +3,8 @@ package com.projectwild.game.pregame;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.worlds.WorldState;
+import com.projectwild.game.ingame.WorldState;
 import com.projectwild.shared.packets.world.RequestWorldResponsePacket;
-import com.projectwild.shared.packets.world.WorldDataPacket;
 
 import javax.swing.*;
 

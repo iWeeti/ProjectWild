@@ -34,4 +34,12 @@ public class ClientHandler {
         return null;
     }
 
+    public Client getClientByUsername(String username){
+        for(Client c : clients){
+            if(c.getUsername().toLowerCase().equals(username.toLowerCase()))
+                return c;
+        }
+        return null;
+    }
+
 }

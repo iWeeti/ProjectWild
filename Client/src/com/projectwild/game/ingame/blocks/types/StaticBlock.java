@@ -1,6 +1,6 @@
-package com.projectwild.game.worlds.blocks.types;
+package com.projectwild.game.ingame.blocks.types;
 
-import com.projectwild.game.worlds.blocks.Block;
+import com.projectwild.game.ingame.blocks.Block;
 import com.projectwild.shared.BlockPreset;
 
 public class StaticBlock extends Block {
@@ -10,8 +10,6 @@ public class StaticBlock extends Block {
     }
     
     @Override
-    public void deserialize(byte[] data) {
-    
-    }
+    public void deserialize(byte[] data) {}
     
 }

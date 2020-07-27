@@ -1,13 +1,17 @@
-package com.projectwild.game.worlds.player;
+package com.projectwild.game.ingame.player;
 
 public enum PlayerAnimations {
 
     WALK_RIGHT(0, 8, 12f),
     WALK_LEFT(1, 8, 12f),
+
     STAND_RIGHT(2, 6, 5f),
     STAND_LEFT(3, 6, 5f),
-    JUMP_RIGHT(4, 4, 0f),
-    JUMP_LEFT(5, 4, 0f);
+
+    JUMP_RIGHT_START(4, 1, 0f),
+    JUMP_LEFT_START(5, 1, 0f),
+    JUMP_RIGHT_END(6, 1, 0f),
+    JUMP_LEFT_END(7, 1, 0f);
 
     private int id;
     private int length;
