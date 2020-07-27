@@ -6,11 +6,9 @@ import com.projectwild.shared.packets.LoginDataPacket;
 import com.projectwild.shared.packets.LoginResponsePacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
-import com.projectwild.shared.packets.player.PlayerAnimationPacket;
-import com.projectwild.shared.packets.player.PlayerRemovePacket;
-import com.projectwild.shared.packets.player.PlayerSpawnPacket;
-import com.projectwild.shared.packets.player.UpdatePositionPacket;
+import com.projectwild.shared.packets.player.*;
 import com.projectwild.shared.packets.player.local.MovePacket;
+import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.packets.world.*;
 import com.projectwild.shared.utils.Vector2;
@@ -48,6 +46,8 @@ public class PacketRegistry {
         kryo.register(ChatMessagePacket.class);
         kryo.register(LeaveWorldPacket.class);
         kryo.register(LeaveWorldPacket.class);
+        kryo.register(UpdateHasAccessPacket.class);
+        kryo.register(UpdateNameTagPacket.class);
 
     }
     

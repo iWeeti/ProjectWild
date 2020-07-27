@@ -9,10 +9,8 @@ import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.ChatMessagePacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
-import com.projectwild.shared.packets.player.PlayerAnimationPacket;
-import com.projectwild.shared.packets.player.PlayerRemovePacket;
-import com.projectwild.shared.packets.player.PlayerSpawnPacket;
-import com.projectwild.shared.packets.player.UpdatePositionPacket;
+import com.projectwild.shared.packets.player.*;
+import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.packets.world.UpdateBlockPacket;
 import com.projectwild.shared.packets.world.WorldDataPacket;
@@ -67,6 +65,31 @@ public class WorldListener extends Listener {
                 return;
 
             worldState.getWorld().getLocalPlayer().setSpeedMultiplier(packet.getSpeedMultiplier());
+        }
+
+        if(obj instanceof UpdateHasAccessPacket) {
+            UpdateHasAccessPacket packet = (UpdateHasAccessPacket) obj;
+            if(worldState.getWorld() == null)
+                return;
+
+            if(worldState.getWorld().getLocalPlayer() == null)
+                return;
+
+            worldState.getWorld().getLocalPlayer().setHasAccess(packet.hasAccess());
+        }
+
+        if(obj instanceof UpdateNameTagPacket) {
+            UpdateNameTagPacket packet = (UpdateNameTagPacket) obj;
+
+            if(worldState.getWorld() == null)
+                return;
+
+            Player ply = worldState.getWorld().getPlayer(packet.getUserId());
+
+            if(ply == null)
+                return;
+
+            ply.setNametag(packet.getNametag());
         }
 
         if(obj instanceof PlayerAnimationPacket) {

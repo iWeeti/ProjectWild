@@ -44,6 +44,10 @@ public class Player {
         font.draw(sb, layout, (int) position.getX() + 17 - layout.width / 2, (int) position.getY() + 40);
     }
 
+    public void setNametag(String nametag) {
+        this.nametag = nametag;
+    }
+
     public int getUserId() {
         return userId;
     }

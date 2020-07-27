@@ -9,6 +9,7 @@ import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
+import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 import com.projectwild.shared.packets.world.UpdateBlockPacket;
 import com.projectwild.shared.utils.Vector2;
 
@@ -131,6 +132,9 @@ public class World {
         // Sending Local Player To Client
         PlayerSpawnPacket playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), player.getNametag(), spawnPosition, true);
         WildServer.getServer().sendToTCP(client.getSocket(), playerSpawnPacket);
+
+        UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(hasAccess(client));
+        WildServer.getServer().sendToTCP(client.getSocket(), hasAccessPacket);
 
         // Sending All Players To Client
         for(Player ply : players) {

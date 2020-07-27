@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.World;
 import com.projectwild.game.ingame.WorldState;
+import com.projectwild.game.ingame.blocks.Block;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
 import com.projectwild.shared.utils.Utils;
@@ -14,10 +15,12 @@ public class LocalPlayer extends Player {
 
     private Vector2 velocity, oldVelocity;
     private float speedMultiplier;
+    private boolean hasAccess;
 
     public LocalPlayer(int userId, String username) {
         super(userId, username);
         speedMultiplier = 1.0f;
+        hasAccess = false;
         velocity = new Vector2();
         oldVelocity = new Vector2();
     }
@@ -71,9 +74,23 @@ public class LocalPlayer extends Player {
             Vector2 bottomRight = new Vector2(newPos.getX() + 24, newPos.getY());
 
             // Perform Collision Calculations
-            if(world.pointCollisionType(velocity.getY() > 0 ? topLeft : bottomLeft) == 1 ||
-                    world.pointCollisionType(velocity.getY() > 0 ? topRight : bottomRight) == 1) {
+            Block block1 = world.pointCollisionBlock(velocity.getY() > 0 ? topLeft : bottomLeft);
+            Block block2 = world.pointCollisionBlock(velocity.getY() > 0 ? topRight : bottomRight);
+
+            if(block1 == null || block2 == null) {
                 velocity.setY(0);
+            } else {
+                int type1 = block1.getBlockPreset().getCollisionType();
+                int type2 = block2.getBlockPreset().getCollisionType();
+
+                if(type1 == 1 || type2 == 1) {
+                    velocity.setY(0);
+                } else {
+                    if(type1 == 2)
+                        velocity.setY(block1.collide(this, velocity.getY()));
+                    if(type2 == 2)
+                        velocity.setY(block2.collide(this, velocity.getY()));
+                }
             }
         }
 
@@ -90,9 +107,23 @@ public class LocalPlayer extends Player {
             Vector2 bottomRight = new Vector2(newPos.getX() + 24, newPos.getY());
 
             // Perform Collision Calculations
-            if(world.pointCollisionType(velocity.getX() > 0 ? topRight : topLeft) == 1 ||
-                    world.pointCollisionType(velocity.getX() > 0 ? bottomRight : bottomLeft) == 1) {
+            Block block1 = world.pointCollisionBlock(velocity.getX() > 0 ? topRight : topLeft);
+            Block block2 = world.pointCollisionBlock(velocity.getX() > 0 ? bottomRight : bottomLeft);
+
+            if(block1 == null || block2 == null) {
                 velocity.setX(0);
+            } else {
+                int type1 = block1.getBlockPreset().getCollisionType();
+                int type2 = block2.getBlockPreset().getCollisionType();
+
+                if(type1 == 1 || type2 == 1) {
+                    velocity.setX(0);
+                } else {
+                    if(type1 == 2)
+                        velocity.setX(block1.collide(this, velocity.getX()));
+                    if(type2 == 2)
+                        velocity.setX(block2.collide(this, velocity.getX()));
+                }
             }
         }
 
@@ -142,7 +173,13 @@ public class LocalPlayer extends Player {
         corner2.changeX(24);
         corner2.changeY(-2);
 
-        return world.pointCollisionType(corner1) == 1 || world.pointCollisionType(corner2) == 1;
+        Block block1 = world.pointCollisionBlock(corner1);
+        Block block2 = world.pointCollisionBlock(corner2);
+
+        if(block1 == null || block2 == null)
+            return true;
+
+        return block1.getBlockPreset().getCollisionType() == 1 || block2.getBlockPreset().getCollisionType() == 1;
     }
 
     public void changeAnimation(PlayerAnimations animation) {
@@ -159,8 +196,16 @@ public class LocalPlayer extends Player {
         this.speedMultiplier = speedMultiplier;
     }
 
+    public void setHasAccess(boolean hasAccess) {
+        this.hasAccess = hasAccess;
+    }
+
     public float getSpeedMultiplier() {
         return speedMultiplier;
+    }
+
+    public boolean hasAccess() {
+        return hasAccess;
     }
 
 }

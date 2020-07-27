@@ -1,7 +1,5 @@
 package com.projectwild.game.ingame;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.projectwild.game.WildGame;
@@ -83,6 +81,9 @@ public class World {
                         case 2:
 
                             break;
+                        case 4:
+                            blocks[y][x][z].render(sb, new Vector2(x, y));
+                            continue;
                         default:
                             continue;
                     }
@@ -112,14 +113,14 @@ public class World {
         }
     }
 
-    public int pointCollisionType(Vector2 point) {
+    public Block pointCollisionBlock(Vector2 point) {
         int blockX = (int) Math.floor((point.getX()) / 32.0f);
         int blockY = (int) Math.floor((point.getY()) / 32.0f);
 
         if(blockX >= getWidth() || blockX < 0 || blockY >= getHeight() || blockY < 0)
-            return 1;
+            return null;
 
-        return blocks[blockY][blockX][1].getBlockPreset().getCollisionType();
+        return blocks[blockY][blockX][1];
     }
 
     public Player createPlayer(int userId, String username) {
@@ -141,6 +142,9 @@ public class World {
     }
 
     public Player getPlayer(int userId) {
+        if(localPlayer.getUserId() == userId)
+            return localPlayer;
+
         for(Player ply : players) {
             if(ply.getUserId() == userId)
                 return ply;

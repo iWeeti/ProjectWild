@@ -13,7 +13,6 @@ public class Player {
     private Client client;
     private World world;
 
-    private String nametag;
     private float speedMultiplier;
     private Vector2 position;
 
@@ -22,17 +21,6 @@ public class Player {
         this.world = world;
         this.position = position.copy();
         speedMultiplier = 1.0f;
-
-        if(client.getUserId() == world.getOwner()) {
-            nametag = String.format("[GREEN]%s", client.getUsername());
-        } else if(world.hasAccess(client) && world.getOwner() != -1) {
-            nametag = String.format("[#98ff73]%s", client.getUsername());
-        } else {
-            nametag = String.format("[WHITE]%s", client.getUsername());
-        }
-
-        if(CommandHandler.isAdmin(client))
-            nametag = String.format("[YELLOW][Mod] %s", nametag);
     }
 
     public void updateSpeedMultiplier(float speedMultiplier) {
@@ -67,6 +55,18 @@ public class Player {
     }
 
     public String getNametag() {
+        String nametag;
+        if(client.getUserId() == world.getOwner()) {
+            nametag = String.format("[GREEN]%s", client.getUsername());
+        } else if(world.hasAccess(client) && world.getOwner() != -1) {
+            nametag = String.format("[#98ff73]%s", client.getUsername());
+        } else {
+            nametag = String.format("[WHITE]%s", client.getUsername());
+        }
+
+        if(CommandHandler.isAdmin(client))
+            nametag = String.format("[YELLOW][Mod] %s", nametag);
+
         return nametag;
     }
 

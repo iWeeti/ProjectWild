@@ -3,7 +3,10 @@ package com.projectwild.server.worlds.commands;
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.World;
+import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.packets.ChatMessagePacket;
+import com.projectwild.shared.packets.player.UpdateNameTagPacket;
+import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 
 public class TrustCommand implements Command {
 
@@ -30,13 +33,35 @@ public class TrustCommand implements Command {
             return;
         }
 
-        world.addTrusted(c);
+        if(c.getUserId() == client.getUserId()) {
+            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Cannot Trust Yourself");
+            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            return;
+        }
 
+        if(world.hasAccess(c)) {
+            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]This Player Is Already Trusted");
+            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            return;
+        }
+
+        // Adding Trusted And Sending messages
+        world.addTrusted(c);
         ChatMessagePacket packet = new ChatMessagePacket(String.format("[GREEN]Success! [WHITE]Trusted %s", c.getUsername()));
         WildServer.getServer().sendToTCP(client.getSocket(), packet);
 
         packet = new ChatMessagePacket(String.format("[GREEN]Trusted! [WHITE]You Are Now Trusted In %s", world.getName()));
         WildServer.getServer().sendToTCP(c.getSocket(), packet);
+
+        // Setting Local Player Access
+        UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(true);
+        WildServer.getServer().sendToTCP(c.getSocket(), hasAccessPacket);
+
+        // Updating Nametag
+        UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(c.getUserId(), c.getPlayer().getNametag());
+        for(Player ply : world.getPlayers()) {
+            WildServer.getServer().sendToTCP(ply.getClient().getSocket(), nameTagPacket);
+        }
         return;
     }
 
