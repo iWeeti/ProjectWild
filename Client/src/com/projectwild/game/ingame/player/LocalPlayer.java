@@ -15,8 +15,6 @@ public class LocalPlayer extends Player {
     private Vector2 velocity, oldVelocity;
     private float speedMultiplier;
 
-    //TODO: use speed multiplier
-
     public LocalPlayer(int userId, String username) {
         super(userId, username);
         speedMultiplier = 1.0f;
@@ -33,10 +31,10 @@ public class LocalPlayer extends Player {
 
         // Handle Input
         if(Gdx.input.isKeyPressed(Input.Keys.A))
-            velocity.changeX(-2);
+            velocity.changeX(-2 * speedMultiplier);
 
         if(Gdx.input.isKeyPressed(Input.Keys.D))
-            velocity.changeX(2);
+            velocity.changeX(2 * speedMultiplier);
 
         if((Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.W)) && isOnGround())
             velocity.changeY(5);
@@ -49,8 +47,8 @@ public class LocalPlayer extends Player {
         Vector2 oldPos = getPosition().copy();
 
         // Define Terminal Velocity
-        velocity.setX(Utils.clamp(5, -5, velocity.getX()));
-        velocity.setY(Utils.clamp(5, -5, velocity.getY()));
+        velocity.setX(Utils.clamp(5  * speedMultiplier, -5 * speedMultiplier, velocity.getX()));
+        velocity.setY(Utils.clamp(5  * speedMultiplier, -5 * speedMultiplier, velocity.getY()));
 
         // Apply Horizontal "Friction"
         velocity.changeX((velocity.getX() > 0 ? -1 : 1) * Math.abs(velocity.getX()) / 3);

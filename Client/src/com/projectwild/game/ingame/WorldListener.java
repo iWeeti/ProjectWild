@@ -13,7 +13,7 @@ import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
 import com.projectwild.shared.packets.player.UpdatePositionPacket;
-import com.projectwild.shared.packets.player.local.UpdatePlayerAttributesPacket;
+import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.packets.world.UpdateBlockPacket;
 import com.projectwild.shared.packets.world.WorldDataPacket;
 
@@ -58,8 +58,8 @@ public class WorldListener extends Listener {
                 player.getPosition().set(packet.getPosition());
         }
 
-        if(obj instanceof UpdatePlayerAttributesPacket) {
-            UpdatePlayerAttributesPacket packet = (UpdatePlayerAttributesPacket) obj;
+        if(obj instanceof UpdateSpeedMultiplierPacket) {
+            UpdateSpeedMultiplierPacket packet = (UpdateSpeedMultiplierPacket) obj;
             if(worldState.getWorld() == null)
                 return;
 

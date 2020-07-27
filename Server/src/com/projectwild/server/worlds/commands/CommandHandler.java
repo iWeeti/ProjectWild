@@ -34,6 +34,7 @@ public class CommandHandler {
         commands.put("trust", new TrustCommand());
         commands.put("untrust", new UntrustCommand());
         commands.put("pm", new PrivateMessageCommand());
+        commands.put("speed", new SpeedCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {

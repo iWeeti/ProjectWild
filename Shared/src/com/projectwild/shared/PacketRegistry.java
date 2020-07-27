@@ -11,7 +11,7 @@ import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
 import com.projectwild.shared.packets.player.UpdatePositionPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
-import com.projectwild.shared.packets.player.local.UpdatePlayerAttributesPacket;
+import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.packets.world.*;
 import com.projectwild.shared.utils.Vector2;
 
@@ -38,7 +38,7 @@ public class PacketRegistry {
         kryo.register(PlayerRemovePacket.class);
         kryo.register(RequestWorldResponsePacket.class);
         kryo.register(UpdatePositionPacket.class);
-        kryo.register(UpdatePlayerAttributesPacket.class);
+        kryo.register(UpdateSpeedMultiplierPacket.class);
         kryo.register(MovePacket.class);
         kryo.register(PlayerAnimationPacket.class);
         kryo.register(InteractBlockPacket.class);

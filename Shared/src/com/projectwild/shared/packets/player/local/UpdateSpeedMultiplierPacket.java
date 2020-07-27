@@ -1,12 +1,12 @@
 package com.projectwild.shared.packets.player.local;
 
-public class UpdatePlayerAttributesPacket {
+public class UpdateSpeedMultiplierPacket {
 
     private float speedMultiplier;
 
-    public UpdatePlayerAttributesPacket() {}
+    public UpdateSpeedMultiplierPacket() {}
 
-    public UpdatePlayerAttributesPacket(float speedMultiplier) {
+    public UpdateSpeedMultiplierPacket(float speedMultiplier) {
         this.speedMultiplier = speedMultiplier;
     }
 

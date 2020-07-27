@@ -60,6 +60,7 @@ public class World {
     }
 
     public void renderWorld(SpriteBatch sb) {
+        //TODO: Background
 //        Texture bgTexture = WildGame.getAssetManager().getAsset(background);
 //        sb.draw(bgTexture, 0, 0, getWidth() * 32, getHeight() * 32);
 

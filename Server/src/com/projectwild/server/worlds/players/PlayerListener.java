@@ -3,15 +3,12 @@ package com.projectwild.server.worlds.players;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.server.WildServer;
-import com.projectwild.server.worlds.blocks.types.StaticBlock;
-import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.ItemPreset;
 import com.projectwild.shared.ItemStack;
 import com.projectwild.shared.ItemTypes;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
-import com.projectwild.shared.packets.world.UpdateBlockPacket;
 import com.projectwild.shared.utils.Vector2;
 
 public class PlayerListener extends Listener {

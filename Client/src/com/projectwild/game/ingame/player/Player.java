@@ -10,15 +10,15 @@ import com.projectwild.shared.utils.Vector2;
 public class Player {
 
     private int userId;
-    private String username;
+    private String nametag;
     private Vector2 position;
 
     private PlayerAnimations animation;
     protected float frame;
 
-    public Player(int userId, String username) {
+    public Player(int userId, String nametag) {
         this.userId = userId;
-        this.username = username;
+        this.nametag = nametag;
         position = new Vector2();
         changeAnimation(PlayerAnimations.STAND_RIGHT.getId());
     }
@@ -40,7 +40,7 @@ public class Player {
 
         BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_10");
         font.getData().markupEnabled = true;
-        GlyphLayout layout = new GlyphLayout(font, username);
+        GlyphLayout layout = new GlyphLayout(font, nametag);
         font.draw(sb, layout, (int) position.getX() + 17 - layout.width / 2, (int) position.getY() + 40);
     }
 
@@ -48,8 +48,8 @@ public class Player {
         return userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNametag() {
+        return nametag;
     }
 
     public Vector2 getPosition() {

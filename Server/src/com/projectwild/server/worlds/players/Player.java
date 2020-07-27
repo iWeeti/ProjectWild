@@ -5,7 +5,7 @@ import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.World;
 import com.projectwild.server.worlds.commands.CommandHandler;
 import com.projectwild.shared.packets.player.UpdatePositionPacket;
-import com.projectwild.shared.packets.player.local.UpdatePlayerAttributesPacket;
+import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.utils.Vector2;
 
 public class Player {
@@ -37,7 +37,7 @@ public class Player {
 
     public void updateSpeedMultiplier(float speedMultiplier) {
         this.speedMultiplier = speedMultiplier;
-        UpdatePlayerAttributesPacket packet = new UpdatePlayerAttributesPacket(speedMultiplier);
+        UpdateSpeedMultiplierPacket packet = new UpdateSpeedMultiplierPacket(speedMultiplier);
         WildServer.getServer().sendToTCP(client.getSocket(), packet);
     }
 
