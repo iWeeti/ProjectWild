@@ -5,6 +5,7 @@ import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.blocks.Block;
 import com.projectwild.server.worlds.blocks.BlockTypes;
 import com.projectwild.server.worlds.blocks.types.StaticBlock;
+import com.projectwild.server.worlds.blocks.types.UnbreakableBlock;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.player.PlayerRemovePacket;
@@ -45,7 +46,8 @@ public class World {
             ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(Paths.get(String.format("data/worlds/%s.world", this.name))));
         
             owner = buffer.getInt();
-            for(int i = 0; i < buffer.getInt(); i++) {
+            int trustedLength = buffer.getInt();
+            for(int i = 0; i < trustedLength; i++) {
                 trusted.add(buffer.getInt());
             }
 
@@ -69,7 +71,7 @@ public class World {
                         }
                         try {
                             BlockPreset preset = BlockPreset.getPreset(id);
-                            Block block = BlockTypes.getBlockClass(preset.getBlockType()).getConstructor(BlockPreset.class).newInstance(preset);
+                            Block block = BlockTypes.getBlockClass(preset.getBlockType()).getConstructor(BlockPreset.class, World.class, int.class, int.class, int.class).newInstance(preset, this, x, y, z);
                             block.deserialize(extra);
                             blocks[y][x][z] = block;
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -86,14 +88,20 @@ public class World {
             for(int y = 0; y < blocks.length; y++) {
                 for(int x = 0; x < blocks[y].length; x++) {
                     for(int z = 0; z < 2; z++) {
-                        if(y <= 30 && z == 1) {
-                            blocks[y][x][z] = new StaticBlock(BlockPreset.getPreset(1));
+                        if(y <= 1 && z == 1) {
+                            blocks[y][x][z] = new UnbreakableBlock(BlockPreset.getPreset(23), this, x, y, z);
+                        } else if(y <= 30 && z == 1) {
+                            blocks[y][x][z] = new StaticBlock(BlockPreset.getPreset(1), this, x, y, z);
                         } else {
-                            blocks[y][x][z] = new StaticBlock(BlockPreset.getPreset(0));
+                            blocks[y][x][z] = new StaticBlock(BlockPreset.getPreset(0), this, x, y, z);
                         }
                     }
                 }
             }
+
+            blocks[31][50][1] = new UnbreakableBlock(BlockPreset.getPreset(24), this, 50, 31, 1);
+            blocks[30][50][1] = new UnbreakableBlock(BlockPreset.getPreset(23), this, 50, 30, 1);
+
         }
     }
     
@@ -153,11 +161,11 @@ public class World {
     }
 
     public void destroyPlayer(Player player) {
-        players.remove(player);
         PlayerRemovePacket playerRemovePacket = new PlayerRemovePacket(player.getClient().getUserId());
         for(Player ply : players) {
             WildServer.getServer().sendToTCP(ply.getClient().getSocket(), playerRemovePacket);
         }
+        players.remove(player);
 
         if(players.size() <= 0)
             WildServer.getWorldHandler().unloadWorld(this);
@@ -176,10 +184,10 @@ public class World {
     public void setBlock(int x, int y, int z, int blockId) {
         BlockPreset blockPreset = BlockPreset.getPreset(blockId);
         try {
-            Block block = BlockTypes.getBlockClass(blockPreset.getBlockType()).getConstructor(BlockPreset.class).newInstance(blockPreset);
+            Block block = BlockTypes.getBlockClass(blockPreset.getBlockType()).getConstructor(BlockPreset.class, World.class, int.class, int.class, int.class).newInstance(blockPreset, this, x, y, z);
             blocks[y][x][z] = block;
 
-            UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket(x, y, z, block.getBlockPreset().getId(), block.serialize());
+            UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket(x, y, z, block.getBlockPreset().getId(), block.serializeNetworkVariables());
             for(Player ply : players) {
                 WildServer.getServer().sendToTCP(ply.getClient().getSocket(), updateBlockPacket);
             }

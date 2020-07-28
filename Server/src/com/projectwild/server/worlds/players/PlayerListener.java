@@ -3,6 +3,7 @@ package com.projectwild.server.worlds.players;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.server.WildServer;
+import com.projectwild.server.worlds.blocks.BlockTypes;
 import com.projectwild.shared.ItemPreset;
 import com.projectwild.shared.ItemStack;
 import com.projectwild.shared.ItemTypes;
@@ -77,6 +78,9 @@ public class PlayerListener extends Listener {
                 return;
 
             if(packet.getZ() > 2)
+                return;
+
+            if(player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getBlockType() == BlockTypes.UNBREAKABLE.getId())
                 return;
 
             // Perform Interaction

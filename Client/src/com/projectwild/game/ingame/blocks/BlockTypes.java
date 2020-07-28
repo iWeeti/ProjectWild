@@ -2,11 +2,13 @@ package com.projectwild.game.ingame.blocks;
 
 import com.projectwild.game.ingame.blocks.types.EntranceBlock;
 import com.projectwild.game.ingame.blocks.types.StaticBlock;
+import com.projectwild.game.ingame.blocks.types.UnbreakableBlock;
 
 public enum BlockTypes {
     
     STATIC(0, StaticBlock.class),
-    ENTRANCE(1, EntranceBlock.class);
+    ENTRANCE(1, EntranceBlock.class),
+    UNBREAKABLE(2, UnbreakableBlock.class);
     
     private int id;
     private Class<? extends Block> blockClass;

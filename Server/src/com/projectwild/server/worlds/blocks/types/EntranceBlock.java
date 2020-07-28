@@ -1,12 +1,15 @@
 package com.projectwild.server.worlds.blocks.types;
 
+import com.projectwild.server.worlds.World;
 import com.projectwild.server.worlds.blocks.Block;
+import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
 
 public class EntranceBlock extends Block {
 
-    public EntranceBlock(BlockPreset preset) {
-        super(preset);
+    public EntranceBlock(BlockPreset preset, World world, int x, int y, int z) {
+        super(preset, world, x, y, z);
+        setNWBool("open", false);
     }
 
     @Override
@@ -20,8 +23,13 @@ public class EntranceBlock extends Block {
     }
 
     @Override
-    public byte[] serializeForClient() {
-        return new byte[0];
+    public void collision(Player ply) {
+        setNWBool("open", true);
+    }
+
+    @Override
+    public void update() {
+        setNWBool("open", false);
     }
 
 }

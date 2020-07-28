@@ -25,4 +25,8 @@ public class WorldHandler {
         worlds.remove(world);
     }
 
+    public CopyOnWriteArrayList<World> getWorlds() {
+        return worlds;
+    }
+
 }

@@ -10,14 +10,19 @@ import com.projectwild.shared.utils.Vector2;
 
 public class EntranceBlock extends Block {
 
-    public EntranceBlock(BlockPreset blockPreset) {
-        super(blockPreset);
+    public EntranceBlock(BlockPreset blockPreset, byte[] data) {
+        super(blockPreset, data);
     }
 
     @Override
     public void render(SpriteBatch sb, Vector2 position) {
         BlockPreset preset = getBlockPreset();
-        TextureRegion texture = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX(), preset.getTilesetY());
+        TextureRegion texture;
+        if(getNWBool("open")) {
+            texture = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 1, preset.getTilesetY());
+        } else {
+            texture = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX(), preset.getTilesetY());
+        }
         sb.draw(texture, (int) position.getX() * 32, (int) position.getY() * 32);
     }
 

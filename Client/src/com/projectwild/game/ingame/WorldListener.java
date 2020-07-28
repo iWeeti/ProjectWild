@@ -2,9 +2,11 @@ package com.projectwild.game.ingame;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.blocks.Block;
 import com.projectwild.game.ingame.blocks.BlockTypes;
 import com.projectwild.game.ingame.player.Player;
+import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.ChatMessagePacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
@@ -13,6 +15,7 @@ import com.projectwild.shared.packets.player.*;
 import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.packets.world.UpdateBlockPacket;
+import com.projectwild.shared.packets.world.UpdateNetworkedVariablePacket;
 import com.projectwild.shared.packets.world.WorldDataPacket;
 
 import java.lang.reflect.InvocationTargetException;
@@ -46,6 +49,10 @@ public class WorldListener extends Listener {
 
         if(obj instanceof PlayerRemovePacket) {
             PlayerRemovePacket packet = (PlayerRemovePacket) obj;
+            if(worldState.getWorld().getLocalPlayer() != null) {
+                if(worldState.getWorld().getLocalPlayer().getUserId() == packet.getUserId())
+                    WildGame.changeState(new WorldSelectionState());
+            }
             worldState.getWorld().removePlayer(packet.getUserId());
         }
 
@@ -92,6 +99,14 @@ public class WorldListener extends Listener {
             ply.setNametag(packet.getNametag());
         }
 
+        if(obj instanceof UpdateNetworkedVariablePacket) {
+            UpdateNetworkedVariablePacket packet = (UpdateNetworkedVariablePacket) obj;
+            if(worldState.getWorld() == null)
+                return;
+
+            worldState.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].setNWVar(packet.getKey(), packet.getValue());
+        }
+
         if(obj instanceof PlayerAnimationPacket) {
             PlayerAnimationPacket packet = (PlayerAnimationPacket) obj;
             Player player = worldState.getWorld().getPlayer(packet.getUserId());
@@ -103,8 +118,7 @@ public class WorldListener extends Listener {
             UpdateBlockPacket packet = (UpdateBlockPacket) obj;
             try {
                 BlockPreset preset = BlockPreset.getPreset(packet.getBlockPresetId());
-                Block block = BlockTypes.getBlockClass(preset.getBlockType()).getConstructor(BlockPreset.class).newInstance(preset);
-                block.deserialize(packet.getExtraData());
+                Block block = BlockTypes.getBlockClass(preset.getBlockType()).getConstructor(BlockPreset.class, byte[].class).newInstance(preset, packet.getExtraData());
                 worldState.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()] = block;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();

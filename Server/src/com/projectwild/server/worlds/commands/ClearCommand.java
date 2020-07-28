@@ -3,6 +3,7 @@ package com.projectwild.server.worlds.commands;
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.World;
+import com.projectwild.server.worlds.blocks.BlockTypes;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
 public class ClearCommand implements Command {
@@ -20,7 +21,8 @@ public class ClearCommand implements Command {
         for(int y = 0; y < world.getHeight(); y++) {
             for(int x = 0; x < world.getWidth(); x++) {
                 for(int z = 0; z < 2; z++) {
-                    world.setBlock(x, y, z, 0);
+                    if(world.getBlocks()[y][x][z].getBlockPreset().getBlockType() != BlockTypes.UNBREAKABLE.getId())
+                        world.setBlock(x, y, z, 0);
                 }
             }
         }

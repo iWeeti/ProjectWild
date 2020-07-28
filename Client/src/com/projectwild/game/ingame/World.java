@@ -46,8 +46,7 @@ public class World {
                     }
                     try {
                         BlockPreset preset = BlockPreset.getPreset(id);
-                        Block block = BlockTypes.getBlockClass(preset.getBlockType()).getConstructor(BlockPreset.class).newInstance(preset);
-                        block.deserialize(extra);
+                        Block block = BlockTypes.getBlockClass(preset.getBlockType()).getConstructor(BlockPreset.class, byte[].class).newInstance(preset, extra);
                         blocks[y][x][z] = block;
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         e.printStackTrace();
@@ -84,6 +83,24 @@ public class World {
                         case 4:
                             blocks[y][x][z].render(sb, new Vector2(x, y));
                             continue;
+                        case 5:
+                            boolean hasLeft = false;
+                            boolean hasRight = false;
+                            if(x > 0)
+                                hasLeft = blocks[y][x-1][z].getBlockPreset().getId() == preset.getId();
+
+                            if(x < getBlocks()[0].length-1)
+                                hasRight = blocks[y][x+1][z].getBlockPreset().getId() == preset.getId();
+
+                            if(hasLeft && hasRight) {
+                                tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 2, preset.getTilesetY());
+                            } else {
+                                if (hasLeft)
+                                    tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 3, preset.getTilesetY());
+                                if (hasRight)
+                                    tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 1, preset.getTilesetY());
+                            }
+                            break;
                         default:
                             continue;
                     }

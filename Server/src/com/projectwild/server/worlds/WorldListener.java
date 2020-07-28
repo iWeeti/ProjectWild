@@ -1,6 +1,8 @@
 package com.projectwild.server.worlds;
 
+import com.esotericsoftware.kryo.KryoSerializable;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.KryoSerialization;
 import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
@@ -16,6 +18,8 @@ import com.projectwild.shared.packets.world.WorldDataPacket;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +63,7 @@ public class WorldListener extends Listener {
                 for(int x = 0; x < blocks[y].length; x++) {
                     for(int z = 0; z < 2; z++) {
                         Block block = blocks[y][x][z];
-                        byte[] data = block.serializeForClient();
+                        byte[] data = block.serializeNetworkVariables();
                         buffer = ByteBuffer.allocate(buffer.capacity() + 8 + data.length).put(buffer.array()).putInt(block.getBlockPreset().getId()).putInt(data.length).put(data);
                     }
                 }

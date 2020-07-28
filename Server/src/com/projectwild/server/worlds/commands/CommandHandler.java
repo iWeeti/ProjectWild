@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class CommandHandler {
 
-    public static final String[] admins = {"ImWuX", "Nullrien"};
+    public static final String[] admins = {"ImWuX", "Nullrien", "Sizzeh", "Gaykid", "nico"};
 
     public static boolean isAdmin(Client client) {
         for(String s : admins) {
@@ -35,6 +35,8 @@ public class CommandHandler {
         commands.put("untrust", new UntrustCommand());
         commands.put("pm", new PrivateMessageCommand());
         commands.put("speed", new SpeedCommand());
+        commands.put("bring", new BringCommand());
+        commands.put("kick", new KickCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {

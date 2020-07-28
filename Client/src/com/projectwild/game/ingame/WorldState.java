@@ -87,7 +87,26 @@ public class WorldState implements GameState {
                         WildGame.getClient().sendTCP(leaveWorldPacket);
                         WildGame.changeState(new WorldSelectionState());
                     }
+                }
+
+                if(chatHandler.isChatOpen())
                     return false;
+
+                switch(keycode) {
+                    case Input.Keys.W:
+                    case Input.Keys.SPACE:
+                        if(world.getLocalPlayer().isOnGround())
+                            world.getLocalPlayer().getVelocity().setY(5.0);
+                        world.getLocalPlayer().KEY_UP = true;
+                        break;
+                    case Input.Keys.A:
+                    case Input.Keys.LEFT:
+                        world.getLocalPlayer().KEY_LEFT = true;
+                        break;
+                    case Input.Keys.D:
+                    case Input.Keys.RIGHT:
+                        world.getLocalPlayer().KEY_RIGHT = true;
+                        break;
                 }
 
                 if(chatHandler.isChatOpen())
@@ -99,6 +118,24 @@ public class WorldState implements GameState {
                 return false;
             }
 
+            @Override
+            public boolean keyUp(int keycode) {
+                switch(keycode) {
+                    case Input.Keys.W:
+                    case Input.Keys.SPACE:
+                        world.getLocalPlayer().KEY_UP = false;
+                        break;
+                    case Input.Keys.A:
+                    case Input.Keys.LEFT:
+                        world.getLocalPlayer().KEY_LEFT = false;
+                        break;
+                    case Input.Keys.D:
+                    case Input.Keys.RIGHT:
+                        world.getLocalPlayer().KEY_RIGHT = false;
+                        break;
+                }
+                return false;
+            }
         });
         inputMultiplexer.addProcessor(chatHandler.getTypeListener());
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -112,7 +149,6 @@ public class WorldState implements GameState {
         if(world.getLocalPlayer() == null)
             return;
 
-        world.getLocalPlayer().handleInput();
         world.getLocalPlayer().handlePhysics();
         world.getLocalPlayer().handleAnimation();
     }

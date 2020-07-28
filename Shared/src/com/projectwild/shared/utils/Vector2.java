@@ -30,20 +30,24 @@ public class Vector2 {
         setY(y);
     }
 
-    public void setX(double x) {
+    public Vector2 setX(double x) {
         this.x = x;
+        return this;
     }
 
-    public void setY(double y) {
+    public Vector2 setY(double y) {
         this.y = y;
+        return this;
     }
 
-    public void changeX(double x) {
+    public Vector2 changeX(double x) {
         this.x += x;
+        return this;
     }
 
-    public void changeY(double y) {
+    public Vector2 changeY(double y) {
         this.y += y;
+        return this;
     }
 
     public double getX() {

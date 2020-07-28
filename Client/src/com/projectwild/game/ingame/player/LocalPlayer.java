@@ -1,7 +1,5 @@
 package com.projectwild.game.ingame.player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.World;
 import com.projectwild.game.ingame.WorldState;
@@ -13,7 +11,9 @@ import com.projectwild.shared.utils.Vector2;
 
 public class LocalPlayer extends Player {
 
-    private Vector2 velocity, oldVelocity;
+    public boolean KEY_UP, KEY_LEFT, KEY_RIGHT;
+
+    private Vector2 oldVelocity, velocity;
     private float speedMultiplier;
     private boolean hasAccess;
 
@@ -22,44 +22,31 @@ public class LocalPlayer extends Player {
         speedMultiplier = 1.0f;
         hasAccess = false;
         velocity = new Vector2();
-        oldVelocity = new Vector2();
-    }
-
-    public void handleInput() {
-        // Save Velocity As Old Velocity
-        oldVelocity.set(velocity);
-
-        if(((WorldState) WildGame.getState()).getChatHandler().isChatOpen())
-            return;
-
-        // Handle Input
-        if(Gdx.input.isKeyPressed(Input.Keys.A))
-            velocity.changeX(-2 * speedMultiplier);
-
-        if(Gdx.input.isKeyPressed(Input.Keys.D))
-            velocity.changeX(2 * speedMultiplier);
-
-        if((Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.W)) && isOnGround())
-            velocity.changeY(5);
     }
 
     public void handlePhysics() {
         World world = ((WorldState) WildGame.getState()).getWorld();
 
-        // Save Old Position
-        Vector2 oldPos = getPosition().copy();
+        // Save Old Velocity
+        oldVelocity = velocity.copy();
 
-        // Define Terminal Velocity
-        velocity.setX(Utils.clamp(5  * speedMultiplier, -5 * speedMultiplier, velocity.getX()));
-        velocity.setY(Utils.clamp(5  * speedMultiplier, -5 * speedMultiplier, velocity.getY()));
+        // First Off Check Keys
+        if(KEY_LEFT)
+            velocity.changeX(-2);
 
-        // Apply Horizontal "Friction"
-        velocity.changeX((velocity.getX() > 0 ? -1 : 1) * Math.abs(velocity.getX()) / 3);
+        if(KEY_RIGHT)
+            velocity.changeX(2);
 
-        if(Math.abs(velocity.getX()) < 0.01)
+        // Enforce Terminal Velocity
+        velocity.setX(Utils.clamp(5 * speedMultiplier, -5 * speedMultiplier, velocity.getX()));
+        velocity.setY(Utils.clamp(5, -5, velocity.getY()));
+
+        // Horizontal "Friction"
+        velocity.changeX(-(velocity.getX() / 4f));
+        if(Math.abs(velocity.getX()) < 0.01) // TODO: hotfix pls fix
             velocity.setX(0);
 
-        // Apply "Gravity"
+        // Gravity
         velocity.changeY(-0.2f);
 
         // Vertical Collision
@@ -85,6 +72,11 @@ public class LocalPlayer extends Player {
 
                 if(type1 == 1 || type2 == 1) {
                     velocity.setY(0);
+                } else if((type1 == 3 || type2 == 3) && velocity.getY() < 0) {
+                    if(world.pointCollisionBlock(getPosition().copy().changeX(8)) != block1)
+                        velocity.setY(0);
+                    if(world.pointCollisionBlock(getPosition().copy().changeX(24)) != block2)
+                        velocity.setY(0);
                 } else {
                     if(type1 == 2)
                         velocity.setY(block1.collide(this, velocity.getY()));
@@ -127,14 +119,16 @@ public class LocalPlayer extends Player {
             }
         }
 
+        // Save Old Position
+        Vector2 oldPos = getPosition().copy();
+
         // Update Position
         getPosition().changeX(velocity.getX());
         getPosition().changeY(velocity.getY());
 
         // Update The Server
-        if(oldPos.getX() != getPosition().getX() || oldPos.getY() != getPosition().getY()) {
+        if(oldPos.getX() != getPosition().getX() || oldPos.getY() != getPosition().getY())
             WildGame.getClient().sendTCP(new MovePacket(oldPos, getPosition()));
-        }
     }
 
     public void handleAnimation() {
@@ -179,7 +173,7 @@ public class LocalPlayer extends Player {
         if(block1 == null || block2 == null)
             return true;
 
-        return block1.getBlockPreset().getCollisionType() == 1 || block2.getBlockPreset().getCollisionType() == 1;
+        return block1.getBlockPreset().getCollisionType() != 0 || block2.getBlockPreset().getCollisionType() != 0;
     }
 
     public void changeAnimation(PlayerAnimations animation) {
@@ -198,6 +192,10 @@ public class LocalPlayer extends Player {
 
     public void setHasAccess(boolean hasAccess) {
         this.hasAccess = hasAccess;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
     }
 
     public float getSpeedMultiplier() {

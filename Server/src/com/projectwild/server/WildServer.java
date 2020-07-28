@@ -3,9 +3,11 @@ package com.projectwild.server;
 import com.esotericsoftware.kryonet.Server;
 import com.projectwild.server.clients.AuthListener;
 import com.projectwild.server.clients.ClientHandler;
+import com.projectwild.server.worlds.World;
 import com.projectwild.server.worlds.WorldHandler;
 import com.projectwild.server.worlds.WorldListener;
 import com.projectwild.server.worlds.commands.CommandHandler;
+import com.projectwild.server.worlds.players.Player;
 import com.projectwild.server.worlds.players.PlayerListener;
 import com.projectwild.shared.PacketRegistry;
 
@@ -19,6 +21,8 @@ public class WildServer {
     private static ClientHandler clientHandler;
     private static WorldHandler worldHandler;
     private static CommandHandler commandHandler;
+
+    private static UpdateLoop updateLoop;
     
     public static void main(String[] args) throws IOException {
         databaseController = new DatabaseController("data/projectwild.db");
@@ -33,6 +37,26 @@ public class WildServer {
         server.addListener(new PlayerListener());
         server.start();
         server.bind(7707, 7707);
+
+        updateLoop = new UpdateLoop();
+        updateLoop.setCallback(() -> {
+            for(World world : worldHandler.getWorlds()) {
+                for(int x = 0; x < world.getWidth(); x++) {
+                    for(int y = 0; y < world.getHeight(); y++) {
+                        for(int z = 0; z < 2; z++) {
+                            world.getBlocks()[y][x][z].update();
+                        }
+                    }
+                }
+
+                for(Player ply : world.getPlayers()) {
+                    ply.checkCollision();
+                }
+            }
+
+            System.out.println(String.format("[PERF] Delta >> %s\t\tMemory Usage >> %sMB", updateLoop.getDelta(), Math.round((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000.0)));
+        });
+        updateLoop.start();
     }
     
     public static DatabaseController getDatabaseController() {

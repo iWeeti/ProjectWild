@@ -18,10 +18,20 @@ public class SetSpawnCommand implements Command {
             return;
         }
 
-        int x = (int) Math.round(client.getPlayer().getPosition().getX() / 32.0) * 32;
-        int y = (int) Math.round(client.getPlayer().getPosition().getY() / 32.0) * 32;
+        int oldX = (int) Math.round(world.getSpawnPosition().getX() / 32f);
+        int oldY = (int) Math.round(world.getSpawnPosition().getY() / 32f);
 
-        world.setSpawnPosition(new Vector2(x, y));
+        world.setBlock(oldX, oldY, 1, 0);
+        if(oldY-1 > 1)
+            world.setBlock(oldX, oldY-1, 1, 0);
+
+        int x = (int) Math.round(client.getPlayer().getPosition().getX() / 32.0);
+        int y = (int) Math.round(client.getPlayer().getPosition().getY() / 32.0);
+
+        world.setBlock(x, y, 1, 24);
+        world.setBlock(x, y-1, 1, 23);
+
+        world.setSpawnPosition(new Vector2(x * 32, y * 32));
 
         ChatMessagePacket packet = new ChatMessagePacket("[GREEN]Success! [WHITE]Spawn Position Set");
         WildServer.getServer().sendToTCP(client.getSocket(), packet);

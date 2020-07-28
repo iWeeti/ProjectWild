@@ -5,15 +5,17 @@ import com.projectwild.server.worlds.blocks.Block;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
 
-public class StaticBlock extends Block {
+public class UnbreakableBlock extends Block {
 
-    public StaticBlock(BlockPreset preset, World world, int x, int y, int z) {
+    public UnbreakableBlock(BlockPreset preset, World world, int x, int y, int z) {
         super(preset, world, x, y, z);
     }
 
     @Override
-    public void deserialize(byte[] data) {}
-    
+    public void deserialize(byte[] data) {
+
+    }
+
     @Override
     public byte[] serialize() {
         return new byte[0];
@@ -21,7 +23,7 @@ public class StaticBlock extends Block {
 
     @Override
     public void collision(Player ply) {
-        //TODO: Shouldn't happen I guess?
+
     }
 
     @Override

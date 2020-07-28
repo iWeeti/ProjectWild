@@ -228,5 +228,35 @@
 		"tileset": "blocks1",
 		"tilesetX": 2,
 		"tilesetY": 6
+	},
+	{
+		"id": 23,
+		"name": "Bedrock",
+		"blockType": 2,
+		"collisionType": 1,
+		"renderType": 0,
+		"tileset": "blocks1",
+		"tilesetX": 4,
+		"tilesetY": 7
+	},
+	{
+		"id": 24,
+		"name": "Portal",
+		"blockType": 2,
+		"collisionType": 0,
+		"renderType": 0,
+		"tileset": "portal",
+		"tilesetX": 0,
+		"tilesetY": 0
+	},
+	{
+		"id": 25,
+		"name": "Platform",
+		"blockType": 0,
+		"collisionType": 3,
+		"renderType": 5,
+		"tileset": "blocks1",
+		"tilesetX": 5,
+		"tilesetY": 7
 	}
 ]

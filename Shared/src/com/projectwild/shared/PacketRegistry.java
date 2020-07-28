@@ -48,6 +48,7 @@ public class PacketRegistry {
         kryo.register(LeaveWorldPacket.class);
         kryo.register(UpdateHasAccessPacket.class);
         kryo.register(UpdateNameTagPacket.class);
+        kryo.register(UpdateNetworkedVariablePacket.class);
 
     }
     

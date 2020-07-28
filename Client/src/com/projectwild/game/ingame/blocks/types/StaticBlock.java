@@ -7,9 +7,9 @@ import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.utils.Vector2;
 
 public class StaticBlock extends Block {
-    
-    public StaticBlock(BlockPreset blockPreset) {
-        super(blockPreset);
+
+    public StaticBlock(BlockPreset blockPreset, byte[] data) {
+        super(blockPreset, data);
     }
 
 }

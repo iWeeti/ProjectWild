@@ -38,6 +38,23 @@ public class Player {
         }
     }
 
+    public void checkCollision() {
+        // Check For Collision
+        Vector2[] corners = new Vector2[] {
+                new Vector2(getPosition().getX() + 8, getPosition().getY() + 26),
+                new Vector2(getPosition().getX() + 24, getPosition().getY() + 26),
+                new Vector2(getPosition().getX() + 8, getPosition().getY()),
+                new Vector2(getPosition().getX() + 24, getPosition().getY())
+        };
+
+        for(Vector2 v : corners) {
+            int blockX = (int) Math.floor(v.getX() / 32.0f);
+            int blockY = (int) Math.floor(v.getY() / 32.0f);
+
+            getWorld().getBlocks()[blockY][blockX][1].collision(this);
+        }
+    }
+
     public Client getClient() {
         return client;
     }

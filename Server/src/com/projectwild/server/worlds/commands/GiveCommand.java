@@ -21,15 +21,24 @@ public class GiveCommand implements Command {
             return;
         }
 
+        ItemPreset itemPreset = null;
+        for(ItemPreset preset : ItemPreset.getItemPresets()) {
+            if(preset.getName().toLowerCase().equals(args[0].toLowerCase()))
+                itemPreset = preset;
+        }
+
         try {
-            int itemId = Integer.parseInt(args[0]);
-            if(itemId >= ItemPreset.getItemPresets().length) {
-                ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Invalid ItemID");
-                WildServer.getServer().sendToTCP(client.getSocket(), packet);
-                return;
+            if(itemPreset == null) {
+                int itemId = Integer.parseInt(args[0]);
+                if(itemId > 0 && itemId < ItemPreset.getItemPresets().length) {
+                    itemPreset = ItemPreset.getPreset(itemId);
+                } else {
+                    ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Please Enter A Valid Item Name or ItemID");
+                    WildServer.getServer().sendToTCP(client.getSocket(), packet);
+                    return;
+                }
             }
 
-            ItemPreset itemPreset = ItemPreset.getPreset(itemId);
             int amount = Integer.parseInt(args[1]);
 
             if(args.length == 3) {
@@ -44,7 +53,7 @@ public class GiveCommand implements Command {
                 client.changeItems(itemPreset, amount);
             }
         } catch(NumberFormatException e) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Please Enter A Valid ItemId & Amount");
+            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Please Enter A Valid Item Id/Name & Amount");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);
             return;
         }

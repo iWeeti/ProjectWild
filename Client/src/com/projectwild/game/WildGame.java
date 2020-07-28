@@ -6,6 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.esotericsoftware.kryonet.Client;
+import com.projectwild.game.pregame.LoadingState;
 import com.projectwild.game.pregame.LoginState;
 import com.projectwild.shared.PacketRegistry;
 
@@ -21,9 +22,9 @@ public class WildGame extends ApplicationAdapter {
         client = new Client(10000000, 10000000);
         PacketRegistry.register(client.getKryo());
         client.start();
-        client.connect(5000, "78.27.101.11", 7707, 7707);
+        client.connect(5000, "127.0.0.1"/*"78.27.101.11"*/, 7707, 7707);
         
-        changeState(new LoginState());
+        changeState(new LoadingState());
         
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 1280;
