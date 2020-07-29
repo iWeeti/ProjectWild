@@ -1,6 +1,7 @@
 package com.projectwild.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -34,6 +35,7 @@ public class WildGame extends ApplicationAdapter {
         config.height = 720;
         config.resizable = false;
         config.vSyncEnabled = true;
+        config.addIcon("data/assets/logo32.png", Files.FileType.Internal);
         new LwjglApplication(new WildGame(), config);
     }
     

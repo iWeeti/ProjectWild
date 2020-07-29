@@ -19,7 +19,7 @@ public class LoadingState implements GameState {
         sb = new SpriteBatch();
         start = System.currentTimeMillis();
         kodama = WildGame.getAssetManager().getAsset("kodama");
-        WildGame.getDiscordIntegration().setPresence("Loading...", null);
+        WildGame.getDiscordIntegration().setPresence("Loading...");
     }
 
     @Override

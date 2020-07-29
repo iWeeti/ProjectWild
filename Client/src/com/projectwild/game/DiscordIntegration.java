@@ -19,6 +19,7 @@ public class DiscordIntegration {
     private static final String applicationId = "737479695729295451";
 
     private DiscordRPC rpc;
+    private DiscordRichPresence richPresence;
 
     public DiscordIntegration() {
         rpc = DiscordRPC.INSTANCE;
@@ -36,6 +37,9 @@ public class DiscordIntegration {
         };
 
         handlers.joinGame = (worldName) -> {
+            if(!(WildGame.getState() instanceof WorldState) && !(WildGame.getState() instanceof WorldSelectionState))
+                return;
+
             StringBuilder worldNameBuilder = new StringBuilder();
             byte[] worldNameBytes = Base64.getDecoder().decode(worldName);
             for (byte b : worldNameBytes)
@@ -67,23 +71,36 @@ public class DiscordIntegration {
         }, "RPC-Callback-Handler").start();
     }
 
-    public void setPresence(String details, String worldName) {
-        DiscordRichPresence richPresence = new DiscordRichPresence();
-        richPresence.details = details;
+    public void setPresence(String state) {
+        richPresence = new DiscordRichPresence();
+        richPresence.state = state;
         richPresence.startTimestamp = Clock.systemUTC().millis();
         richPresence.largeImageKey = "icon";
-        if(worldName != null) {
-            // Generating A Random PartyID
-            byte[] array = new byte[9];
-            new Random().nextBytes(array);
-            richPresence.partyId = new String(array, Charset.forName("UTF-8"));
 
-            richPresence.joinSecret = Base64.getEncoder().encodeToString(worldName.getBytes());
+        rpc.Discord_UpdatePresence(richPresence);
+    }
 
-            richPresence.partySize = 5;
-            richPresence.partyMax = 20;
-        }
+    public void setPresence(String state, String world) {
+        richPresence = new DiscordRichPresence();
+        richPresence.state = state;
+        richPresence.startTimestamp = Clock.systemUTC().millis();
+        richPresence.largeImageKey = "icon";
 
+        // Generating A Random PartyID
+        byte[] array = new byte[9];
+        new Random().nextBytes(array);
+        richPresence.partyId = new String(array, Charset.forName("UTF-8"));
+
+        richPresence.partySize = 1;
+        richPresence.partyMax = 100;
+
+        richPresence.joinSecret = Base64.getEncoder().encodeToString(world.getBytes());
+
+        rpc.Discord_UpdatePresence(richPresence);
+    }
+
+    public void setPresenceWorldPlayers(int players) {
+        richPresence.partySize = players;
         rpc.Discord_UpdatePresence(richPresence);
     }
 

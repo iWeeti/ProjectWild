@@ -35,8 +35,7 @@ public class WorldListener extends Listener {
 
             System.out.println();
 
-            WildGame.getDiscordIntegration().setPresence(String.format("In World: %s", packet.getName().toUpperCase()), packet.getName().toLowerCase());
-
+            WildGame.getDiscordIntegration().setPresence(String.format("In World: %s", packet.getName().toUpperCase()), packet.getName());
             worldState.setWorld(new World(packet));
         }
 
@@ -50,6 +49,8 @@ public class WorldListener extends Listener {
                 player = worldState.getWorld().createLocalPlayer(packet.getUserId(), packet.getUsername());
             }
             player.getPosition().set(packet.getPosition());
+
+            WildGame.getDiscordIntegration().setPresenceWorldPlayers(worldState.getWorld().getPlayers().size());
         }
 
         if(obj instanceof PlayerRemovePacket) {
