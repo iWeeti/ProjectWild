@@ -12,6 +12,7 @@ import com.projectwild.shared.utils.Vector2;
 public class LocalPlayer extends Player {
 
     public boolean KEY_UP, KEY_LEFT, KEY_RIGHT;
+    public long KEY_UP_TIME;
 
     private Vector2 oldVelocity, velocity;
     private float speedMultiplier;
@@ -37,8 +38,16 @@ public class LocalPlayer extends Player {
         if(KEY_RIGHT)
             velocity.changeX(2);
 
+        // Make Player Go A Higher When Holding Jump
+        if(KEY_UP && KEY_UP_TIME != -1) {
+            double timeDown = (System.currentTimeMillis() - KEY_UP_TIME) / 1000.0;
+            if(timeDown > 0.25)
+                KEY_UP_TIME = -1;
+            velocity.changeY((0.25 - timeDown) * 0.8);
+        }
+
         // Enforce Terminal Velocity
-        velocity.setX(Utils.clamp(5 * speedMultiplier, -5 * speedMultiplier, velocity.getX()));
+        velocity.setX(Utils.clamp(5f * speedMultiplier, -5f * speedMultiplier, velocity.getX()));
         velocity.setY(Utils.clamp(5, -5, velocity.getY()));
 
         // Horizontal "Friction"
@@ -78,6 +87,11 @@ public class LocalPlayer extends Player {
                     if(world.pointCollisionBlock(getPosition().copy().changeX(24)) != block2)
                         velocity.setY(0);
                 } else {
+                    if(type1 == 4 || type2 == 4) {
+                        velocity.changeY(0.15f);
+                        velocity.setY(Utils.clamp(2, -2, velocity.getY()));
+                    }
+
                     if(type1 == 2)
                         velocity.setY(block1.collide(this, velocity.getY()));
                     if(type2 == 2)
@@ -160,9 +174,11 @@ public class LocalPlayer extends Player {
 
     public boolean isOnGround() {
         World world = ((WorldState) WildGame.getState()).getWorld();
+
         Vector2 corner1 = getPosition().copy();
         corner1.changeX(8);
         corner1.changeY(-2);
+
         Vector2 corner2 = getPosition().copy();
         corner2.changeX(24);
         corner2.changeY(-2);
@@ -172,6 +188,14 @@ public class LocalPlayer extends Player {
 
         if(block1 == null || block2 == null)
             return true;
+
+        if((block1.getBlockPreset().getCollisionType() == 3 || block2.getBlockPreset().getCollisionType() == 3) && velocity.getY() < 0) {
+            if(world.pointCollisionBlock(getPosition().copy().changeX(8)) != block1)
+                return true;
+            if(world.pointCollisionBlock(getPosition().copy().changeX(24)) != block2)
+                return true;
+            return false;
+        }
 
         return block1.getBlockPreset().getCollisionType() != 0 || block2.getBlockPreset().getCollisionType() != 0;
     }

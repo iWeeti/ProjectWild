@@ -3,11 +3,13 @@ package com.projectwild.server.worlds.players;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.server.WildServer;
+import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.blocks.BlockTypes;
 import com.projectwild.shared.ItemPreset;
 import com.projectwild.shared.ItemStack;
 import com.projectwild.shared.ItemTypes;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
+import com.projectwild.shared.packets.player.local.MoveItemSlotsPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.utils.Vector2;
@@ -110,6 +112,24 @@ public class PlayerListener extends Listener {
 
                 player.getWorld().setBlock(packet.getX(), packet.getY(), packet.getZ(), 0);
             }
+        }
+
+        if(obj instanceof MoveItemSlotsPacket) {
+            MoveItemSlotsPacket packet = (MoveItemSlotsPacket) obj;
+
+            Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
+
+            if(packet.getOriginSlot() < 0 || packet.getTargetSlot() < 0)
+                return;
+
+            if(packet.getOriginSlot() >= client.getInventory().length || packet.getTargetSlot() >= client.getInventory().length)
+                return;
+
+            ItemStack origin = client.getInventorySlot(packet.getOriginSlot());
+            ItemStack target = client.getInventorySlot(packet.getTargetSlot());
+
+            client.setItemSlot(packet.getOriginSlot(), target);
+            client.setItemSlot(packet.getTargetSlot(), origin);
         }
     }
 

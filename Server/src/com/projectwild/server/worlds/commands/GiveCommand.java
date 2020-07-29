@@ -9,7 +9,7 @@ public class GiveCommand implements Command {
 
     @Override
     public void execute(Client client, String[] args) {
-        if(!CommandHandler.isAdmin(client)) {
+        if(!CommandHandler.isMod(client)) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Admin Only");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);
             return;
@@ -28,7 +28,7 @@ public class GiveCommand implements Command {
         }
 
         try {
-            if(itemPreset == null) {
+            if(itemPreset == null && !args[0].toLowerCase().equals("all")) {
                 int itemId = Integer.parseInt(args[0]);
                 if(itemId > 0 && itemId < ItemPreset.getItemPresets().length) {
                     itemPreset = ItemPreset.getPreset(itemId);
@@ -40,6 +40,13 @@ public class GiveCommand implements Command {
             }
 
             int amount = Integer.parseInt(args[1]);
+
+            if(args[0].toLowerCase().equals("all")) {
+                for(ItemPreset preset : ItemPreset.getItemPresets()) {
+                    client.changeItems(preset, amount);
+                }
+                return;
+            }
 
             if(args.length == 3) {
                 Client c = WildServer.getClientHandler().getClientByUsername(args[2]);

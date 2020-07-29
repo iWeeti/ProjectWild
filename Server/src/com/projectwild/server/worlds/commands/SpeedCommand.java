@@ -9,7 +9,7 @@ public class SpeedCommand implements Command {
 
     @Override
     public void execute(Client client, String[] args) {
-        if(!CommandHandler.isAdmin(client)) {
+        if(!CommandHandler.isMod(client)) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Admin Only");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);
             return;

@@ -9,6 +9,7 @@ public class ItemPreset {
 
     private int id;
     private String name;
+    private int maxStack;
     private int itemType;
     private int blockId;
 
@@ -18,6 +19,10 @@ public class ItemPreset {
 
     public String getName() {
         return name;
+    }
+
+    public int getMaxStack() {
+        return maxStack;
     }
 
     public int getItemType() {

@@ -9,14 +9,15 @@ import java.util.HashMap;
 
 public class CommandHandler {
 
-    public static final String[] admins = {"ImWuX", "Nullrien", "Sizzeh", "Gaykid", "nico"};
+    public static boolean isDev(Client client) {
+        return client.getRank().toLowerCase().equals("dev");
+    }
 
-    public static boolean isAdmin(Client client) {
-        for(String s : admins) {
-            if(s.toLowerCase().equals(client.getUsername().toLowerCase()))
-                return true;
-        }
-        return false;
+    public static boolean isMod(Client client) {
+        if(isDev(client))
+            return true;
+
+        return client.getRank().toLowerCase().equals("mod");
     }
 
     private HashMap<String, Command> commands;
@@ -37,6 +38,7 @@ public class CommandHandler {
         commands.put("speed", new SpeedCommand());
         commands.put("bring", new BringCommand());
         commands.put("kick", new KickCommand());
+        commands.put("setrank", new SetRankCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {

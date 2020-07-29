@@ -84,11 +84,11 @@ public class AuthListener extends Listener {
                         connection.sendTCP(new LoginResponsePacket(false, "Uh oh. Something went wrong. Try registering again."));
                         return;
                     }
-                    WildServer.getClientHandler().loginClient(new Client(connection.getID(), rs.getInt("id"), rs.getString("username")));
+                    WildServer.getClientHandler().loginClient(new Client(connection.getID(), rs.getInt("id"), rs.getString("username"), rs.getString("rank")));
                 } else {
                     // Tries to login client
-                    String sql = "SELECT id, username, password FROM Users WHERE username = ? COLLATE NOCASE";
-                
+                    String sql = "SELECT id, username, password, rank FROM Users WHERE username = ? COLLATE NOCASE";
+
                     ResultSet rs = WildServer.getDatabaseController().query(sql, username);
                     if(rs.isClosed()) {
                         connection.sendTCP(new LoginResponsePacket(false, "Huh. An account by that name does not seem to exist."));
@@ -104,7 +104,7 @@ public class AuthListener extends Listener {
                         connection.sendTCP(new LoginResponsePacket(false, "Wrong password! Try again."));
                     }else{
                         connection.sendTCP(new LoginResponsePacket(true, "Successfully logged in! Now loading you in..."));
-                        WildServer.getClientHandler().loginClient(new Client(connection.getID(), rs.getInt("id"), rs.getString("username")));
+                        WildServer.getClientHandler().loginClient(new Client(connection.getID(), rs.getInt("id"), rs.getString("username"), rs.getString("rank")));
                     }
                 }
             } catch (SQLException e) {
@@ -115,7 +115,7 @@ public class AuthListener extends Listener {
     }
     
     private ResultSet getAccount(String username) {
-        String sql = "SELECT id, username FROM Users WHERE username = ? COLLATE NOCASE";
+        String sql = "SELECT id, username, rank FROM Users WHERE username = ? COLLATE NOCASE";
         
         ResultSet rs = WildServer.getDatabaseController().query(sql, username);
         try {

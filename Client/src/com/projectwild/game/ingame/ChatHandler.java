@@ -30,6 +30,9 @@ public class ChatHandler {
     }
 
     public void render(SpriteBatch sb) {
+        if(((WorldState) WildGame.getState()).getInventoryHandler().isInventoryOpen())
+            return;
+
         BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_16");
         font.getData().markupEnabled = true;
 

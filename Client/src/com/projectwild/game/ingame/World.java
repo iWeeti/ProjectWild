@@ -101,6 +101,20 @@ public class World {
                                     tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 1, preset.getTilesetY());
                             }
                             break;
+                        case 6:
+                            if(y == blocks.length-1)
+                                break;
+                            if(blocks[y+1][x][z].getBlockPreset().getId() == preset.getId()) {
+                                tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 1, preset.getTilesetY());
+                            } else {
+                                break;
+                            }
+
+                            if(y == blocks.length-2)
+                                break;
+                            if(blocks[y+2][x][z].getBlockPreset().getId() == preset.getId())
+                                tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX()+2, preset.getTilesetY());
+                            break;
                         default:
                             continue;
                     }

@@ -6,13 +6,11 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.ingame.player.Player;
 import com.projectwild.game.pregame.WorldSelectionState;
-import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.packets.world.LeaveWorldPacket;
 
@@ -27,6 +25,7 @@ public class WorldState implements GameState {
     private InputMultiplexer inputMultiplexer;
 
     private SpriteBatch sb;
+    private ShapeRenderer sr;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
 
@@ -41,6 +40,7 @@ public class WorldState implements GameState {
 
         // Setting Up Rendering Stuff
         sb = new SpriteBatch();
+        sr = new ShapeRenderer();
         camera = new OrthographicCamera();
         camera.setToOrtho(false);
         camera.zoom = 0.6f;
@@ -63,7 +63,7 @@ public class WorldState implements GameState {
                 if(chatHandler.isChatOpen())
                     return false;
 
-                if(inventoryHandler.handleMouseInput(screenX, screenY))
+                if(inventoryHandler.mouseDown(screenX, screenY))
                     return false;
 
                 // Handle Block Input
@@ -74,6 +74,15 @@ public class WorldState implements GameState {
 
                 InteractBlockPacket packet = new InteractBlockPacket(x, y, 1, inventoryHandler.getActiveSlot());
                 WildGame.getClient().sendTCP(packet);
+                return false;
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                // Check For HUD Interaction
+                if(inventoryHandler.mouseUp(screenX, screenY))
+                    return false;
+
                 return false;
             }
 
@@ -89,14 +98,22 @@ public class WorldState implements GameState {
                     }
                 }
 
+                if(world == null)
+                    return false;
+
+                if(world.getLocalPlayer() == null)
+                    return false;
+
                 if(chatHandler.isChatOpen())
                     return false;
 
                 switch(keycode) {
                     case Input.Keys.W:
                     case Input.Keys.SPACE:
-                        if(world.getLocalPlayer().isOnGround())
-                            world.getLocalPlayer().getVelocity().setY(5.0);
+                        if(world.getLocalPlayer().isOnGround()) {
+                            world.getLocalPlayer().getVelocity().setY(4.0);
+                            world.getLocalPlayer().KEY_UP_TIME = System.currentTimeMillis();
+                        }
                         world.getLocalPlayer().KEY_UP = true;
                         break;
                     case Input.Keys.A:
@@ -120,10 +137,18 @@ public class WorldState implements GameState {
 
             @Override
             public boolean keyUp(int keycode) {
+                if(world == null)
+                    return false;
+
+                if(world.getLocalPlayer() == null)
+                    return false;
+
                 switch(keycode) {
                     case Input.Keys.W:
+                    case Input.Keys.UP:
                     case Input.Keys.SPACE:
                         world.getLocalPlayer().KEY_UP = false;
+                        world.getLocalPlayer().KEY_UP_TIME = -1;
                         break;
                     case Input.Keys.A:
                     case Input.Keys.LEFT:
@@ -177,8 +202,9 @@ public class WorldState implements GameState {
         world.renderWorld(sb);
 
         // Render HUD
+        sr.setProjectionMatrix(hudCamera.combined);
         sb.setProjectionMatrix(hudCamera.combined);
-        inventoryHandler.render(sb);
+        inventoryHandler.render(sb, sr);
         chatHandler.render(sb);
 
         sb.end();

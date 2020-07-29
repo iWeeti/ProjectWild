@@ -81,8 +81,12 @@ public class Player {
             nametag = String.format("[WHITE]%s", client.getUsername());
         }
 
-        if(CommandHandler.isAdmin(client))
+        if(CommandHandler.isDev(client)) {
+            nametag = String.format("[RED][Dev] %s", nametag);
+        } else if(CommandHandler.isMod(client)) {
             nametag = String.format("[YELLOW][Mod] %s", nametag);
+        }
+
 
         return nametag;
     }

@@ -17,6 +17,12 @@ public class KickCommand implements Command {
             return;
         }
 
+        if(args.length < 1) {
+            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Missing Arguments");
+            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            return;
+        }
+
         Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
         if(c == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");

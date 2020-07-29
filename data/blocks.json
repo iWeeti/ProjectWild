@@ -258,5 +258,35 @@
 		"tileset": "blocks1",
 		"tilesetX": 5,
 		"tilesetY": 7
+	},
+	{
+		"id": 26,
+		"name": "Water",
+		"blockType": 0,
+		"collisionType": 4,
+		"renderType": 1,
+		"tileset": "blocks1",
+		"tilesetX": 5,
+		"tilesetY": 0
+	},
+	{
+		"id": 27,
+		"name": "Lava",
+		"blockType": 0,
+		"collisionType": 4,
+		"renderType": 1,
+		"tileset": "blocks1",
+		"tilesetX": 2,
+		"tilesetY": 1
+	},
+	{
+		"id": 28,
+		"name": "Sand",
+		"blockType": 0,
+		"collisionType": 1,
+		"renderType": 6,
+		"tileset": "blocks1",
+		"tilesetX": 7,
+		"tilesetY": 6
 	}
 ]

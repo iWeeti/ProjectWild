@@ -14,13 +14,16 @@ public class Client {
     private int userId, socket;
     private String username;
 
+    private String rank;
+
     private Player player;
     private ItemStack[] inventory;
-    
-    public Client(int socket, int userId, String username) {
+
+    public Client(int socket, int userId, String username, String rank) {
         this.socket = socket;
         this.userId = userId;
         this.username = username;
+        this.rank = rank;
 
         // Loading The Inventory
         String sql = "SELECT slot, itemId, amount FROM Items WHERE userId = ?";
@@ -43,8 +46,8 @@ public class Client {
 
             if(inventory[i].getItemPreset().getId() == preset.getId()) {
                 int newAmount = inventory[i].getAmount() + amount;
-                if(newAmount > 999)
-                    return false;
+                if(newAmount > inventory[i].getItemPreset().getMaxStack())
+                    continue;
 
                 if(newAmount != 0) {
                     inventory[i] = new ItemStack(preset, newAmount);
@@ -76,6 +79,28 @@ public class Client {
         return false;
     }
 
+    public void setItemSlot(int slot, ItemStack stack) {
+        if(slot < 0 || slot >= inventory.length)
+            return;
+
+        if(stack == null) {
+            inventory[slot] = null;
+            String sql = "DELETE FROM Items WHERE userId = ? AND slot = ?";
+            WildServer.getDatabaseController().delete(sql, userId, slot);
+            return;
+        }
+
+        if(inventory[slot] == null) {
+            String sql = "INSERT INTO Items (userId, slot, itemId, amount) VALUES (?, ?, ?, ?)";
+            WildServer.getDatabaseController().insert(sql, userId, slot, stack.getItemPreset().getId(), stack.getAmount());
+        } else {
+            String sql = "UPDATE Items SET (amount = ?, itemId = ?) WHERE userId = ? AND slot = ?";
+            WildServer.getDatabaseController().update(sql, stack.getAmount(), stack.getItemPreset().getId(), userId, slot);
+        }
+
+        inventory[slot] = stack;
+    }
+
     public ItemStack getInventorySlot(int slot) {
         if(slot > inventory.length)
             return null;
@@ -86,6 +111,17 @@ public class Client {
         this.player = player;
     }
 
+    public void setRank(String rank) {
+        this.rank = rank;
+
+        String sql = "UPDATE Users SET rank = ? WHERE id = ?";
+        WildServer.getDatabaseController().update(sql, rank, userId);
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
     public Player getPlayer() {
         return player;
     }
@@ -93,11 +129,11 @@ public class Client {
     public int getSocket() {
         return socket;
     }
-    
+
     public int getUserId() {
         return userId;
     }
-    
+
     public String getUsername() {
         return username;
     }
