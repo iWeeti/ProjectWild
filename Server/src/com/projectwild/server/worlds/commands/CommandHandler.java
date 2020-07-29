@@ -2,6 +2,7 @@ package com.projectwild.server.worlds.commands;
 
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
+import com.projectwild.server.worlds.World;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
 import java.util.Collection;
@@ -32,6 +33,8 @@ public class CommandHandler {
         commands.put("teleport", new TeleportCommand());
         commands.put("ftrust", new ForceTrustCommand());
         commands.put("funtrust", new ForceUntrustCommand());
+        commands.put("bc", new BroadcastCommand());
+        commands.put("world", new WorldCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {

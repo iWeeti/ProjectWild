@@ -15,7 +15,6 @@ public class ForceUntrustCommand implements Command{
     public void execute(Client client, String[] args) {
         World world = client.getPlayer().getWorld();
 
-
         if(args.length < 1) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Missing Arguments");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);
