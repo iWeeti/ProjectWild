@@ -12,5 +12,6 @@
     <orderEntry type="module" module-name="Shared" />
     <orderEntry type="library" name="kryonet" level="project" />
     <orderEntry type="library" name="gson-2.8.6" level="project" />
+    <orderEntry type="library" name="kryonet-2.21-all" level="project" />
   </component>
 </module>
