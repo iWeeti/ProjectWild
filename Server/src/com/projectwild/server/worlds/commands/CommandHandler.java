@@ -29,6 +29,7 @@ public class CommandHandler {
         commands.put("kick", new KickCommand());
         commands.put("setrank", new SetRankCommand());
         commands.put("online", new OnlineCommand());
+        commands.put("teleport", new TeleportCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {
