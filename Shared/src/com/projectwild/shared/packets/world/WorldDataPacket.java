@@ -2,6 +2,7 @@ package com.projectwild.shared.packets.world;
 
 public class WorldDataPacket {
 
+    private String name;
     private String background;
 
     private int width, height;
@@ -9,13 +10,18 @@ public class WorldDataPacket {
     
     public WorldDataPacket() {}
     
-    public WorldDataPacket(int width, int height, byte[] blockData, String background) {
+    public WorldDataPacket(String name, int width, int height, byte[] blockData, String background) {
+        this.name = name;
         this.width = width;
         this.height = height;
         this.blockData = blockData;
         this.background = background;
     }
-    
+
+    public String getName() {
+        return name;
+    }
+
     public int getWidth() {
         return width;
     }

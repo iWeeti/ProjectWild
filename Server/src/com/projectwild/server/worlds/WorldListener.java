@@ -68,7 +68,7 @@ public class WorldListener extends Listener {
                     }
                 }
             }
-            connection.sendTCP(new WorldDataPacket(blocks[0].length, blocks.length, buffer.array(), world.getBackground()));
+            connection.sendTCP(new WorldDataPacket(world.getName(), blocks[0].length, blocks.length, buffer.array(), world.getBackground()));
 
             client.setPlayer(world.createPlayer(client));
 

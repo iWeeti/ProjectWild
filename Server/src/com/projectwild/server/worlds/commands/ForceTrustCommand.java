@@ -28,12 +28,6 @@ public class ForceTrustCommand implements Command {
             return;
         }
 
-        if(c.getUserId() == client.getUserId()) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Cannot Trust Yourself");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
-            return;
-        }
-
         if(world.hasAccess(c)) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]This Player Is Already Trusted");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);

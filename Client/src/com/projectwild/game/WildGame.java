@@ -17,8 +17,11 @@ public class WildGame extends ApplicationAdapter {
     private static Client client;
     private static GameState tempState, currentState;
     private static AssetManager assetManager;
+    private static DiscordIntegration discordIntegration;
     
     public static void main(String[] args) throws IOException {
+        discordIntegration = new DiscordIntegration();
+
         client = new Client(10000000, 10000000);
         PacketRegistry.register(client.getKryo());
         client.start();
@@ -49,7 +52,11 @@ public class WildGame extends ApplicationAdapter {
     public static AssetManager getAssetManager() {
         return assetManager;
     }
-    
+
+    public static DiscordIntegration getDiscordIntegration() {
+        return discordIntegration;
+    }
+
     @Override
     public void create() {
         assetManager = new AssetManager();

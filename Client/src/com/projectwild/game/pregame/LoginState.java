@@ -24,6 +24,8 @@ public class LoginState implements GameState {
         loginListener = new LoginListener();
         WildGame.getClient().addListener(loginListener);
 
+        WildGame.getDiscordIntegration().setPresence("In Main Menu", null);
+
         // Creating The GUIParent
         guiParent = new GUIParent();
         Gdx.input.setInputProcessor(guiParent.getInputAdapter());

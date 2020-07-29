@@ -32,6 +32,11 @@ public class WorldListener extends Listener {
     public void received(Connection connection, Object obj) {
         if(obj instanceof WorldDataPacket) {
             WorldDataPacket packet = (WorldDataPacket) obj;
+
+            System.out.println();
+
+            WildGame.getDiscordIntegration().setPresence(String.format("In World: %s", packet.getName().toUpperCase()), packet.getName().toLowerCase());
+
             worldState.setWorld(new World(packet));
         }
 

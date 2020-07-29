@@ -29,6 +29,8 @@ public class WorldSelectionState implements GameState {
         worldSelectionListener = new WorldSelectionListener();
         WildGame.getClient().addListener(worldSelectionListener);
 
+        WildGame.getDiscordIntegration().setPresence("In World Selection", null);
+
         // Creating GUI Parent
         guiParent = new GUIParent();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
