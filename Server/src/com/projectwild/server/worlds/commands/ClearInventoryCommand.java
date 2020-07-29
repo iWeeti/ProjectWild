@@ -2,6 +2,7 @@ package com.projectwild.server.worlds.commands;
 
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
+import com.projectwild.server.clients.Rank;
 import com.projectwild.shared.ItemStack;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
@@ -9,12 +10,6 @@ public class ClearInventoryCommand implements Command {
 
     @Override
     public void execute(Client client, String[] args) {
-        if(!CommandHandler.isMod(client)) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Admin Only");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
-            return;
-        }
-
         if(args.length == 1) {
             Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
             if(c == null) {
@@ -38,6 +33,11 @@ public class ClearInventoryCommand implements Command {
     @Override
     public String help() {
         return "Clears Players Inventory";
+    }
+
+    @Override
+    public Rank rank() {
+        return Rank.MOD;
     }
 
 }

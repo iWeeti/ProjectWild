@@ -2,8 +2,8 @@ package com.projectwild.server.worlds.players;
 
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
+import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
-import com.projectwild.server.worlds.commands.CommandHandler;
 import com.projectwild.shared.packets.player.UpdatePositionPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.utils.Vector2;
@@ -81,9 +81,9 @@ public class Player {
             nametag = String.format("[WHITE]%s", client.getUsername());
         }
 
-        if(CommandHandler.isDev(client)) {
+        if(getClient().getRank() == Rank.DEVELOPER) {
             nametag = String.format("[RED][Dev] %s", nametag);
-        } else if(CommandHandler.isMod(client)) {
+        } else if(getClient().getRank() == Rank.MOD) {
             nametag = String.format("[YELLOW][Mod] %s", nametag);
         }
 

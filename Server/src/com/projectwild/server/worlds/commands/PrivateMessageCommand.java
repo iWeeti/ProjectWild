@@ -2,6 +2,7 @@ package com.projectwild.server.worlds.commands;
 
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
+import com.projectwild.server.clients.Rank;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
 import java.util.Arrays;
@@ -39,6 +40,11 @@ public class PrivateMessageCommand implements Command {
     @Override
     public String help() {
         return "Private Message";
+    }
+
+    @Override
+    public Rank rank() {
+        return Rank.USER;
     }
 
 }

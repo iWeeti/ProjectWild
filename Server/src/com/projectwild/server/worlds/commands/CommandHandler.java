@@ -9,17 +9,6 @@ import java.util.HashMap;
 
 public class CommandHandler {
 
-    public static boolean isDev(Client client) {
-        return client.getRank().toLowerCase().equals("dev");
-    }
-
-    public static boolean isMod(Client client) {
-        if(isDev(client))
-            return true;
-
-        return client.getRank().toLowerCase().equals("mod");
-    }
-
     private HashMap<String, Command> commands;
 
     public CommandHandler() {
@@ -39,11 +28,18 @@ public class CommandHandler {
         commands.put("bring", new BringCommand());
         commands.put("kick", new KickCommand());
         commands.put("setrank", new SetRankCommand());
+        commands.put("online", new OnlineCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {
         if(commands.containsKey(command.toLowerCase())) {
-            commands.get(command.toLowerCase()).execute(client, args);
+            Command cmd = commands.get(command.toLowerCase());
+            if(cmd.rank().getPower() <= client.getRank().getPower()) {
+                cmd.execute(client, args);
+            } else {
+                ChatMessagePacket packet = new ChatMessagePacket("[RED]You Don't Have Permission To Use This Command");
+                WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            }
         } else {
             ChatMessagePacket packet = new ChatMessagePacket(String.format("[RED]Unknown Command: %s", command.toLowerCase()));
             WildServer.getServer().sendToTCP(client.getSocket(), packet);

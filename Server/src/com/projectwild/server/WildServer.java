@@ -14,7 +14,7 @@ import com.projectwild.shared.PacketRegistry;
 import java.io.IOException;
 
 public class WildServer {
-    
+
     private static DatabaseController databaseController;
     private static Server server;
     
@@ -23,7 +23,7 @@ public class WildServer {
     private static CommandHandler commandHandler;
 
     private static UpdateLoop updateLoop;
-    
+
     public static void main(String[] args) throws IOException {
         databaseController = new DatabaseController("data/projectwild.db");
         clientHandler = new ClientHandler();
@@ -40,6 +40,7 @@ public class WildServer {
 
         updateLoop = new UpdateLoop();
         updateLoop.setCallback(() -> {
+            // Update Blocks & Players
             for(World world : worldHandler.getWorlds()) {
                 for(int x = 0; x < world.getWidth(); x++) {
                     for(int y = 0; y < world.getHeight(); y++) {
@@ -54,7 +55,8 @@ public class WildServer {
                 }
             }
 
-            System.out.println(String.format("[PERF] Delta >> %s\t\tMemory Usage >> %sMB", updateLoop.getDelta(), Math.round((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000.0)));
+            // Performance
+            System.out.print(String.format("\r[PERF] Delta >> %s\t\tMemory Usage >> %sMB", updateLoop.getDelta(), Math.round((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000.0)));
         });
         updateLoop.start();
     }

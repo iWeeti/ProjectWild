@@ -42,4 +42,8 @@ public class ClientHandler {
         return null;
     }
 
+    public CopyOnWriteArrayList<Client> getClients() {
+        return clients;
+    }
+
 }

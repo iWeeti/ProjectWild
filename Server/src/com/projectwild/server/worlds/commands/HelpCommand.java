@@ -2,6 +2,7 @@ package com.projectwild.server.worlds.commands;
 
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
+import com.projectwild.server.clients.Rank;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
 public class HelpCommand implements Command{
@@ -14,7 +15,10 @@ public class HelpCommand implements Command{
         Command[] commands = WildServer.getCommandHandler().getCommandClasses().toArray(Command[]::new);
 
         for(int i = 0; i < names.length; i++) {
-            builder.append("[GREEN]");
+            if(commands[i].rank().getPower() > client.getRank().getPower())
+                continue;
+
+            builder.append("[GREEN]/");
             builder.append(names[i].substring(0, 1).toUpperCase());
             builder.append(names[i].substring(1));
             builder.append(": [WHITE]");
@@ -31,6 +35,11 @@ public class HelpCommand implements Command{
     @Override
     public String help() {
         return "Shows All Commands";
+    }
+
+    @Override
+    public Rank rank() {
+        return Rank.USER;
     }
 
 }

@@ -14,7 +14,7 @@ public class Client {
     private int userId, socket;
     private String username;
 
-    private String rank;
+    private Rank rank;
 
     private Player player;
     private ItemStack[] inventory;
@@ -23,7 +23,7 @@ public class Client {
         this.socket = socket;
         this.userId = userId;
         this.username = username;
-        this.rank = rank;
+        this.rank = Rank.getRank(rank.toLowerCase());
 
         // Loading The Inventory
         String sql = "SELECT slot, itemId, amount FROM Items WHERE userId = ?";
@@ -94,7 +94,7 @@ public class Client {
             String sql = "INSERT INTO Items (userId, slot, itemId, amount) VALUES (?, ?, ?, ?)";
             WildServer.getDatabaseController().insert(sql, userId, slot, stack.getItemPreset().getId(), stack.getAmount());
         } else {
-            String sql = "UPDATE Items SET (amount = ?, itemId = ?) WHERE userId = ? AND slot = ?";
+            String sql = "UPDATE Items SET amount = ?, itemId = ? WHERE userId = ? AND slot = ?";
             WildServer.getDatabaseController().update(sql, stack.getAmount(), stack.getItemPreset().getId(), userId, slot);
         }
 
@@ -111,14 +111,14 @@ public class Client {
         this.player = player;
     }
 
-    public void setRank(String rank) {
+    public void setRank(Rank rank) {
         this.rank = rank;
 
         String sql = "UPDATE Users SET rank = ? WHERE id = ?";
-        WildServer.getDatabaseController().update(sql, rank, userId);
+        WildServer.getDatabaseController().update(sql, rank.getIdentifier(), userId);
     }
 
-    public String getRank() {
+    public Rank getRank() {
         return rank;
     }
 
