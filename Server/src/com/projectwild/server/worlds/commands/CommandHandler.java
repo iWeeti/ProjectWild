@@ -34,6 +34,7 @@ public class CommandHandler {
         commands.put("bc", new BroadcastCommand());
         commands.put("world", new WorldCommand());
         commands.put("override", new OverrideCommand());
+        commands.put("noclip", new NoclipCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {

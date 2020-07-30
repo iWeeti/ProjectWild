@@ -13,6 +13,7 @@ import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
 import com.projectwild.shared.packets.player.*;
 import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
+import com.projectwild.shared.packets.player.local.UpdateNoclipPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.packets.world.UpdateBlockPacket;
 import com.projectwild.shared.packets.world.UpdateNetworkedVariablePacket;
@@ -144,6 +145,18 @@ public class WorldListener extends Listener {
         if(obj instanceof ChatMessagePacket) {
             ChatMessagePacket packet = (ChatMessagePacket) obj;
             worldState.getChatHandler().addMessage(packet.getMessage());
+        }
+
+        if(obj instanceof UpdateNoclipPacket) {
+            UpdateNoclipPacket packet = (UpdateNoclipPacket) obj;
+            if(worldState.getWorld() == null)
+                return;
+
+            if(worldState.getWorld().getLocalPlayer() == null)
+                return;
+
+            worldState.getWorld().getLocalPlayer().getVelocity().set(0);
+            worldState.getWorld().getLocalPlayer().setNoclip(packet.isActive());
         }
     }
 

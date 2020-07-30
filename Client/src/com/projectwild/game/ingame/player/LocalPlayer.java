@@ -11,22 +11,48 @@ import com.projectwild.shared.utils.Vector2;
 
 public class LocalPlayer extends Player {
 
-    public boolean KEY_UP, KEY_LEFT, KEY_RIGHT;
+    public boolean KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT;
     public long KEY_UP_TIME;
 
     private Vector2 oldVelocity, velocity;
     private float speedMultiplier;
     private boolean hasAccess;
 
+    private boolean noclip;
+
     public LocalPlayer(int userId, String username) {
         super(userId, username);
         speedMultiplier = 1.0f;
         hasAccess = false;
         velocity = new Vector2();
+        noclip = false;
     }
 
     public void handlePhysics() {
         World world = ((WorldState) WildGame.getState()).getWorld();
+
+        // Completely Ignore Velocity If Noclipping
+        if(noclip) {
+            // Save Old Position
+            Vector2 oldPos = getPosition().copy();
+
+            if(KEY_LEFT)
+                getPosition().changeX(-3 * speedMultiplier);
+
+            if(KEY_RIGHT)
+                getPosition().changeX(3 * speedMultiplier);
+
+            if(KEY_UP)
+                getPosition().changeY(3 * speedMultiplier);
+
+            if(KEY_DOWN)
+                getPosition().changeY(-3 * speedMultiplier);
+
+            // Update The Server
+            if(oldPos.getX() != getPosition().getX() || oldPos.getY() != getPosition().getY())
+                WildGame.getClient().sendTCP(new MovePacket(oldPos, getPosition()));
+            return;
+        }
 
         // Save Old Velocity
         oldVelocity = velocity.copy();
@@ -218,6 +244,10 @@ public class LocalPlayer extends Player {
         this.hasAccess = hasAccess;
     }
 
+    public void setNoclip(boolean noclip) {
+        this.noclip = noclip;
+    }
+
     public Vector2 getVelocity() {
         return velocity;
     }
@@ -228,6 +258,10 @@ public class LocalPlayer extends Player {
 
     public boolean hasAccess() {
         return hasAccess;
+    }
+
+    public boolean isNoclip() {
+        return noclip;
     }
 
 }

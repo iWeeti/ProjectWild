@@ -109,12 +109,17 @@ public class WorldState implements GameState {
 
                 switch(keycode) {
                     case Input.Keys.W:
+                    case Input.Keys.UP:
                     case Input.Keys.SPACE:
                         if(world.getLocalPlayer().isOnGround()) {
                             world.getLocalPlayer().getVelocity().setY(4.0);
                             world.getLocalPlayer().KEY_UP_TIME = System.currentTimeMillis();
                         }
                         world.getLocalPlayer().KEY_UP = true;
+                        break;
+                    case Input.Keys.S:
+                    case Input.Keys.DOWN:
+                        world.getLocalPlayer().KEY_DOWN = true;
                         break;
                     case Input.Keys.A:
                     case Input.Keys.LEFT:
@@ -149,6 +154,10 @@ public class WorldState implements GameState {
                     case Input.Keys.SPACE:
                         world.getLocalPlayer().KEY_UP = false;
                         world.getLocalPlayer().KEY_UP_TIME = -1;
+                        break;
+                    case Input.Keys.S:
+                    case Input.Keys.DOWN:
+                        world.getLocalPlayer().KEY_DOWN = false;
                         break;
                     case Input.Keys.A:
                     case Input.Keys.LEFT:

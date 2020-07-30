@@ -7,10 +7,7 @@ import com.projectwild.shared.packets.LoginResponsePacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
 import com.projectwild.shared.packets.player.*;
-import com.projectwild.shared.packets.player.local.MoveItemSlotsPacket;
-import com.projectwild.shared.packets.player.local.MovePacket;
-import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
-import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
+import com.projectwild.shared.packets.player.local.*;
 import com.projectwild.shared.packets.world.*;
 import com.projectwild.shared.utils.Vector2;
 
@@ -51,6 +48,7 @@ public class PacketRegistry {
         kryo.register(UpdateNameTagPacket.class);
         kryo.register(UpdateNetworkedVariablePacket.class);
         kryo.register(MoveItemSlotsPacket.class);
+        kryo.register(UpdateNoclipPacket.class);
 
     }
     

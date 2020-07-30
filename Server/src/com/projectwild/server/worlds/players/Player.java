@@ -5,6 +5,7 @@ import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
 import com.projectwild.shared.packets.player.UpdatePositionPacket;
+import com.projectwild.shared.packets.player.local.UpdateNoclipPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.utils.Vector2;
 
@@ -15,13 +16,16 @@ public class Player {
 
     private float speedMultiplier;
     private Vector2 position;
+
     private boolean override;
+    private boolean noclip;
 
     public Player(Client client, World world, Vector2 position) {
         this.client = client;
         this.world = world;
         this.position = position.copy();
         this.override = false;
+        this.noclip = false;
         speedMultiplier = 1.0f;
     }
 
@@ -93,11 +97,21 @@ public class Player {
         return nametag;
     }
 
+    public void setOverride(boolean override) {
+        this.override = override;
+    }
+
     public boolean isOverride() {
         return override;
     }
 
-    public void setOverride(boolean override) {
-        this.override = override;
+    public void setNoclip(boolean noclip) {
+        this.noclip = noclip;
+        client.sendTCP(new UpdateNoclipPacket(noclip));
     }
+
+    public boolean isNoclip() {
+        return noclip;
+    }
+
 }
