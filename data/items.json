@@ -188,7 +188,7 @@
 		"itemType": 2,
 		"clothingId": 0,
 		"itemSet": "items1",
-		"itemSetX": 0,
+		"itemSetX": 1,
 		"itemSetY": 0
 	},
 	{
@@ -196,9 +196,9 @@
 		"name": "Black Shirt",
 		"maxStack": 1,
 		"itemType": 2,
-		"clothingId": 1,
+		"clothingId": 2,
 		"itemSet": "items1",
-		"itemSetX": 1,
+		"itemSetX": 3,
 		"itemSetY": 0
 	},
 	{
@@ -206,7 +206,7 @@
 		"name": "White Shirt",
 		"maxStack": 1,
 		"itemType": 2,
-		"clothingId": 2,
+		"clothingId": 1,
 		"itemSet": "items1",
 		"itemSetX": 2,
 		"itemSetY": 0
@@ -218,7 +218,7 @@
 		"itemType": 2,
 		"clothingId": 3,
 		"itemSet": "items1",
-		"itemSetX": 3,
+		"itemSetX": 4,
 		"itemSetY": 0
 	},
 	{
@@ -228,7 +228,7 @@
 		"itemType": 2,
 		"clothingId": 4,
 		"itemSet": "items1",
-		"itemSetX": 4,
+		"itemSetX": 0,
 		"itemSetY": 0
 	}
 ]

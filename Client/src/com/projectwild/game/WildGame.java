@@ -28,7 +28,7 @@ public class WildGame extends ApplicationAdapter {
         client.start();
         String address = System.getenv("address");
         if (address == null)
-            address =  "78.27.101.11";
+            address =  "104.248.65.87";
         client.connect(5000, address, 7707, 7707);
         
         changeState(new LoadingState());

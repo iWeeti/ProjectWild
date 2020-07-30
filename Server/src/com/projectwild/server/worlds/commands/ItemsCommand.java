@@ -34,7 +34,7 @@ public class ItemsCommand implements Command {
 
     @Override
     public Rank rank() {
-        return Rank.MOD;
+        return Rank.USER;
     }
 
     @Override

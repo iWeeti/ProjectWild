@@ -41,7 +41,7 @@ public class GiveCommand implements Command {
 
     @Override
     public Rank rank() {
-        return Rank.MOD;
+        return Rank.USER;
     }
 
     @Override
