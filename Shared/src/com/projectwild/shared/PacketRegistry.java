@@ -49,6 +49,7 @@ public class PacketRegistry {
         kryo.register(UpdateNetworkedVariablePacket.class);
         kryo.register(MoveItemSlotsPacket.class);
         kryo.register(UpdateNoclipPacket.class);
+        kryo.register(UpdateHealthPacket.class);
 
     }
     

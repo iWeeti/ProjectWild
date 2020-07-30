@@ -34,6 +34,7 @@ public class CommandHandler {
         commands.put("world", new WorldCommand());
         commands.put("override", new OverrideCommand());
         commands.put("noclip", new NoclipCommand());
+        commands.put("sethealth", new SetHealthCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {

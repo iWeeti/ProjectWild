@@ -32,7 +32,7 @@
 	{
 		"id": 3,
 		"name": "Lava Rock",
-		"blockType": 0,
+		"blockType": 3,
 		"collisionType": 1,
 		"renderType": 0,
 		"tileset": "blocks1",
@@ -52,9 +52,9 @@
 	{
 		"id": 5,
 		"name": "Sign",
-		"blockType": 0,
+		"blockType": 4,
 		"collisionType": 0,
-		"renderType": 0,
+		"renderType": 4,
 		"tileset": "blocks1",
 		"tilesetX": 8,
 		"tilesetY": 0
@@ -62,9 +62,9 @@
 	{
 		"id": 6,
 		"name": "Street Sign",
-		"blockType": 0,
+		"blockType": 4,
 		"collisionType": 0,
-		"renderType": 0,
+		"renderType": 4,
 		"tileset": "blocks1",
 		"tilesetX": 9,
 		"tilesetY": 0
@@ -272,7 +272,7 @@
 	{
 		"id": 27,
 		"name": "Lava",
-		"blockType": 0,
+		"blockType": 3,
 		"collisionType": 4,
 		"renderType": 1,
 		"tileset": "blocks1",
