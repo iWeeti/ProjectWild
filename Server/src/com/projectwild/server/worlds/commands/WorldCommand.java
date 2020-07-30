@@ -37,10 +37,10 @@ public class WorldCommand implements Command {
         worldInfo.append(String.format("POS: [%s, %s] %s blocks tall and %s blocks wide\n", Math.floor(client.getPlayer().getPosition().getX()/32), Math.floor(client.getPlayer().getPosition().getY()/32), world.getHeight(), world.getWidth()));
 
         StringBuilder trusted = new StringBuilder();
-        for (int id: world.getTrusted()){
+        for (int id : world.getTrusted()){
             String _sql = "SELECT username FROM Users WHERE id = ? COLLATE NOCASE";
 
-            ResultSet resultSet = WildServer.getDatabaseController().query(_sql, world.getOwner());
+            ResultSet resultSet = WildServer.getDatabaseController().query(_sql, id);
             try {
                 if(resultSet.isClosed()) {
                     client.sendTCP(new ChatMessagePacket("Something went wrong."));
