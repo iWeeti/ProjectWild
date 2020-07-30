@@ -1,0 +1,184 @@
+[
+	{
+		"id": 0,
+		"name": "Dirt",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 1
+	},
+	{
+		"id": 1,
+		"name": "Rock",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 2
+	},
+	{
+		"id": 2,
+		"name": "Lava Rock",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 3
+	},
+	{
+		"id": 3,
+		"name": "Red Bricks",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 4
+	},
+	{
+		"id": 4,
+		"name": "Sign",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 5
+	},
+	{
+		"id": 5,
+		"name": "Street Sign",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 6
+	},
+	{
+		"id": 6,
+		"name": "Log",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 7
+	},
+	{
+		"id": 7,
+		"name": "Wood",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 8
+	},
+	{
+		"id": 8,
+		"name": "Bricks",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 9
+	},
+	{
+		"id": 9,
+		"name": "Glass",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 10
+	},
+	{
+		"id": 10,
+		"name": "Flowers",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 11
+	},
+	{
+		"id": 11,
+		"name": "Dark Wood",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 12
+	},
+	{
+		"id": 12,
+		"name": "Fancy Block",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 13
+	},
+	{
+		"id": 13,
+		"name": "Character Block",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 14
+	},
+	{
+		"id": 14,
+		"name": "Crate",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 15
+	},
+	{
+		"id": 15,
+		"name": "Bookshelf",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 16
+	},
+	{
+		"id": 16,
+		"name": "Bed",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 17
+	},
+	{
+		"id": 17,
+		"name": "Barrel",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 18
+	},
+	{
+		"id": 18,
+		"name": "Vase",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 19
+	},
+	{
+		"id": 19,
+		"name": "Bush",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 20
+	},
+	{
+		"id": 20,
+		"name": "Cactus",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 21
+	},
+	{
+		"id": 21,
+		"name": "Door",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 22
+	},
+	{
+		"id": 22,
+		"name": "Platform",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 25
+	},
+	{
+		"id": 23,
+		"name": "Water",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 26
+	},
+	{
+		"id": 24,
+		"name": "Lava",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 27
+	},
+	{
+		"id": 25,
+		"name": "Sand",
+		"maxStack": 999,
+		"itemType": 1,
+		"blockId": 28
+	}
+]
