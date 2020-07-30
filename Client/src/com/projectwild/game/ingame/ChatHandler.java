@@ -8,15 +8,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.projectwild.game.WildGame;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
-import java.util.ArrayList;
+import java.time.Clock;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChatHandler {
 
+    private class Message {
+        public String content;
+        public long time;
+
+        public Message(String message, long time) {
+            this.content = message;
+            this.time = time;
+        }
+    }
+
     private boolean chatOpen;
-    private CopyOnWriteArrayList<String> messages;
+    private CopyOnWriteArrayList<Message> messages;
     private CopyOnWriteArrayList<String> localMessages;
     private int localCounter;
     private TextInputListener typeListener;
@@ -42,16 +52,18 @@ public class ChatHandler {
             font.draw(sb, msgLayout, 50, 50);
 
         float y = chatOpen ? msgLayout.height + 50 : 50;
-        for (String message : messages) {
-            GlyphLayout layout = new GlyphLayout(font, message);
-            y += layout.height;
-            font.draw(sb, layout, 50, y);
-            y += 15;
+        for (Message message : messages) {
+            if (chatOpen || message.time + 5000 >  Clock.systemUTC().millis()) {
+                GlyphLayout layout = new GlyphLayout(font, message.content);
+                y += layout.height;
+                font.draw(sb, layout, 50, y);
+                y += 15;
+            }
         }
     }
 
     public void addMessage(String message) {
-        messages.add(0, message);
+        messages.add(0, new Message(message, Clock.systemUTC().millis()));
 
         if(messages.size() > 10)
             messages.remove(messages.size()-1);

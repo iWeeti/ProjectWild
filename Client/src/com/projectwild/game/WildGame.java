@@ -26,7 +26,7 @@ public class WildGame extends ApplicationAdapter {
         client = new Client(10000000, 10000000);
         PacketRegistry.register(client.getKryo());
         client.start();
-        client.connect(5000, "78.27.101.11", 7707, 7707);
+        client.connect(5000, "localhost", 7707, 7707); // 78.27.101.11
         
         changeState(new LoadingState());
         
