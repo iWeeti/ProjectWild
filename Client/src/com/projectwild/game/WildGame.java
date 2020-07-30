@@ -83,7 +83,9 @@ public class WildGame extends ApplicationAdapter {
         currentState.update();
         currentState.render();
     }
-    
+
+
+
     @Override
     public void dispose() {
         currentState.dispose();

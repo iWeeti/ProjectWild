@@ -43,7 +43,7 @@ public class PlayerListener extends Listener {
             InteractBlockPacket packet = (InteractBlockPacket) obj;
             Player player = WildServer.getClientHandler().getClientBySocket(connection.getID()).getPlayer();
 
-            if(!player.getWorld().hasAccess(player.getClient()))
+            if(!player.isOverride() && !player.getWorld().hasAccess(player.getClient()))
                 return;
 
             // Check If There Are Any Players There
@@ -67,9 +67,10 @@ public class PlayerListener extends Listener {
                 }
             }
 
-            if(isColliding)
+            if(!player.isOverride() && isColliding)
                 return;
 
+            // checks world border
             if(packet.getY() < 0 || packet.getX() < 0 || packet.getZ() < 0)
                 return;
 
@@ -82,7 +83,8 @@ public class PlayerListener extends Listener {
             if(packet.getZ() > 2)
                 return;
 
-            if(player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getBlockType() == BlockTypes.UNBREAKABLE.getId())
+            // prevents breaking unbreakable blocks
+            if(!player.isOverride() && player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getBlockType() == BlockTypes.UNBREAKABLE.getId())
                 return;
 
             // Perform Interaction

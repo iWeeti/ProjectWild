@@ -64,11 +64,11 @@ public class WorldCommand implements Command {
 
     @Override
     public String help() {
-        return null;
+        return "Info about the world.";
     }
 
     @Override
     public Rank rank() {
-        return null;
+        return Rank.USER;
     }
 }

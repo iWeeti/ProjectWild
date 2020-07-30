@@ -1,0 +1,34 @@
+--- [ Blocks ] ---
+
+Block Rendering Types:
+	0 -> Normal (Ex. Rock)
+	1 -> Blocks Under First Block Take Another Texture (Ex. Dirt)
+	2 -> Full Block Sheets (Ex. Fancy Block)
+	3 -> Infront Of Player (Ex. Flowers)
+	4 -> Block Specific (Ex. Entrance Blocks)
+	5 -> Sides Are Extended (Ex. Platform)
+	6 -> Like Type 1 But With One More Block (Ex. Sand)
+
+Block Collision Types:
+	0 -> No Collision (Ex. Air)
+	1 -> Full Collision (Ex. Dirt)
+	2 -> Custom Collision (Ex. Entrance Blocks)
+	3 -> Only Top Downwards Collision (Ex. Platform Blocks)
+	4 -> Liquid
+
+
+--- [ Clothing ] ---
+
+Clothing Slots:
+	0 -> Full Body?
+	1 -> Feet (Ex. Boots)
+	2 -> Legs (Ex. Pants)
+	3 -> Chest (Ex. Shirts)
+	4 -> Eyes (Ex. Sunglasses)
+	5 -> Hair
+	6 -> OnTop (Ex. Hats)
+	7 -> Back (Ex. Backpack)
+	8 -> Hand (Ex. Pickaxe)
+
+Clothing Rendering Types:
+	0 -> Normal - Stationary (Ex. White Shirt)

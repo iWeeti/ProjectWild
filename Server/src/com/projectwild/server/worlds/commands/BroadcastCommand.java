@@ -10,8 +10,8 @@ public class BroadcastCommand implements Command{
     public void execute(Client client, String[] args) {
         StringBuilder text = new StringBuilder();
         for (String s : args)
-            text.append(s);
-        WildServer.getServer().sendToAllTCP(new ChatMessagePacket(String.format("[YELLOW]Broadcast: [WHITE]%s", text.toString())));
+            text.append(s).append(" ");
+        WildServer.getServer().sendToAllTCP(new ChatMessagePacket(String.format("[YELLOW]Broadcast: [WHITE]%s", text.toString().substring(0, text.toString().length()-1))));
     }
 
     @Override
