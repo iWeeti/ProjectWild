@@ -116,7 +116,7 @@ public class Client {
                     WildServer.getDatabaseController().update(sql, newAmount, userId, preset.getId(), "main");
                 } else {
                     inventory[i] = null;
-                    String sql = "DELETE FROM Items WHERE userId = ? AND itemId = ?, invType = ?";
+                    String sql = "DELETE FROM Items WHERE userId = ? AND itemId = ? invType = ?";
                     WildServer.getDatabaseController().delete(sql, userId, preset.getId(), "main");
                 }
 
