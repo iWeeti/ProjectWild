@@ -39,6 +39,14 @@ public class Client {
         }
     }
 
+    public void sendTCP(Object packet) {
+        WildServer.getServer().sendToTCP(socket, packet);
+    }
+
+    public void sendUDP(Object packet) {
+        WildServer.getServer().sendToUDP(socket, packet);
+    }
+
     public boolean changeItems(ItemPreset preset, int amount) {
         for(int i = 0; i < inventory.length; i++) {
             if(inventory[i] == null)
@@ -60,7 +68,7 @@ public class Client {
                 }
 
                 ChangeInventoryItemPacket packet = new ChangeInventoryItemPacket(i, inventory[i]);
-                WildServer.getServer().sendToTCP(socket, packet);
+                sendTCP(packet);
                 return true;
             }
         }
@@ -72,7 +80,7 @@ public class Client {
                 WildServer.getDatabaseController().insert(sql, userId, i, preset.getId(), amount);
 
                 ChangeInventoryItemPacket packet = new ChangeInventoryItemPacket(i, inventory[i]);
-                WildServer.getServer().sendToTCP(socket, packet);
+                sendTCP(packet);
                 return true;
             }
         }

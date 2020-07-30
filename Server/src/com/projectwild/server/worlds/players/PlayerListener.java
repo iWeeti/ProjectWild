@@ -34,7 +34,7 @@ public class PlayerListener extends Listener {
                 packet = new PlayerAnimationPacket(player.getClient().getUserId(), packet.getAnimationId());
                 for(Player ply : player.getWorld().getPlayers()) {
                     if(player.getClient().getUserId() != ply.getClient().getUserId())
-                        WildServer.getServer().sendToTCP(ply.getClient().getSocket(), packet);
+                        ply.getClient().sendTCP(packet);
                 }
             }
         }

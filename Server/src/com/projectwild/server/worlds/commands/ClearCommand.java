@@ -15,7 +15,7 @@ public class ClearCommand implements Command {
 
         if(world.getOwner() != client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] You Don't Have Permission");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
@@ -29,7 +29,7 @@ public class ClearCommand implements Command {
         }
 
         ChatMessagePacket packet = new ChatMessagePacket("[GREEN]Success![WHITE] World Cleared");
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
     }
 
     @Override

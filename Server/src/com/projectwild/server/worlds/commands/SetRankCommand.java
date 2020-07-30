@@ -13,14 +13,14 @@ public class SetRankCommand implements Command {
     public void execute(Client client, String[] args) {
         if(args.length < 2) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Missing Arguments");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
         if(c == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
@@ -28,11 +28,11 @@ public class SetRankCommand implements Command {
         c.setRank(rank);
         UpdateNameTagPacket packet = new UpdateNameTagPacket(c.getUserId(), c.getPlayer().getNametag());
         for(Player ply : c.getPlayer().getWorld().getPlayers()) {
-            WildServer.getServer().sendToTCP(ply.getClient().getSocket(), packet);
+            ply.getClient().sendTCP(packet);
         }
 
         ChatMessagePacket messagePacket = new ChatMessagePacket(String.format("[GREEN]Success! [WHITE] Set %s's Rank To %s", c.getUsername(), rank.getIdentifier()));
-        WildServer.getServer().sendToTCP(client.getSocket(), messagePacket);
+        client.sendTCP(messagePacket);
     }
 
     @Override

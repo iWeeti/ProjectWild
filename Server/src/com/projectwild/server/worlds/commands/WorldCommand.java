@@ -21,7 +21,7 @@ public class WorldCommand implements Command {
         ResultSet rs = WildServer.getDatabaseController().query(sql, world.getOwner());
         try {
             if(rs.isClosed()) {
-                WildServer.getServer().sendToTCP(client.getSocket(), new ChatMessagePacket("Something went wrong."));
+                client.sendTCP(new ChatMessagePacket("Something went wrong."));
                 return;
             }
         } catch (SQLException throwables) {
@@ -43,7 +43,7 @@ public class WorldCommand implements Command {
             ResultSet resultSet = WildServer.getDatabaseController().query(_sql, world.getOwner());
             try {
                 if(resultSet.isClosed()) {
-                    WildServer.getServer().sendToTCP(client.getSocket(), new ChatMessagePacket("Something went wrong."));
+                    client.sendTCP(new ChatMessagePacket("Something went wrong."));
                     return;
                 }
             } catch (SQLException throwables) {
@@ -59,7 +59,7 @@ public class WorldCommand implements Command {
         if (!trusted.toString().isBlank() && !trusted.toString().isEmpty())
             worldInfo.append(String.format("Trusted %s", trusted.toString().substring(0, trusted.toString().length() - 2)));
 
-        WildServer.getServer().sendToTCP(client.getSocket(), new ChatMessagePacket(worldInfo.toString()));
+        client.sendTCP(new ChatMessagePacket(worldInfo.toString()));
     }
 
     @Override

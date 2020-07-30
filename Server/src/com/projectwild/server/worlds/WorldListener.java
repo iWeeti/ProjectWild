@@ -110,7 +110,7 @@ public class WorldListener extends Listener {
             ChatMessagePacket chatMessagePacket = new ChatMessagePacket(String.format("[YELLOW]%s >> [WHITE]%s", client.getUsername(), packet.getMessage()));
 
             for(Player ply : world.getPlayers()) {
-                WildServer.getServer().sendToTCP(ply.getClient().getSocket(), chatMessagePacket);
+                ply.getClient().sendTCP(chatMessagePacket);
             }
 
         }

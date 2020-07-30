@@ -16,24 +16,24 @@ public class TeleportCommand implements Command {
         Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
         if(c == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(c.getPlayer() == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(!c.getPlayer().getWorld().getName().equals(world.getName())) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         client.getPlayer().updatePosition(c.getPlayer().getPosition(), true);
-        WildServer.getServer().sendToTCP(client.getSocket(), new ChatMessagePacket(String.format("[GREEN]Success! [WHITE]Teleported you to %s.", c.getUsername())));
+        client.sendTCP(new ChatMessagePacket(String.format("[GREEN]Success! [WHITE]Teleported you to %s.", c.getUsername())));
     }
 
     @Override

@@ -14,7 +14,7 @@ public class ClearInventoryCommand implements Command {
             Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
             if(c == null) {
                 ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Couldn't Find Specified Player");
-                WildServer.getServer().sendToTCP(client.getSocket(), packet);
+                client.sendTCP(packet);
                 return;
             }
 

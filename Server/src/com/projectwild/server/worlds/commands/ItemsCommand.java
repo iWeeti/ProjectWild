@@ -19,7 +19,7 @@ public class ItemsCommand implements Command {
         }
 
         ChatMessagePacket chatMessagePacket = new ChatMessagePacket(builder.toString());
-        WildServer.getServer().sendToTCP(client.getSocket(), chatMessagePacket);
+        client.sendTCP(chatMessagePacket);
     }
 
     @Override

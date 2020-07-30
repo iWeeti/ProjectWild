@@ -13,14 +13,14 @@ public class PrivateMessageCommand implements Command {
     public void execute(Client client, String[] args) {
         if(args.length < 2) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Missing Arguments");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
         if(c == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
@@ -31,10 +31,10 @@ public class PrivateMessageCommand implements Command {
         }
 
         ChatMessagePacket packet = new ChatMessagePacket(String.format("[PURPLE][PM] %s >> [WHITE] %s", client.getUsername(), builder.toString()));
-        WildServer.getServer().sendToTCP(c.getSocket(), packet);
+        c.sendTCP(packet);
 
         packet = new ChatMessagePacket(String.format("[PURPLE][PM] Sent To %s >> [WHITE] %s", c.getUsername(), builder.toString()));
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
     }
 
     @Override

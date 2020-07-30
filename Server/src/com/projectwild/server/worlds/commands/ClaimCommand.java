@@ -18,19 +18,19 @@ public class ClaimCommand implements Command {
         if(world.claimWorld(client)) {
             // Message
             ChatMessagePacket packet = new ChatMessagePacket("[GREEN]Success! [WHITE]World Claimed");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
 
             // Updating Access & Nametag
             UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(false);
             UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(client.getUserId(), client.getPlayer().getNametag());
             for(Player ply : world.getPlayers()) {
                 if(ply.getClient().getUserId() != client.getUserId())
-                    WildServer.getServer().sendToTCP(ply.getClient().getSocket(), hasAccessPacket);
-                WildServer.getServer().sendToTCP(ply.getClient().getSocket(), nameTagPacket);
+                    ply.getClient().sendTCP(hasAccessPacket);
+                ply.getClient().sendTCP(nameTagPacket);
             }
         } else {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Claim World");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
         }
     }
 

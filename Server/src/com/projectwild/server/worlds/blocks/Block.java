@@ -86,7 +86,7 @@ public abstract class Block {
         networkedVariables.put(key, value);
         UpdateNetworkedVariablePacket variablePacket = new UpdateNetworkedVariablePacket(x, y, z, key, value);
         for(Player ply : world.getPlayers())
-            WildServer.getServer().sendToTCP(ply.getClient().getSocket(), variablePacket);
+            ply.getClient().sendTCP(variablePacket);
     }
 
     public void setNWString(String key, String value) {

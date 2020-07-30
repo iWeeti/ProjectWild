@@ -43,11 +43,11 @@ public class CommandHandler {
                 cmd.execute(client, args);
             } else {
                 ChatMessagePacket packet = new ChatMessagePacket("[RED]You Don't Have Permission To Use This Command");
-                WildServer.getServer().sendToTCP(client.getSocket(), packet);
+                client.sendTCP(packet);
             }
         } else {
             ChatMessagePacket packet = new ChatMessagePacket(String.format("[RED]Unknown Command: %s", command.toLowerCase()));
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
         }
     }
 

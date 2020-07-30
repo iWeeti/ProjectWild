@@ -17,20 +17,20 @@ public class UntrustCommand implements Command{
 
         if (!client.getPlayer().isOverride() && world.getOwner() != client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Don't Have Permission");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(args.length < 1) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Missing Arguments");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
         if(c == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
@@ -42,26 +42,26 @@ public class UntrustCommand implements Command{
 
         if(!isTrusted) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]This Player Is Not Trusted");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         // Untrusting & Removing Access
         world.removeTrusted(c);
         ChatMessagePacket packet = new ChatMessagePacket(String.format("[GREEN]Success! [WHITE]Untrusted %s", c.getUsername()));
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
 
         packet = new ChatMessagePacket(String.format("[RED]Untrusted! [WHITE]You Are No Longer Trusted In %s", world.getName()));
-        WildServer.getServer().sendToTCP(c.getSocket(), packet);
+        c.sendTCP(packet);
 
         // Updating Local Clients Access
         UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(false);
-        WildServer.getServer().sendToTCP(c.getSocket(), hasAccessPacket);
+        c.sendTCP(hasAccessPacket);
 
         // Updating Nametag
         UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(c.getUserId(), c.getPlayer().getNametag());
         for(Player ply : world.getPlayers()) {
-            WildServer.getServer().sendToTCP(ply.getClient().getSocket(), nameTagPacket);
+            ply.getClient().sendTCP(nameTagPacket);
         }
     }
 

@@ -12,7 +12,7 @@ public class GiveCommand implements Command {
     public void execute(Client client, String[] args) {
         if(args.length < 2) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Missing Arguments");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
@@ -29,7 +29,7 @@ public class GiveCommand implements Command {
                     itemPreset = ItemPreset.getPreset(itemId);
                 } else {
                     ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Please Enter A Valid Item Name or ItemID");
-                    WildServer.getServer().sendToTCP(client.getSocket(), packet);
+                    client.sendTCP(packet);
                     return;
                 }
             }
@@ -47,7 +47,7 @@ public class GiveCommand implements Command {
                 Client c = WildServer.getClientHandler().getClientByUsername(args[2]);
                 if(c == null) {
                     ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Couldn't Find Specified Player");
-                    WildServer.getServer().sendToTCP(client.getSocket(), packet);
+                    client.sendTCP(packet);
                     return;
                 }
                 c.changeItems(itemPreset, amount);
@@ -56,7 +56,7 @@ public class GiveCommand implements Command {
             }
         } catch(NumberFormatException e) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Please Enter A Valid Item Id/Name & Amount");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
     }

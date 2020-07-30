@@ -139,21 +139,21 @@ public class World {
 
         // Sending Local Player To Client
         PlayerSpawnPacket playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), player.getNametag(), spawnPosition, true);
-        WildServer.getServer().sendToTCP(client.getSocket(), playerSpawnPacket);
+        client.sendTCP(playerSpawnPacket);
 
         UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(hasAccess(client));
-        WildServer.getServer().sendToTCP(client.getSocket(), hasAccessPacket);
+        client.sendTCP(hasAccessPacket);
 
         // Sending All Players To Client
         for(Player ply : players) {
             playerSpawnPacket = new PlayerSpawnPacket(ply.getClient().getUserId(), ply.getNametag(), ply.getPosition(), false);
-            WildServer.getServer().sendToTCP(client.getSocket(), playerSpawnPacket);
+            client.sendTCP(playerSpawnPacket);
         }
 
         // Broadcasting New Player With All Clients In The World
         playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), player.getNametag(), spawnPosition, false);
         for(Player ply : players)
-            WildServer.getServer().sendToTCP(ply.getClient().getSocket(), playerSpawnPacket);
+            ply.getClient().sendTCP(playerSpawnPacket);
 
         players.add(player);
 
@@ -163,7 +163,7 @@ public class World {
     public void destroyPlayer(Player player) {
         PlayerRemovePacket playerRemovePacket = new PlayerRemovePacket(player.getClient().getUserId());
         for(Player ply : players) {
-            WildServer.getServer().sendToTCP(ply.getClient().getSocket(), playerRemovePacket);
+            ply.getClient().sendTCP(playerRemovePacket);
         }
         players.remove(player);
 
@@ -189,7 +189,7 @@ public class World {
 
             UpdateBlockPacket updateBlockPacket = new UpdateBlockPacket(x, y, z, block.getBlockPreset().getId(), block.serializeNetworkVariables());
             for(Player ply : players) {
-                WildServer.getServer().sendToTCP(ply.getClient().getSocket(), updateBlockPacket);
+                ply.getClient().sendTCP(updateBlockPacket);
             }
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();

@@ -16,39 +16,39 @@ public class KickCommand implements Command {
 
         if (!player.isOverride() && !world.hasAccess(client)) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] You Don't Have Permission");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(args.length < 1) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Missing Arguments");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
         if(c == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(c.getPlayer() == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(!c.getPlayer().getWorld().getName().equals(world.getName())) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         world.destroyPlayer(c.getPlayer());
 
         ChatMessagePacket packet = new ChatMessagePacket(String.format("[GREEN]Success! [WHITE]Kicked %s", c.getUsername()));
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
     }
 
     @Override

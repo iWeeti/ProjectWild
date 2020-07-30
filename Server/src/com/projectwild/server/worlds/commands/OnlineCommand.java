@@ -10,7 +10,7 @@ public class OnlineCommand implements Command {
     @Override
     public void execute(Client client, String[] args) {
         ChatMessagePacket packet = new ChatMessagePacket(String.format("There Are %s Player(s) Online", WildServer.getClientHandler().getClients().size()));
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
     }
 
     @Override

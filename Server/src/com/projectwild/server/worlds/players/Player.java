@@ -28,7 +28,7 @@ public class Player {
     public void updateSpeedMultiplier(float speedMultiplier) {
         this.speedMultiplier = speedMultiplier;
         UpdateSpeedMultiplierPacket packet = new UpdateSpeedMultiplierPacket(speedMultiplier);
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
     }
 
     public void updatePosition(Vector2 position, boolean force) {
@@ -36,7 +36,7 @@ public class Player {
         UpdatePositionPacket packet = new UpdatePositionPacket(client.getUserId(), position);
         for(Player ply : world.getPlayers()) {
             if(force || (ply.getClient().getUserId() != this.getClient().getUserId()))
-                WildServer.getServer().sendToTCP(ply.getClient().getSocket(), packet);
+                ply.getClient().sendTCP(packet);
         }
     }
 

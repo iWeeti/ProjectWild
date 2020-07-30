@@ -17,22 +17,22 @@ public class UnclaimCommand implements Command {
 
         if(world.getOwner() != client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Don't Have Permission");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(world.claimWorld(null)) {
             // Message
             ChatMessagePacket packet = new ChatMessagePacket("[GREEN]Success! [WHITE]World Unclaimed");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
 
             // Updating Access & Nametag
             UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(true);
             UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(client.getUserId(), client.getPlayer().getNametag());
             for(Player ply : world.getPlayers()) {
                 if(ply.getClient().getUserId() != client.getUserId())
-                    WildServer.getServer().sendToTCP(ply.getClient().getSocket(), hasAccessPacket);
-                WildServer.getServer().sendToTCP(ply.getClient().getSocket(), nameTagPacket);
+                    ply.getClient().sendTCP(hasAccessPacket);
+                ply.getClient().sendTCP(nameTagPacket);
             }
         }
     }

@@ -29,7 +29,7 @@ public class HelpCommand implements Command{
         }
 
         ChatMessagePacket packet = new ChatMessagePacket(builder.toString());
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
     }
 
     @Override

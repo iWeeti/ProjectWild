@@ -17,51 +17,51 @@ public class TrustCommand implements Command {
 
         if(!client.getPlayer().isOverride() && world.getOwner() != client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Don't Have Permission");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(args.length < 1) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Missing Arguments");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
         if(c == null) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if (!client.getPlayer().isOverride() && c.getUserId() == client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Cannot Trust Yourself");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         if(world.hasAccess(c)) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]This Player Is Already Trusted");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
         // Adding Trusted And Sending messages
         world.addTrusted(c);
         ChatMessagePacket packet = new ChatMessagePacket(String.format("[GREEN]Success! [WHITE]Trusted %s", c.getUsername()));
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
 
         packet = new ChatMessagePacket(String.format("[GREEN]Trusted! [WHITE]You Are Now Trusted In %s", world.getName()));
-        WildServer.getServer().sendToTCP(c.getSocket(), packet);
+        c.sendTCP(packet);
 
         // Setting Local Player Access
         UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(true);
-        WildServer.getServer().sendToTCP(c.getSocket(), hasAccessPacket);
+        c.sendTCP(hasAccessPacket);
 
         // Updating Nametag
         UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(c.getUserId(), c.getPlayer().getNametag());
         for(Player ply : world.getPlayers()) {
-            WildServer.getServer().sendToTCP(ply.getClient().getSocket(), nameTagPacket);
+            ply.getClient().sendTCP(nameTagPacket);
         }
         return;
     }

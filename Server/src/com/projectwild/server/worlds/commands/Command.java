@@ -14,12 +14,12 @@ public interface Command {
     Rank rank();
 
     static void sendChatMessage(Client client, String message) {
-        WildServer.getServer().sendToTCP(client.getSocket(), new ChatMessagePacket(message));
+        client.sendTCP(new ChatMessagePacket(message));
     }
 
     static void sendChatMessage(Client client, String message, Object... args) {
         message = String.format(message, args);
-        WildServer.getServer().sendToTCP(client.getSocket(), new ChatMessagePacket(message));
+        client.sendTCP(new ChatMessagePacket(message));
     }
 
 }

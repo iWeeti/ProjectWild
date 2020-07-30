@@ -15,7 +15,7 @@ public class SetSpawnCommand implements Command {
 
         if(!client.getPlayer().isOverride() && world.getOwner() != client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] You Don't Have Permission");
-            WildServer.getServer().sendToTCP(client.getSocket(), packet);
+            client.sendTCP(packet);
             return;
         }
 
@@ -35,7 +35,7 @@ public class SetSpawnCommand implements Command {
         world.setSpawnPosition(new Vector2(x * 32, y * 32));
 
         ChatMessagePacket packet = new ChatMessagePacket("[GREEN]Success! [WHITE]Spawn Position Set");
-        WildServer.getServer().sendToTCP(client.getSocket(), packet);
+        client.sendTCP(packet);
     }
 
     @Override
