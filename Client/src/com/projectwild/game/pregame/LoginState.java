@@ -1,6 +1,7 @@
 package com.projectwild.game.pregame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.projectwild.game.GameState;
@@ -13,16 +14,13 @@ import com.projectwild.game.gui.components.TextField;
 import com.projectwild.shared.packets.LoginDataPacket;
 import com.projectwild.shared.utils.Vector2;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.FileHandler;
-
 public class LoginState implements GameState {
 
     private GUIParent guiParent;
     private boolean isRegistering;
 
     private LoginListener loginListener;
+    private InputMultiplexer inputMultiplexer;
 
     @Override
     public void initialize() {
@@ -100,6 +98,7 @@ public class LoginState implements GameState {
             guiParent.removeComponent(back);
             createPage1();
         });
+
         guiParent.addComponent(back);
     }
 

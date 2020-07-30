@@ -15,11 +15,13 @@ public class Player {
 
     private float speedMultiplier;
     private Vector2 position;
+    private boolean override;
 
     public Player(Client client, World world, Vector2 position) {
         this.client = client;
         this.world = world;
         this.position = position.copy();
+        this.override = false;
         speedMultiplier = 1.0f;
     }
 
@@ -91,4 +93,11 @@ public class Player {
         return nametag;
     }
 
+    public boolean isOverride() {
+        return override;
+    }
+
+    public void setOverride(boolean override) {
+        this.override = override;
+    }
 }

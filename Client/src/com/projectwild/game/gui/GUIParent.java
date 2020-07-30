@@ -94,4 +94,7 @@ public class GUIParent {
         return activeComponent;
     }
 
+    public void setActiveComponent(int activeComponent) {
+        this.activeComponent = activeComponent;
+    }
 }

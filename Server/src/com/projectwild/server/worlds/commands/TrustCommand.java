@@ -15,7 +15,7 @@ public class TrustCommand implements Command {
     public void execute(Client client, String[] args) {
         World world = client.getPlayer().getWorld();
 
-        if(world.getOwner() != client.getUserId()) {
+        if(!client.getPlayer().isOverride() && world.getOwner() != client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Don't Have Permission");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);
             return;
@@ -34,7 +34,7 @@ public class TrustCommand implements Command {
             return;
         }
 
-        if(c.getUserId() == client.getUserId()) {
+        if (!client.getPlayer().isOverride() && c.getUserId() == client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Cannot Trust Yourself");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);
             return;

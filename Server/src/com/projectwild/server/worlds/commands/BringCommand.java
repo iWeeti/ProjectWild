@@ -12,7 +12,7 @@ public class BringCommand implements Command {
     public void execute(Client client, String[] args) {
         World world = client.getPlayer().getWorld();
 
-        if(!world.hasAccess(client)) {
+        if(!client.getPlayer().isOverride() && !world.hasAccess(client)) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] You Don't Have Permission");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);
             return;

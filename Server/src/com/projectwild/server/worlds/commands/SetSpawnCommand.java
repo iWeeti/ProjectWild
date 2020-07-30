@@ -13,7 +13,7 @@ public class SetSpawnCommand implements Command {
     public void execute(Client client, String[] args) {
         World world = client.getPlayer().getWorld();
 
-        if(world.getOwner() != client.getUserId()) {
+        if(!client.getPlayer().isOverride() && world.getOwner() != client.getUserId()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] You Don't Have Permission");
             WildServer.getServer().sendToTCP(client.getSocket(), packet);
             return;

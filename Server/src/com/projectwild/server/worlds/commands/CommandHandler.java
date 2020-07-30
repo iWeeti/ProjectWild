@@ -31,10 +31,9 @@ public class CommandHandler {
         commands.put("setrank", new SetRankCommand());
         commands.put("online", new OnlineCommand());
         commands.put("teleport", new TeleportCommand());
-        commands.put("ftrust", new ForceTrustCommand());
-        commands.put("funtrust", new ForceUntrustCommand());
         commands.put("bc", new BroadcastCommand());
         commands.put("world", new WorldCommand());
+        commands.put("override", new OverrideCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {
