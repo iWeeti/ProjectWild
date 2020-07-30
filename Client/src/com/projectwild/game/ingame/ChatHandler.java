@@ -65,7 +65,7 @@ public class ChatHandler {
     public void addMessage(String message) {
         messages.add(0, new Message(message, Clock.systemUTC().millis()));
 
-        if(messages.size() > 10)
+        if(messages.size() > 20)
             messages.remove(messages.size()-1);
     }
 
