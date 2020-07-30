@@ -67,9 +67,11 @@ public class LoginState implements GameState {
     private void createPage2() {
         String _username = "";
         String _password = "";
+        // get file, has to be external cause can't write to an internal file.
         FileHandle file = Gdx.files.external("KodamaStudios\\ProjectWild\\login.txt");
         if (file.exists()){
             String[] data = file.readString().split("\n");
+            // has 2 entries
             if (data.length == 2){
                 _username = data[0];
                 _password = data[1];
@@ -84,6 +86,7 @@ public class LoginState implements GameState {
 
         Button submit = new Button(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 600), "Submit", Color.valueOf("56569c"));
         submit.setCallback(() -> {
+            //write the credentials on every login
             file.writeString(String.format("%s\n%s", username.getText(), password.getText()), false);
             WildGame.getClient().sendTCP(new LoginDataPacket(username.getText(), password.getText(), isRegistering));
         });
