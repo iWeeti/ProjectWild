@@ -8,8 +8,8 @@ import com.projectwild.shared.utils.Vector2;
 
 public class StaticBlock extends Block {
 
-    public StaticBlock(BlockPreset blockPreset, byte[] data) {
-        super(blockPreset, data);
+    public StaticBlock(BlockPreset blockPreset, byte[] data, int x, int y, int z) {
+        super(blockPreset, data, x, y, z);
     }
 
 }

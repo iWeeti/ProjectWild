@@ -9,7 +9,7 @@ public class SignBlock extends Block {
 
     public SignBlock(BlockPreset preset, World world, int x, int y, int z) {
         super(preset, world, x, y, z);
-        setNWString("text", "olet homo");
+        setNWString("text", "Empty");
     }
 
     @Override

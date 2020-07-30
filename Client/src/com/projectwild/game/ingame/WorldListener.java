@@ -5,10 +5,12 @@ import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.blocks.Block;
 import com.projectwild.game.ingame.blocks.BlockTypes;
+import com.projectwild.game.ingame.player.LocalPlayer;
 import com.projectwild.game.ingame.player.Player;
 import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.ChatMessagePacket;
+import com.projectwild.shared.packets.clothing.UpdateEquippedPacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
 import com.projectwild.shared.packets.player.*;
@@ -16,6 +18,7 @@ import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 import com.projectwild.shared.packets.player.local.UpdateHealthPacket;
 import com.projectwild.shared.packets.player.local.UpdateNoclipPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
+import com.projectwild.shared.packets.world.CallNetworkedCallbackPacket;
 import com.projectwild.shared.packets.world.UpdateBlockPacket;
 import com.projectwild.shared.packets.world.UpdateNetworkedVariablePacket;
 import com.projectwild.shared.packets.world.WorldDataPacket;
@@ -116,6 +119,13 @@ public class WorldListener extends Listener {
             worldState.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].setNWVar(packet.getKey(), packet.getValue());
         }
 
+        if(obj instanceof CallNetworkedCallbackPacket) {
+            CallNetworkedCallbackPacket packet = (CallNetworkedCallbackPacket) obj;
+            Block.Callback callback = worldState.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getNWCallback(packet.getCallback());
+            if(callback != null)
+                callback.callback(packet.getData());
+        }
+
         if(obj instanceof PlayerAnimationPacket) {
             PlayerAnimationPacket packet = (PlayerAnimationPacket) obj;
             Player player = worldState.getWorld().getPlayer(packet.getUserId());
@@ -127,7 +137,8 @@ public class WorldListener extends Listener {
             UpdateBlockPacket packet = (UpdateBlockPacket) obj;
             try {
                 BlockPreset preset = BlockPreset.getPreset(packet.getBlockPresetId());
-                Block block = BlockTypes.getBlockClass(preset.getBlockType()).getConstructor(BlockPreset.class, byte[].class).newInstance(preset, packet.getExtraData());
+                Class<? extends Block> blockClass = BlockTypes.getBlockClass(preset.getBlockType());
+                Block block = blockClass.getConstructor(BlockPreset.class, byte[].class, int.class, int.class, int.class).newInstance(preset, packet.getExtraData(), packet.getX(), packet.getY(), packet.getZ());
                 worldState.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()] = block;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 e.printStackTrace();
@@ -164,6 +175,18 @@ public class WorldListener extends Listener {
             UpdateHealthPacket packet = (UpdateHealthPacket) obj;
             worldState.getWorld().localPlayer.setHealth(packet.getHealth());
         }
+
+        if(obj instanceof UpdateEquippedPacket) {
+            UpdateEquippedPacket packet = (UpdateEquippedPacket) obj;
+            Player ply = worldState.getWorld().getPlayer(packet.getUserId());
+
+            if(packet.getUserId() == worldState.getWorld().getLocalPlayer().getUserId())
+                ply = worldState.getWorld().getLocalPlayer();
+
+            if (ply != null)
+                ply.setEquipped(packet.getEquipped());
+        }
+
     }
 
 }

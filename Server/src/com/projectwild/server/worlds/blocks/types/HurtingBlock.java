@@ -9,6 +9,10 @@ public class HurtingBlock extends Block {
 
     public HurtingBlock(BlockPreset preset, World world, int x, int y, int z) {
         super(preset, world, x, y, z);
+        setNWCallback("collision", (client, data) -> {
+            if(client.getPlayer() != null)
+                client.getPlayer().changeHealth(-1);
+        });
     }
 
     @Override
@@ -23,7 +27,7 @@ public class HurtingBlock extends Block {
 
     @Override
     public void collision(Player player) {
-        player.changeHealth(-2);
+
     }
 
     @Override

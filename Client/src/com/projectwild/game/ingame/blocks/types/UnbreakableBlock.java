@@ -5,8 +5,8 @@ import com.projectwild.shared.BlockPreset;
 
 public class UnbreakableBlock extends Block {
 
-    public UnbreakableBlock(BlockPreset blockPreset, byte[] data) {
-        super(blockPreset, data);
+    public UnbreakableBlock(BlockPreset blockPreset, byte[] data, int x, int y, int z) {
+        super(blockPreset, data, x, y, z);
     }
     
 }

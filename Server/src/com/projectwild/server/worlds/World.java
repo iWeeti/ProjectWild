@@ -8,6 +8,7 @@ import com.projectwild.server.worlds.blocks.types.StaticBlock;
 import com.projectwild.server.worlds.blocks.types.UnbreakableBlock;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
+import com.projectwild.shared.packets.clothing.UpdateEquippedPacket;
 import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
 import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
@@ -156,6 +157,10 @@ public class World {
             ply.getClient().sendTCP(playerSpawnPacket);
 
         players.add(player);
+
+        UpdateEquippedPacket equippedPacket = new UpdateEquippedPacket(client.getUserId(), client.getEquipped());
+        for(Player ply : players)
+            ply.getClient().sendTCP(equippedPacket);
 
         return player;
     }

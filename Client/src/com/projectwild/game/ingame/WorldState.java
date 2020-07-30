@@ -215,10 +215,12 @@ public class WorldState implements GameState {
         sb.setProjectionMatrix(hudCamera.combined);
         inventoryHandler.render(sb, sr);
         chatHandler.render(sb);
+
+        // Render Health
         {
-            int hearts = (int) Math.floor(world.localPlayer.getHealth() / 10);
+            int hearts = (int) Math.floor(world.localPlayer.getHealth() / 10f);
             int x = 8;
-            for (int i = 0; i < hearts; i++) {
+            for(int i = 0; i < hearts; i++) {
                 sb.draw(WildGame.getAssetManager().getAsset("heart"), x, Gdx.graphics.getHeight() - 32, 24, 24);
                 x += 28;
             }

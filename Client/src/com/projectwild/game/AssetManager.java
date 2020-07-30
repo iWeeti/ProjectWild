@@ -12,15 +12,19 @@ public class AssetManager {
     
     private HashMap<String, Texture> assets;
     private HashMap<String, TextureRegion[][]> tilesets;
+    private HashMap<String, TextureRegion[][]> clothingAssets;
+    private HashMap<String, TextureRegion[][]> itemIcons;
     private HashMap<String, BitmapFont> fonts;
     
     public AssetManager(){
         assets = loadAssets("data/assets");
-        tilesets = loadTilesets("data/assets/tilesets");
+        tilesets = loadTilesets("data/assets/tilesets", 32);
+        clothingAssets = loadTilesets("data/assets/clothing",32);
+        itemIcons = loadTilesets("data/assets/items", 20);
         fonts = loadFonts("data/assets/fonts");
     }
     
-    private HashMap<String, TextureRegion[][]> loadTilesets(String path){
+    private HashMap<String, TextureRegion[][]> loadTilesets(String path, int tileSize){
         HashMap<String, TextureRegion[][]> tilesets = new HashMap<>();
         File[] files = new File(path).listFiles();
         
@@ -29,7 +33,7 @@ public class AssetManager {
         
         for(File f : files){
             Texture texture = new Texture(f.getPath());
-            TextureRegion[][] ts = TextureRegion.split(texture, 32, 32);
+            TextureRegion[][] ts = TextureRegion.split(texture, tileSize, tileSize);
             tilesets.put(f.getName().replace(".png", "").toLowerCase(), ts);
         }
         return tilesets;
@@ -73,13 +77,25 @@ public class AssetManager {
         }
         return fonts;
     }
-    
+
     public TextureRegion getTile(String tileset, int x, int y){
         if(tilesets.containsKey(tileset.toLowerCase()))
             return tilesets.get(tileset.toLowerCase())[y][x];
         return null;
     }
-    
+
+    public TextureRegion[][] getClothingAsset(String asset){
+        if(clothingAssets.containsKey(asset.toLowerCase()))
+            return clothingAssets.get(asset.toLowerCase());
+        return null;
+    }
+
+    public TextureRegion getItemIcon(String iconSet, int x, int y){
+        if(itemIcons.containsKey(iconSet.toLowerCase()))
+            return itemIcons.get(iconSet.toLowerCase())[y][x];
+        return null;
+    }
+
     public Texture getAsset(String asset){
         if(assets.containsKey(asset.toLowerCase()))
             return assets.get(asset.toLowerCase());

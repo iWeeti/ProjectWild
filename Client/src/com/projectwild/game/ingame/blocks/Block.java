@@ -1,8 +1,10 @@
 package com.projectwild.game.ingame.blocks;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.player.LocalPlayer;
 import com.projectwild.shared.BlockPreset;
+import com.projectwild.shared.packets.world.CallNetworkedCallbackPacket;
 import com.projectwild.shared.utils.Vector2;
 
 import java.nio.ByteBuffer;
@@ -12,13 +14,20 @@ public abstract class Block {
 
     private BlockPreset blockPreset;
 
+    private int x, y, z;
+
+    private HashMap<String, Callback> networkedCallbacks;
     private HashMap<String, Object> networkedVariables;
-    
-    public Block(BlockPreset blockPreset, byte[] data) {
+
+    public Block(BlockPreset blockPreset, byte[] data, int x, int y, int z) {
         this.blockPreset = blockPreset;
+        this.x = x;
+        this.y = y;
+        this.z = z;
 
         // Loading Networked Variables
         networkedVariables = new HashMap<>();
+        networkedCallbacks = new HashMap<>();
         ByteBuffer buffer = ByteBuffer.wrap(data);
         int variables = buffer.getInt();
         for(int i = 0; i < variables; i++) {
@@ -45,12 +54,27 @@ public abstract class Block {
 
     public void render(SpriteBatch sb, Vector2 position) {}
 
-    public double collide(LocalPlayer player, double startingVelocity) {
-        return startingVelocity;
+    public boolean collide() {
+        return true;
     }
     
     public BlockPreset getBlockPreset() {
         return blockPreset;
+    }
+
+    public void setNWCallback(String key, Callback callback) {
+        networkedCallbacks.put(key, callback);
+    }
+
+    public void callNWCallback(String key, Object... data) {
+        CallNetworkedCallbackPacket packet = new CallNetworkedCallbackPacket(x, y, z, key, data);
+        WildGame.getClient().sendTCP(packet);
+    }
+
+    public Callback getNWCallback(String key) {
+        if(networkedCallbacks.containsKey(key))
+            return networkedCallbacks.get(key);
+        return null;
     }
 
     public void setNWVar(String key, Object value) {
@@ -71,6 +95,12 @@ public abstract class Block {
 
     public boolean getNWBool(String key) {
         return (boolean) networkedVariables.get(key);
+    }
+
+    public interface Callback {
+
+        void callback(Object[] data);
+
     }
 
 }

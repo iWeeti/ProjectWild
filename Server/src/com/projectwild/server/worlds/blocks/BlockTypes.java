@@ -1,16 +1,14 @@
 package com.projectwild.server.worlds.blocks;
 
-import com.projectwild.server.worlds.blocks.types.EntranceBlock;
-import com.projectwild.server.worlds.blocks.types.HurtingBlock;
-import com.projectwild.server.worlds.blocks.types.StaticBlock;
-import com.projectwild.server.worlds.blocks.types.UnbreakableBlock;
+import com.projectwild.server.worlds.blocks.types.*;
 
 public enum BlockTypes {
 
     STATIC(0, StaticBlock.class),
     ENTRANCE(1, EntranceBlock.class),
     UNBREAKABLE(2, UnbreakableBlock.class),
-    HURTING(3, HurtingBlock.class);
+    HURTING(3, HurtingBlock.class),
+    SIGN(4, SignBlock.class);
     
     private int id;
     private Class<? extends Block> blockClass;

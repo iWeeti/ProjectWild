@@ -1,8 +1,10 @@
 package com.projectwild.server.worlds.blocks;
 
+import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.World;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
+import com.projectwild.shared.packets.world.CallNetworkedCallbackPacket;
 import com.projectwild.shared.packets.world.UpdateNetworkedVariablePacket;
 
 import java.nio.ByteBuffer;
@@ -16,10 +18,12 @@ public abstract class Block {
     private World world;
     private int x, y, z;
 
+    private HashMap<String, Callback> networkedCallbacks;
     private HashMap<String, Object> networkedVariables;
 
     public Block(BlockPreset preset, World world, int x, int y, int z) {
         networkedVariables = new HashMap<>();
+        networkedCallbacks = new HashMap<>();
         this.blockPreset = preset;
         this.world = world;
         this.x = x;
@@ -41,6 +45,10 @@ public abstract class Block {
 
     public HashMap<String, Object> getNetworkedVariables() {
         return networkedVariables;
+    }
+
+    public HashMap<String, Callback> getNetworkedCallbacks() {
+        return networkedCallbacks;
     }
 
     public byte[] serializeNetworkVariables() {
@@ -81,6 +89,22 @@ public abstract class Block {
         return buffer.array();
     }
 
+    public void setNWCallback(String key, Callback callback) {
+        networkedCallbacks.put(key, callback);
+    }
+
+    public void callNWCallback(String key, Object[] data) {
+        CallNetworkedCallbackPacket packet = new CallNetworkedCallbackPacket(x, y, z, key, data);
+        for(Player ply : world.getPlayers())
+            ply.getClient().sendTCP(packet);
+    }
+
+    public Callback getNWCallback(String key) {
+        if(networkedCallbacks.containsKey(key))
+            return networkedCallbacks.get(key);
+        return null;
+    }
+
     private void setNWVar(String key, Object value) {
         networkedVariables.put(key, value);
         UpdateNetworkedVariablePacket variablePacket = new UpdateNetworkedVariablePacket(x, y, z, key, value);
@@ -118,6 +142,12 @@ public abstract class Block {
 
     public boolean getNWBool(String key) {
         return (Boolean) networkedVariables.get(key);
+    }
+
+    public interface Callback {
+
+        void callback(Client client, Object[] data);
+
     }
 
 }

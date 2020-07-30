@@ -11,7 +11,13 @@ public class ItemPreset {
     private String name;
     private int maxStack;
     private int itemType;
+
+    private String itemSet;
+    private int itemSetX;
+    private int itemSetY;
+
     private int blockId;
+    private int clothingId;
 
     public int getId() {
         return id;
@@ -25,12 +31,28 @@ public class ItemPreset {
         return maxStack;
     }
 
+    public String getItemSet() {
+        return itemSet;
+    }
+
+    public int getItemSetX() {
+        return itemSetX;
+    }
+
+    public int getItemSetY() {
+        return itemSetY;
+    }
+
     public int getItemType() {
         return itemType;
     }
 
     public int getBlockId() {
         return blockId;
+    }
+
+    public int getClothingId() {
+        return clothingId;
     }
 
     private static ItemPreset[] itemPresets;

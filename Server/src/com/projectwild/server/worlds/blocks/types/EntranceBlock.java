@@ -24,12 +24,14 @@ public class EntranceBlock extends Block {
 
     @Override
     public void collision(Player ply) {
-        setNWBool("open", true);
+        if(!getNWBool("open"))
+            setNWBool("open", true);
     }
 
     @Override
     public void update() {
-        setNWBool("open", false);
+        if(getNWBool("open"))
+            setNWBool("open", false);
     }
 
 }

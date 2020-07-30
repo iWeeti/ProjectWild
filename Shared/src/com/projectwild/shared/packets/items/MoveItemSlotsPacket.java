@@ -1,4 +1,4 @@
-package com.projectwild.shared.packets.player.local;
+package com.projectwild.shared.packets.items;
 
 public class MoveItemSlotsPacket {
 

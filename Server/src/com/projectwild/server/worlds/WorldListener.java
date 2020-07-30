@@ -7,11 +7,9 @@ import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.blocks.Block;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.packets.ChatMessagePacket;
+import com.projectwild.shared.packets.clothing.UpdateEquippedPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
-import com.projectwild.shared.packets.world.LeaveWorldPacket;
-import com.projectwild.shared.packets.world.RequestWorldPacket;
-import com.projectwild.shared.packets.world.RequestWorldResponsePacket;
-import com.projectwild.shared.packets.world.WorldDataPacket;
+import com.projectwild.shared.packets.world.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -78,6 +76,22 @@ public class WorldListener extends Listener {
             client.getPlayer().getWorld().destroyPlayer(client.getPlayer());
         }
 
+        if(obj instanceof CallNetworkedCallbackPacket) {
+            CallNetworkedCallbackPacket packet = (CallNetworkedCallbackPacket) obj;
+
+            Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
+            if(client == null)
+                return;
+
+            if(client.getPlayer() == null)
+                return;
+
+            World world = client.getPlayer().getWorld();
+            Block.Callback callback = world.getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getNWCallback(packet.getCallback());
+            if(callback != null)
+                callback.callback(client, packet.getData());
+        }
+
         if(obj instanceof ChatMessagePacket) {
             ChatMessagePacket packet = (ChatMessagePacket) obj;
 
@@ -88,10 +102,34 @@ public class WorldListener extends Listener {
             if(client.getPlayer() == null)
                 return;
 
+            // Make World Name Only Alphanumeric Characters
+            String regex = "^[a-zA-Z0-9öäåÖÄÅ/!?#$%^&*()_\\-{}|'\\[\\].,\b\\s\"]+$";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(packet.getMessage());
+            if(!matcher.matches()) {
+                client.sendChatMessage("[RED]FAILED! [WHITE] What Are You Tryina Do -,-");
+                return;
+            }
+
             if(packet.getMessage().startsWith("/")) {
-                String[] arr = packet.getMessage().split(" ");
+                String message = packet.getMessage();
+                while(message.contains("\"")) {
+                    int start = message.indexOf("\"");
+                    message = message.replaceFirst("\"", "");
+                    int end = message.indexOf("\"");
+                    if(end == -1)
+                        break;
+                    message = message.replaceFirst("\"", "");
+
+                    String arg = message.substring(start, end-2);
+                    String modifiedArg = arg.replaceAll(" ", "@");
+                    message = message.replace(arg, modifiedArg);
+                }
+                String[] arr = message.split(" ");
                 String command = arr[0].substring(1);
                 String[] args = Arrays.copyOfRange(arr, 1, arr.length);
+                for(int i = 0; i < args.length; i++)
+                    args[i] = args[i].replaceAll("@", " ");
                 WildServer.getCommandHandler().executeCommand(command, client, args);
                 return;
             }

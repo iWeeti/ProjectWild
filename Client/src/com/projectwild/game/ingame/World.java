@@ -46,7 +46,8 @@ public class World {
                     }
                     try {
                         BlockPreset preset = BlockPreset.getPreset(id);
-                        Block block = BlockTypes.getBlockClass(preset.getBlockType()).getConstructor(BlockPreset.class, byte[].class).newInstance(preset, extra);
+                        Class<? extends Block> blockClass = BlockTypes.getBlockClass(preset.getBlockType());
+                        Block block = blockClass.getConstructor(BlockPreset.class, byte[].class, int.class, int.class, int.class).newInstance(preset, extra, x, y, z);
                         blocks[y][x][z] = block;
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         e.printStackTrace();

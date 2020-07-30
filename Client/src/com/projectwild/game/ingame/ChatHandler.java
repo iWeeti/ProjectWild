@@ -9,6 +9,7 @@ import com.projectwild.game.WildGame;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
 import java.time.Clock;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,7 +100,7 @@ public class ChatHandler {
         @Override
         public boolean keyDown(int keycode) {
             if(keycode == Input.Keys.ENTER) {
-                if(chatHandler.isChatOpen()) {
+                if(chatHandler.isChatOpen() && !string.isEmpty()) {
                     WildGame.getClient().sendTCP(new ChatMessagePacket(string));
 
                     chatHandler.localMessages.add(0, string);
@@ -134,7 +135,7 @@ public class ChatHandler {
         public boolean keyTyped(char character) {
             if (!chatHandler.isChatOpen()) return true;
             String input = Character.toString(character);
-            String regex = "^[a-zA-Z0-9öäåÖÄÅ/!?#$%^&*()_\\-{}|'\\[\\].,\b\\s]+$";
+            String regex = "^[a-zA-Z0-9öäåÖÄÅ/!?#$%^&*()_\\-{}|'\\[\\].,\b\\s\"]+$";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(input);
             if(matcher.matches()) {

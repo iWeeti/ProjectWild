@@ -1,6 +1,9 @@
 package com.projectwild.game.pregame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +23,16 @@ public class LoadingState implements GameState {
         start = System.currentTimeMillis();
         kodama = WildGame.getAssetManager().getAsset("kodama");
         WildGame.getDiscordIntegration().setPresence("Loading...");
+
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if(keycode == Input.Keys.SPACE || keycode == Input.Keys.ENTER)
+                    WildGame.changeState(new LoginState());
+
+                return false;
+            }
+        });
     }
 
     @Override
@@ -41,7 +54,7 @@ public class LoadingState implements GameState {
 
     @Override
     public void dispose() {
-
+        Gdx.input.setInputProcessor(null);
     }
 
 }

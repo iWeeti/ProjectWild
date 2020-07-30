@@ -3,29 +3,23 @@ package com.projectwild.game.ingame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.projectwild.game.WildGame;
-import com.projectwild.shared.BlockPreset;
-import com.projectwild.shared.ItemPreset;
-import com.projectwild.shared.ItemStack;
-import com.projectwild.shared.ItemTypes;
-import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
-import com.projectwild.shared.packets.player.local.MoveItemSlotsPacket;
+import com.projectwild.shared.*;
+import com.projectwild.shared.packets.clothing.EquipPacket;
+import com.projectwild.shared.packets.items.MoveItemSlotsPacket;
 
 public class InventoryHandler {
 
     private boolean inventoryOpen;
+    private boolean draggingEquipped;
     private int draggingSlot;
     private ItemStack[] inventory;
     private int activeSlot = 0;
 
     public InventoryHandler() {
-        inventory = new ItemStack[48];
+        inventory = new ItemStack[44];
         draggingSlot = -1;
     }
 
@@ -38,9 +32,6 @@ public class InventoryHandler {
     }
 
     public void render(SpriteBatch sb, ShapeRenderer sr) {
-        Texture slotTexture = WildGame.getAssetManager().getAsset("inventory_slot");
-        Texture activeSlotTexture = WildGame.getAssetManager().getAsset("inventory_slot_active");
-
         if(inventoryOpen) {
             // Draw Background
             sb.end();
@@ -55,83 +46,102 @@ public class InventoryHandler {
 
             // Draw Inventory
             for(int x = 0; x < 6; x++) {
-                for(int y = 0; y < 5; y++) {
-                    sb.draw(slotTexture, 20 + x * 40, 20 + y * 40);
-
+                for(int y = 0; y < inventory.length / 6; y++) {
                     int slot = 8 + (y * 6) + x;
-
-                    if(draggingSlot == slot)
-                        continue;
-
-                    if(inventory[slot] != null) {
-                        ItemPreset itemPreset = inventory[slot].getItemPreset();
-                        if(itemPreset.getItemType() == ItemTypes.BLOCK.getId()) {
-                            BlockPreset blockPreset = BlockPreset.getPreset(itemPreset.getBlockId());
-                            TextureRegion texture = WildGame.getAssetManager().getTile(blockPreset.getTileset(), blockPreset.getTilesetX(), blockPreset.getTilesetY());
-                            sb.draw(texture, 20 + x * 40 + 10, 20 + y * 40 + 10, 20, 20);
-                        }
-
-                        BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_12");
-                        GlyphLayout layout = new GlyphLayout(font, Integer.toString(inventory[slot].getAmount()));
-                        font.draw(sb, layout, 20 + x * 40 + 35 - layout.width, 20 + y * 40 + 15);
-                    }
+                    if(inventory.length <= slot)
+                        break;
+                    drawSlot(sb, slot, 20 + x * 40, 20 + y * 40);
                 }
             }
 
+            // Draw Equipped slots
+            for(int i = 0; i < 9; i++) {
+                sb.draw(WildGame.getAssetManager().getAsset("inventory_slot"), 280, 20 + i * 40);
+                if(getEquipped()[i] != null)
+                    drawItemStack(sb, getEquipped()[i], 290, 30 + i * 40);
+            }
         }
 
         // Draw The Hotbar
-        for(int i = 0; i < 8; i++) {
-            if(activeSlot == i) {
-                sb.draw(activeSlotTexture, Gdx.graphics.getWidth() / 2 - 8 / 2 * 40 + i * 40, 0);
-            } else {
-                sb.draw(slotTexture, Gdx.graphics.getWidth() / 2 - 8 / 2 * 40 + i * 40, 0);
-            }
+        for(int i = 0; i < 8; i++)
+            drawSlot(sb, i, Gdx.graphics.getWidth() / 2 - 8 / 2 * 40 + i * 40, 0);
 
-            if(draggingSlot == i)
-                continue;
+        // Draw Drag Thing
+        if(inventoryOpen)
+            if(draggingSlot != -1)
+                drawItemStack(sb, draggingEquipped ? getEquipped()[draggingSlot] : inventory[draggingSlot], Gdx.input.getX() + 15, Gdx.graphics.getHeight() - (Gdx.input.getY() + 30));
+    }
 
-            if(inventory[i] != null) {
-                ItemPreset itemPreset = inventory[i].getItemPreset();
-                if(itemPreset.getItemType() == ItemTypes.BLOCK.getId()) {
-                    BlockPreset blockPreset = BlockPreset.getPreset(itemPreset.getBlockId());
-                    TextureRegion texture = WildGame.getAssetManager().getTile(blockPreset.getTileset(), blockPreset.getTilesetX(), blockPreset.getTilesetY());
-                    sb.draw(texture, Gdx.graphics.getWidth() / 2 - 8 / 2 * 40 + i * 40 + 10, 10, 20, 20);
-                }
+    private ItemStack[] getEquipped() {
+        return ((WorldState) WildGame.getState()).getWorld().getLocalPlayer().getEquipped();
+    }
 
-                BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_12");
-                GlyphLayout layout = new GlyphLayout(font, Integer.toString(inventory[i].getAmount()));
-                font.draw(sb, layout, Gdx.graphics.getWidth() / 2 - 8 / 2 * 40 + i * 40 + 35 - layout.width, 15);
-            }
+    private void drawSlot(SpriteBatch sb, int slot, int x, int y) {
+        if(activeSlot == slot) {
+            sb.draw(WildGame.getAssetManager().getAsset("inventory_slot_active"), x, y);
+        } else {
+            sb.draw(WildGame.getAssetManager().getAsset("inventory_slot"), x, y);
         }
 
-        if(inventoryOpen) {
-            // Draw Drag Thing
-            if(draggingSlot != -1) {
-                ItemPreset itemPreset = inventory[draggingSlot].getItemPreset();
-                if (itemPreset.getItemType() == ItemTypes.BLOCK.getId()) {
-                    BlockPreset blockPreset = BlockPreset.getPreset(itemPreset.getBlockId());
-                    TextureRegion texture = WildGame.getAssetManager().getTile(blockPreset.getTileset(), blockPreset.getTilesetX(), blockPreset.getTilesetY());
-                    sb.draw(texture, Gdx.input.getX() + 15, Gdx.graphics.getHeight() - (Gdx.input.getY() + 30), 20, 20);
-                }
+        if(draggingSlot == slot && !draggingEquipped)
+            return;
 
-                BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_12");
-                GlyphLayout layout = new GlyphLayout(font, Integer.toString(inventory[draggingSlot].getAmount()));
-                font.draw(sb, layout, Gdx.input.getX() + 40 - layout.width, Gdx.graphics.getHeight() - (Gdx.input.getY() + 25));
-            }
+        if(inventory[slot] == null)
+            return;
+
+        drawItemStack(sb, inventory[slot], x + 10, y + 10);
+    }
+
+    private void drawItemStack(SpriteBatch sb, ItemStack stack, int x, int y) {
+        ItemPreset itemPreset = stack.getItemPreset();
+        TextureRegion itemTexture = null;
+        switch(ItemTypes.getType(itemPreset.getItemType())) {
+            case ITEM:
+            case CLOTHING:
+                itemTexture = WildGame.getAssetManager().getItemIcon(itemPreset.getItemSet(), itemPreset.getItemSetX(), itemPreset.getItemSetY());
+                break;
+            case BLOCK:
+                BlockPreset blockPreset = BlockPreset.getPreset(itemPreset.getBlockId());
+                itemTexture = WildGame.getAssetManager().getTile(blockPreset.getTileset(), blockPreset.getTilesetX(), blockPreset.getTilesetY());
+                break;
         }
+
+        if(itemTexture != null)
+            sb.draw(itemTexture, x, y, 20, 20);
+
+        if(stack.getAmount() == 1)
+            return;
+
+        BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_12");
+        GlyphLayout layout = new GlyphLayout(font, Integer.toString(stack.getAmount()));
+        font.draw(sb, layout, x + 25 - layout.width, y + 5);
     }
 
     public boolean mouseDown(int screenX, int screenY) {
         if(inventoryOpen) {
             // Check For Clicks Inside Inventory
-            int x = (int) Math.floor((screenX - 20) / 40f);
-            int y = (int) Math.floor((Gdx.graphics.getHeight() - screenY - 20) / 40f);
+            {
+                int x = (int) Math.floor((screenX - 20) / 40f);
+                int y = (int) Math.floor((Gdx.graphics.getHeight() - screenY - 20) / 40f);
 
-            if(x >= 0 && x < 6 && y >= 0 && y < 5) {
-                int slot = 8 + y * 6 + x;
-                if(inventory[slot] != null)
-                    draggingSlot = slot;
+                if (x >= 0 && x < 6 && y >= 0 && y < inventory.length / 6) {
+                    int slot = 8 + y * 6 + x;
+                    if (inventory[slot] != null)
+                        draggingSlot = slot;
+                }
+            }
+
+            // Check For Clicks Inside Equipped
+            {
+                int x = (int) Math.floor((screenX - 280) / 40f);
+                int y = (int) Math.floor((Gdx.graphics.getHeight() - screenY - 20) / 40f);
+
+                if(x == 0 && y >= 0 && y < 9) {
+                    if(getEquipped()[y] != null) {
+                        draggingEquipped = true;
+                        draggingSlot = y;
+                    }
+                }
             }
         }
 
@@ -162,22 +172,39 @@ public class InventoryHandler {
             return false;
 
         // Setting Variables And Resetting Drag
+        boolean draggedEquipped = draggingEquipped;
         int draggedSlot = draggingSlot;
         int droppedSlot = -1;
 
+        draggingEquipped = false;
         draggingSlot = -1;
 
         // Check For Clicks Inside Inventory
-        int x = (int) Math.floor((screenX - 20) / 40f);
-        int y = (int) Math.floor((Gdx.graphics.getHeight() - screenY - 20) / 40f);
+        {
+            int x = (int) Math.floor((screenX - 20) / 40f);
+            int y = (int) Math.floor((Gdx.graphics.getHeight() - screenY - 20) / 40f);
 
-        if(x >= 0 && x < 6 && y >= 0 && y < 5)
-            droppedSlot = 8 + y * 6 + x;
+            if (x >= 0 && x < 6 && y >= 0 && y < inventory.length / 6)
+                droppedSlot = 8 + y * 6 + x;
+        }
+
+        // Check For Clicks Inside Equipped
+        {
+            int x = (int) Math.floor((screenX - 280) / 40f);
+            int y = (int) Math.floor((Gdx.graphics.getHeight() - screenY - 20) / 40f);
+
+            if(x == 0 && y >= 0 && y < 9) {
+                if(getEquipped()[y] == null && !draggedEquipped) {
+                    WildGame.getClient().sendTCP(new EquipPacket(draggedSlot, y));
+                    return true;
+                }
+            }
+        }
 
         // Check For Clicks Inside Hotbar
         if(screenY >= Gdx.graphics.getHeight() - 40) {
             for(int i = 0; i < 8; i++) {
-                x = Gdx.graphics.getWidth() / 2 - 8 / 2 * 40 + i * 40;
+                int x = Gdx.graphics.getWidth() / 2 - 8 / 2 * 40 + i * 40;
                 if(screenX >= x && screenX < x + 40) {
                     droppedSlot = i;
                     break;
@@ -188,6 +215,11 @@ public class InventoryHandler {
         // Slot Not Detected
         if(droppedSlot < 0)
             return false;
+
+        if(draggedEquipped) {
+            WildGame.getClient().sendTCP(new EquipPacket(droppedSlot, draggedSlot));
+            return true;
+        }
 
         ItemStack temp = inventory[droppedSlot];
         inventory[droppedSlot] = inventory[draggedSlot];

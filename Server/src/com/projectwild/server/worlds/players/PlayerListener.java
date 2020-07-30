@@ -8,8 +8,9 @@ import com.projectwild.server.worlds.blocks.BlockTypes;
 import com.projectwild.shared.ItemPreset;
 import com.projectwild.shared.ItemStack;
 import com.projectwild.shared.ItemTypes;
+import com.projectwild.shared.packets.clothing.EquipPacket;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
-import com.projectwild.shared.packets.player.local.MoveItemSlotsPacket;
+import com.projectwild.shared.packets.items.MoveItemSlotsPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.utils.Vector2;
@@ -21,6 +22,7 @@ public class PlayerListener extends Listener {
         if(obj instanceof MovePacket) {
             MovePacket packet = (MovePacket) obj;
             Player player = WildServer.getClientHandler().getClientBySocket(connection.getID()).getPlayer();
+
             //TODO: check the pos to correct with server / update pos and speed
             //TODO: pathfinding and shit like that also check movement size n shit yknow
 
@@ -90,7 +92,7 @@ public class PlayerListener extends Listener {
             // Perform Interaction
             if(player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getId() == 0) {
                 // Doing Inventory Stuff
-                if(packet.getSlot() >= 8)
+                if(packet.getSlot() >= 8 || packet.getSlot() < 0)
                     return;
 
                 ItemStack itemStack = player.getClient().getInventorySlot(packet.getSlot());
@@ -100,7 +102,7 @@ public class PlayerListener extends Listener {
                 if(itemStack.getItemPreset().getItemType() != ItemTypes.BLOCK.getId())
                     return;
 
-                player.getClient().changeItems(itemStack.getItemPreset(), -1);
+                player.getClient().setInventorySlot(packet.getSlot(), new ItemStack(itemStack.getItemPreset(), itemStack.getAmount()-1));
 
                 // Placing Block
                 player.getWorld().setBlock(packet.getX(), packet.getY(), packet.getZ(), itemStack.getItemPreset().getBlockId());
@@ -130,9 +132,18 @@ public class PlayerListener extends Listener {
             ItemStack origin = client.getInventorySlot(packet.getOriginSlot());
             ItemStack target = client.getInventorySlot(packet.getTargetSlot());
 
-            client.setItemSlot(packet.getOriginSlot(), target);
-            client.setItemSlot(packet.getTargetSlot(), origin);
+            client.setInventorySlot(packet.getOriginSlot(), target);
+            client.setInventorySlot(packet.getTargetSlot(), origin);
         }
+
+        if(obj instanceof EquipPacket) {
+            EquipPacket packet = (EquipPacket) obj;
+
+            Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
+
+            client.equip(packet.getInvSlot(), packet.getClothingSlot());
+        }
+
     }
 
 }

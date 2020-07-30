@@ -107,23 +107,24 @@ public class LocalPlayer extends Player {
                 int type1 = block1.getBlockPreset().getCollisionType();
                 int type2 = block2.getBlockPreset().getCollisionType();
 
+                if(!block1.collide())
+                    type1 = 0;
+
+                if(!block2.collide())
+                    type2 = 0;
+
                 if(type1 == 1 || type2 == 1) {
                     velocity.setY(0);
-                } else if((type1 == 3 || type2 == 3) && velocity.getY() < 0) {
+                } else if((type1 == 2 || type2 == 2) && velocity.getY() < 0) {
                     if(world.pointCollisionBlock(getPosition().copy().changeX(8)) != block1)
                         velocity.setY(0);
                     if(world.pointCollisionBlock(getPosition().copy().changeX(24)) != block2)
                         velocity.setY(0);
                 } else {
-                    if(type1 == 4 || type2 == 4) {
+                    if(type1 == 3 || type2 == 3) {
                         velocity.changeY(0.15f);
                         velocity.setY(Utils.clamp(2, -2, velocity.getY()));
                     }
-
-                    if(type1 == 2)
-                        velocity.setY(block1.collide(this, velocity.getY()));
-                    if(type2 == 2)
-                        velocity.setY(block2.collide(this, velocity.getY()));
                 }
             }
         }
@@ -150,13 +151,17 @@ public class LocalPlayer extends Player {
                 int type1 = block1.getBlockPreset().getCollisionType();
                 int type2 = block2.getBlockPreset().getCollisionType();
 
+                if(!block1.collide())
+                    type1 = 0;
+
+                if(!block2.collide())
+                    type2 = 0;
+
                 if(type1 == 1 || type2 == 1) {
                     velocity.setX(0);
                 } else {
-                    if(type1 == 2)
-                        velocity.setX(block1.collide(this, velocity.getX()));
-                    if(type2 == 2)
-                        velocity.setX(block2.collide(this, velocity.getX()));
+                    if(type1 == 3 || type2 == 3)
+                        velocity.setX(Utils.clamp(2, -2, velocity.getX()));
                 }
             }
         }

@@ -35,6 +35,7 @@ public class CommandHandler {
         commands.put("override", new OverrideCommand());
         commands.put("noclip", new NoclipCommand());
         commands.put("sethealth", new SetHealthCommand());
+        commands.put("setinventorysize", new SetInventorySizeCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {
@@ -48,18 +49,15 @@ public class CommandHandler {
                     return;
                 }
 
+                // Check Length
                 if(args.length < cmd.arguments().length) {
                     client.sendChatMessage("[RED]Missing Arguments");
                     return;
                 }
 
+                // Convert Into Correct Types
                 Object[] convertedArgs = new Object[cmd.arguments().length];
                 for(int i = 0; i < cmd.arguments().length; i++) {
-                    if(i >= args.length) {
-                        client.sendChatMessage("[RED]Missing Arguments");
-                        return;
-                    }
-
                     boolean stopLoop = false;
                     switch(cmd.arguments()[i]) {
                         case STRING:
@@ -110,6 +108,7 @@ public class CommandHandler {
                             StringBuilder builder = new StringBuilder();
                             for(int j = i; j < args.length; j++) {
                                 builder.append(args[j]);
+                                builder.append(" ");
                             }
                             convertedArgs[i] = builder.toString();
                             stopLoop = true;

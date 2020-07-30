@@ -1,69 +1,32 @@
 package com.projectwild.server.worlds.commands;
 
-import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
 import com.projectwild.shared.ItemPreset;
-import com.projectwild.shared.packets.ChatMessagePacket;
 
 public class GiveCommand implements Command {
 
     @Override
-    public void execute(Client client, World world, Object[] _args) {
-
-        //TODO: better stuff ?
-        String[] args = ((String) _args[0]).split(" ");
-
-        if(args.length < 2) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Missing Arguments");
-            client.sendTCP(packet);
-            return;
-        }
+    public void execute(Client client, World world, Object[] args) {
 
         ItemPreset itemPreset = null;
         for(ItemPreset preset : ItemPreset.getItemPresets()) {
-            if(preset.getName().toLowerCase().equals(args[0].toLowerCase()))
+            if(preset.getName().toLowerCase().equals(((String) args[0]).toLowerCase()))
                 itemPreset = preset;
         }
 
-        try {
-            if(itemPreset == null && !args[0].toLowerCase().equals("all")) {
-                int itemId = Integer.parseInt(args[0]);
-                if(itemId > 0 && itemId < ItemPreset.getItemPresets().length) {
-                    itemPreset = ItemPreset.getPreset(itemId);
-                } else {
-                    ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Please Enter A Valid Item Name or ItemID");
-                    client.sendTCP(packet);
-                    return;
-                }
-            }
-
-            int amount = Integer.parseInt(args[1]);
-
-            if(args[0].toLowerCase().equals("all")) {
-                for(ItemPreset preset : ItemPreset.getItemPresets()) {
-                    client.changeItems(preset, amount);
-                }
-                return;
-            }
-
-            if(args.length == 3) {
-                Client c = WildServer.getClientHandler().getClientByUsername(args[2]);
-                if(c == null) {
-                    ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Couldn't Find Specified Player");
-                    client.sendTCP(packet);
-                    return;
-                }
-                c.changeItems(itemPreset, amount);
-            } else {
-                client.changeItems(itemPreset, amount);
-            }
-        } catch(NumberFormatException e) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Please Enter A Valid Item Id/Name & Amount");
-            client.sendTCP(packet);
+        if(itemPreset == null) {
+            client.sendChatMessage("[RED]Failed![WHITE] Please Enter A Valid Item Name");
             return;
         }
+
+
+        int amount = (int) args[1];
+
+        client.changeItems(itemPreset, amount);
+
+        client.sendChatMessage(String.format("[GREEN]Success![WHITE] Added x%s %s", amount, itemPreset.getName()));
     }
 
     @Override
@@ -83,7 +46,7 @@ public class GiveCommand implements Command {
 
     @Override
     public CommandHandler.ArgType[] arguments() {
-        return new CommandHandler.ArgType[] {CommandHandler.ArgType.STRING_CONCAT};
+        return new CommandHandler.ArgType[] {CommandHandler.ArgType.STRING, CommandHandler.ArgType.INTEGER};
     }
 
 }

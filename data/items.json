@@ -180,5 +180,55 @@
 		"maxStack": 999,
 		"itemType": 1,
 		"blockId": 28
+	},
+	{
+		"id": 26,
+		"name": "Brown Boots",
+		"maxStack": 1,
+		"itemType": 2,
+		"clothingId": 0,
+		"itemSet": "items1",
+		"itemSetX": 0,
+		"itemSetY": 0
+	},
+	{
+		"id": 27,
+		"name": "Black Shirt",
+		"maxStack": 1,
+		"itemType": 2,
+		"clothingId": 1,
+		"itemSet": "items1",
+		"itemSetX": 1,
+		"itemSetY": 0
+	},
+	{
+		"id": 28,
+		"name": "White Shirt",
+		"maxStack": 1,
+		"itemType": 2,
+		"clothingId": 2,
+		"itemSet": "items1",
+		"itemSetX": 2,
+		"itemSetY": 0
+	},
+	{
+		"id": 29,
+		"name": "Blue Shirt",
+		"maxStack": 1,
+		"itemType": 2,
+		"clothingId": 3,
+		"itemSet": "items1",
+		"itemSetX": 3,
+		"itemSetY": 0
+	},
+	{
+		"id": 30,
+		"name": "Pants",
+		"maxStack": 1,
+		"itemType": 2,
+		"clothingId": 4,
+		"itemSet": "items1",
+		"itemSetX": 4,
+		"itemSetY": 0
 	}
 ]
