@@ -1,24 +1,20 @@
 package com.projectwild.server.worlds.commands;
 
-import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
 import com.projectwild.server.worlds.players.Player;
-import com.projectwild.shared.packets.ChatMessagePacket;
 import com.projectwild.shared.packets.player.UpdateNameTagPacket;
 import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 
 public class ClaimCommand implements Command {
 
     @Override
-    public void execute(Client client, String[] args) {
-        World world = client.getPlayer().getWorld();
+    public void execute(Client client, World world, Object[] args) {
 
         if(world.claimWorld(client)) {
             // Message
-            ChatMessagePacket packet = new ChatMessagePacket("[GREEN]Success! [WHITE]World Claimed");
-            client.sendTCP(packet);
+            client.sendChatMessage("[GREEN]Success! [WHITE]World Claimed");
 
             // Updating Access & Nametag
             UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(false);
@@ -29,8 +25,7 @@ public class ClaimCommand implements Command {
                 ply.getClient().sendTCP(nameTagPacket);
             }
         } else {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Claim World");
-            client.sendTCP(packet);
+            client.sendChatMessage("[RED]Failed! [WHITE]Couldn't Claim World");
         }
     }
 
@@ -40,8 +35,18 @@ public class ClaimCommand implements Command {
     }
 
     @Override
+    public boolean worldOwnerOnly() {
+        return false;
+    }
+
+    @Override
     public Rank rank() {
         return Rank.USER;
+    }
+
+    @Override
+    public CommandHandler.ArgType[] arguments() {
+        return new CommandHandler.ArgType[0];
     }
 
 }

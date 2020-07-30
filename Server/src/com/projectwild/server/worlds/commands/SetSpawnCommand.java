@@ -1,6 +1,5 @@
 package com.projectwild.server.worlds.commands;
 
-import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
@@ -10,15 +9,7 @@ import com.projectwild.shared.utils.Vector2;
 public class SetSpawnCommand implements Command {
 
     @Override
-    public void execute(Client client, String[] args) {
-        World world = client.getPlayer().getWorld();
-
-        if(!client.getPlayer().isOverride() && world.getOwner() != client.getUserId()) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] You Don't Have Permission");
-            client.sendTCP(packet);
-            return;
-        }
-
+    public void execute(Client client, World world, Object[] args) {
         int oldX = (int) Math.round(world.getSpawnPosition().getX() / 32f);
         int oldY = (int) Math.round(world.getSpawnPosition().getY() / 32f);
 
@@ -44,8 +35,18 @@ public class SetSpawnCommand implements Command {
     }
 
     @Override
+    public boolean worldOwnerOnly() {
+        return true;
+    }
+
+    @Override
     public Rank rank() {
         return Rank.USER;
+    }
+
+    @Override
+    public CommandHandler.ArgType[] arguments() {
+        return new CommandHandler.ArgType[0];
     }
 
 }

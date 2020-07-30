@@ -3,13 +3,18 @@ package com.projectwild.server.worlds.commands;
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
+import com.projectwild.server.worlds.World;
 import com.projectwild.shared.ItemPreset;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
 public class GiveCommand implements Command {
 
     @Override
-    public void execute(Client client, String[] args) {
+    public void execute(Client client, World world, Object[] _args) {
+
+        //TODO: better stuff ?
+        String[] args = ((String) _args[0]).split(" ");
+
         if(args.length < 2) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed![WHITE] Missing Arguments");
             client.sendTCP(packet);
@@ -67,8 +72,18 @@ public class GiveCommand implements Command {
     }
 
     @Override
+    public boolean worldOwnerOnly() {
+        return false;
+    }
+
+    @Override
     public Rank rank() {
         return Rank.MOD;
+    }
+
+    @Override
+    public CommandHandler.ArgType[] arguments() {
+        return new CommandHandler.ArgType[] {CommandHandler.ArgType.STRING_CONCAT};
     }
 
 }

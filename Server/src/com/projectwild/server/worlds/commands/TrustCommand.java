@@ -1,6 +1,5 @@
 package com.projectwild.server.worlds.commands;
 
-import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
@@ -12,58 +11,35 @@ import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 public class TrustCommand implements Command {
 
     @Override
-    public void execute(Client client, String[] args) {
-        World world = client.getPlayer().getWorld();
+    public void execute(Client client, World world, Object[] args) {
+        Player player = (Player) args[0];
 
-        if(!client.getPlayer().isOverride() && world.getOwner() != client.getUserId()) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Don't Have Permission");
-            client.sendTCP(packet);
-            return;
-        }
-
-        if(args.length < 1) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Missing Arguments");
-            client.sendTCP(packet);
-            return;
-        }
-
-        Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
-        if(c == null) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            client.sendTCP(packet);
-            return;
-        }
-
-        if (!client.getPlayer().isOverride() && c.getUserId() == client.getUserId()) {
+        if (player.getClient().getUserId() == world.getOwner()) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Cannot Trust Yourself");
             client.sendTCP(packet);
             return;
         }
 
-        if(world.hasAccess(c)) {
+        if(world.hasAccess(player.getClient())) {
             ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]This Player Is Already Trusted");
             client.sendTCP(packet);
             return;
         }
 
         // Adding Trusted And Sending messages
-        world.addTrusted(c);
-        ChatMessagePacket packet = new ChatMessagePacket(String.format("[GREEN]Success! [WHITE]Trusted %s", c.getUsername()));
-        client.sendTCP(packet);
+        world.addTrusted(player.getClient());
 
-        packet = new ChatMessagePacket(String.format("[GREEN]Trusted! [WHITE]You Are Now Trusted In %s", world.getName()));
-        c.sendTCP(packet);
+        client.sendChatMessage(String.format("[GREEN]Success! [WHITE]Trusted %s", player.getClient().getUsername()));
+        player.getClient().sendChatMessage(String.format("[GREEN]Trusted! [WHITE]You Are Now Trusted In %s", world.getName()));
 
         // Setting Local Player Access
-        UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(true);
-        c.sendTCP(hasAccessPacket);
+        player.getClient().sendTCP(new UpdateHasAccessPacket(true));
 
         // Updating Nametag
-        UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(c.getUserId(), c.getPlayer().getNametag());
+        UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(player.getClient().getUserId(), player.getNametag());
         for(Player ply : world.getPlayers()) {
             ply.getClient().sendTCP(nameTagPacket);
         }
-        return;
     }
 
     @Override
@@ -72,8 +48,18 @@ public class TrustCommand implements Command {
     }
 
     @Override
+    public boolean worldOwnerOnly() {
+        return true;
+    }
+
+    @Override
     public Rank rank() {
         return Rank.USER;
+    }
+
+    @Override
+    public CommandHandler.ArgType[] arguments() {
+        return new CommandHandler.ArgType[] {CommandHandler.ArgType.PLAYER};
     }
 
 }

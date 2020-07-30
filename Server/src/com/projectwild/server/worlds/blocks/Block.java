@@ -1,6 +1,5 @@
 package com.projectwild.server.worlds.blocks;
 
-import com.projectwild.server.WildServer;
 import com.projectwild.server.worlds.World;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;

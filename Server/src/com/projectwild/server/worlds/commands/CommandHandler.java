@@ -3,7 +3,6 @@ package com.projectwild.server.worlds.commands;
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.World;
-import com.projectwild.shared.packets.ChatMessagePacket;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,14 +40,90 @@ public class CommandHandler {
         if(commands.containsKey(command.toLowerCase())) {
             Command cmd = commands.get(command.toLowerCase());
             if(cmd.rank().getPower() <= client.getRank().getPower()) {
-                cmd.execute(client, args);
+
+                World world = client.getPlayer().getWorld();
+                if(cmd.worldOwnerOnly() && !client.getPlayer().isOverride() && !world.hasAccess(client)) {
+                    client.sendChatMessage("[RED]Failed![WHITE] You Don't Have Permission To Do That Here");
+                    return;
+                }
+
+                if(args.length < cmd.arguments().length) {
+                    client.sendChatMessage("[RED]Missing Arguments");
+                    return;
+                }
+
+                Object[] convertedArgs = new Object[cmd.arguments().length];
+                for(int i = 0; i < cmd.arguments().length; i++) {
+                    if(i >= args.length) {
+                        client.sendChatMessage("[RED]Missing Arguments");
+                        return;
+                    }
+
+                    boolean stopLoop = false;
+                    switch(cmd.arguments()[i]) {
+                        case STRING:
+                            convertedArgs[i] = args[i];
+                            break;
+                        case INTEGER:
+                            try {
+                                convertedArgs[i] = Integer.parseInt(args[i]);
+                            } catch(NumberFormatException e) {
+                                client.sendChatMessage(String.format("[RED]Failed![WHITE] %s Is Not A Valid Integer", args[i]));
+                                return;
+                            }
+                            break;
+                        case FLOAT:
+                            try {
+                                convertedArgs[i] = Float.parseFloat(args[i]);
+                            } catch(NumberFormatException e) {
+                                client.sendChatMessage(String.format("[RED]Failed![WHITE] %s Is Not A Valid Float", args[i]));
+                                return;
+                            }
+                            break;
+                        case CLIENT:
+                            convertedArgs[i] = WildServer.getClientHandler().getClientByUsername(args[i]);
+                            if(convertedArgs[i] == null) {
+                                client.sendChatMessage(String.format("[RED]Failed![WHITE] Player %s Is Not Online", args[i]));
+                                return;
+                            }
+                            break;
+                        case PLAYER:
+                            Client c = WildServer.getClientHandler().getClientByUsername(args[i]);
+                            if(c == null) {
+                                client.sendChatMessage(String.format("[RED]Failed![WHITE] Player %s Is Not In Your World", args[i]));
+                                return;
+                            }
+
+                            if(c.getPlayer() == null) {
+                                client.sendChatMessage(String.format("[RED]Failed![WHITE] Player %s Is Not In Your World", args[i]));
+                                return;
+                            }
+
+                            if(!c.getPlayer().getWorld().getName().equals(client.getPlayer().getWorld().getName())) {
+                                client.sendChatMessage(String.format("[RED]Failed![WHITE] Player %s Is Not In Your World", args[i]));
+                                return;
+                            }
+                            convertedArgs[i] = c.getPlayer();
+                            break;
+                        case STRING_CONCAT:
+                            StringBuilder builder = new StringBuilder();
+                            for(int j = i; j < args.length; j++) {
+                                builder.append(args[j]);
+                            }
+                            convertedArgs[i] = builder.toString();
+                            stopLoop = true;
+                            break;
+                    }
+
+                    if(stopLoop)
+                        break;
+                }
+                cmd.execute(client, world, convertedArgs);
             } else {
-                ChatMessagePacket packet = new ChatMessagePacket("[RED]You Don't Have Permission To Use This Command");
-                client.sendTCP(packet);
+                client.sendChatMessage("[RED]You Don't Have Permission To Use This Command");
             }
         } else {
-            ChatMessagePacket packet = new ChatMessagePacket(String.format("[RED]Unknown Command: %s", command.toLowerCase()));
-            client.sendTCP(packet);
+            client.sendChatMessage(String.format("[RED]Unknown Command: %s", command.toLowerCase()));
         }
     }
 
@@ -58,6 +133,15 @@ public class CommandHandler {
 
     public Collection<Command> getCommandClasses() {
         return commands.values();
+    }
+
+    public enum ArgType {
+        STRING,
+        STRING_CONCAT,
+        FLOAT,
+        INTEGER,
+        PLAYER,
+        CLIENT;
     }
 
 }

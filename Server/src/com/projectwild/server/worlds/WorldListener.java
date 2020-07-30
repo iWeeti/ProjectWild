@@ -1,15 +1,12 @@
 package com.projectwild.server.worlds;
 
-import com.esotericsoftware.kryo.KryoSerializable;
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.KryoSerialization;
 import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.blocks.Block;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.packets.ChatMessagePacket;
-import com.projectwild.shared.packets.LoginResponsePacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
 import com.projectwild.shared.packets.world.LeaveWorldPacket;
 import com.projectwild.shared.packets.world.RequestWorldPacket;
@@ -18,8 +15,6 @@ import com.projectwild.shared.packets.world.WorldDataPacket;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

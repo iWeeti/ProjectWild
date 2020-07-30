@@ -1,25 +1,19 @@
 package com.projectwild.server.worlds.commands;
 
-import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
-import com.projectwild.shared.packets.ChatMessagePacket;
+import com.projectwild.server.worlds.World;
 
 public interface Command {
 
-    void execute(Client client, String[] args);
+    void execute(Client client, World world, Object[] args);
 
     String help();
 
+    boolean worldOwnerOnly();
+
     Rank rank();
 
-    static void sendChatMessage(Client client, String message) {
-        client.sendTCP(new ChatMessagePacket(message));
-    }
-
-    static void sendChatMessage(Client client, String message, Object... args) {
-        message = String.format(message, args);
-        client.sendTCP(new ChatMessagePacket(message));
-    }
+    CommandHandler.ArgType[] arguments();
 
 }

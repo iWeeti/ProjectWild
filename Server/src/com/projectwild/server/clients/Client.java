@@ -4,6 +4,7 @@ import com.projectwild.server.WildServer;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.ItemPreset;
 import com.projectwild.shared.ItemStack;
+import com.projectwild.shared.packets.ChatMessagePacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 
 import java.sql.ResultSet;
@@ -45,6 +46,15 @@ public class Client {
 
     public void sendUDP(Object packet) {
         WildServer.getServer().sendToUDP(socket, packet);
+    }
+
+    public void sendChatMessage(String message) {
+        sendTCP(new ChatMessagePacket(message));
+    }
+
+    public void sendChatMessage(String message, Object... args) {
+        message = String.format(message, args);
+        sendTCP(new ChatMessagePacket(message));
     }
 
     public boolean changeItems(ItemPreset preset, int amount) {

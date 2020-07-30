@@ -1,6 +1,5 @@
 package com.projectwild.server.worlds.commands;
 
-import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
@@ -12,27 +11,8 @@ import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
 public class UntrustCommand implements Command{
 
     @Override
-    public void execute(Client client, String[] args) {
-        World world = client.getPlayer().getWorld();
-
-        if (!client.getPlayer().isOverride() && world.getOwner() != client.getUserId()) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]You Don't Have Permission");
-            client.sendTCP(packet);
-            return;
-        }
-
-        if(args.length < 1) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Missing Arguments");
-            client.sendTCP(packet);
-            return;
-        }
-
-        Client c = WildServer.getClientHandler().getClientByUsername(args[0]);
-        if(c == null) {
-            ChatMessagePacket packet = new ChatMessagePacket("[RED]Failed! [WHITE]Couldn't Find Player");
-            client.sendTCP(packet);
-            return;
-        }
+    public void execute(Client client, World world, Object[] args) {
+        Client c = (Client) args[0];
 
         boolean isTrusted = false;
         for(int i : world.getTrusted()) {
@@ -48,11 +28,9 @@ public class UntrustCommand implements Command{
 
         // Untrusting & Removing Access
         world.removeTrusted(c);
-        ChatMessagePacket packet = new ChatMessagePacket(String.format("[GREEN]Success! [WHITE]Untrusted %s", c.getUsername()));
-        client.sendTCP(packet);
 
-        packet = new ChatMessagePacket(String.format("[RED]Untrusted! [WHITE]You Are No Longer Trusted In %s", world.getName()));
-        c.sendTCP(packet);
+        client.sendChatMessage(String.format("[GREEN]Success! [WHITE]Untrusted %s", c.getUsername()));
+        c.sendChatMessage(String.format("[RED]Untrusted! [WHITE]You Are No Longer Trusted In %s", world.getName()));
 
         // Updating Local Clients Access
         UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(false);
@@ -71,8 +49,18 @@ public class UntrustCommand implements Command{
     }
 
     @Override
+    public boolean worldOwnerOnly() {
+        return true;
+    }
+
+    @Override
     public Rank rank() {
         return Rank.USER;
+    }
+
+    @Override
+    public CommandHandler.ArgType[] arguments() {
+        return new CommandHandler.ArgType[] {CommandHandler.ArgType.CLIENT};
     }
 
 }

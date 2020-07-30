@@ -2,13 +2,14 @@ package com.projectwild.server.worlds.commands;
 
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
+import com.projectwild.server.worlds.World;
 
 public class NoclipCommand implements Command {
 
     @Override
-    public void execute(Client client, String[] args) {
+    public void execute(Client client, World world, Object[] args) {
         client.getPlayer().setNoclip(!client.getPlayer().isNoclip());
-        Command.sendChatMessage(client, "[GREEN]Success! [WHITE]Noclip: %s.", client.getPlayer().isNoclip() ? "on" : "off");
+        client.sendChatMessage("[GREEN]Success! [WHITE]Noclip: %s.", client.getPlayer().isNoclip() ? "on" : "off");
     }
 
     @Override
@@ -17,8 +18,18 @@ public class NoclipCommand implements Command {
     }
 
     @Override
+    public boolean worldOwnerOnly() {
+        return false;
+    }
+
+    @Override
     public Rank rank() {
         return Rank.MOD;
+    }
+
+    @Override
+    public CommandHandler.ArgType[] arguments() {
+        return new CommandHandler.ArgType[0];
     }
 
 }

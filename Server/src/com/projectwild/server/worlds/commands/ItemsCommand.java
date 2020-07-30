@@ -1,15 +1,15 @@
 package com.projectwild.server.worlds.commands;
 
-import com.projectwild.server.WildServer;
 import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
+import com.projectwild.server.worlds.World;
 import com.projectwild.shared.ItemPreset;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
 public class ItemsCommand implements Command {
 
     @Override
-    public void execute(Client client, String[] args) {
+    public void execute(Client client, World world, Object[] args) {
         StringBuilder builder = new StringBuilder();
         for(ItemPreset preset : ItemPreset.getItemPresets()) {
             builder.append(preset.getId());
@@ -28,8 +28,18 @@ public class ItemsCommand implements Command {
     }
 
     @Override
+    public boolean worldOwnerOnly() {
+        return false;
+    }
+
+    @Override
     public Rank rank() {
         return Rank.MOD;
+    }
+
+    @Override
+    public CommandHandler.ArgType[] arguments() {
+        return new CommandHandler.ArgType[0];
     }
 
 }
