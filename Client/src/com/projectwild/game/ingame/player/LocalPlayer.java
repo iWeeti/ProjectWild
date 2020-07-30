@@ -17,6 +17,7 @@ public class LocalPlayer extends Player {
     private Vector2 oldVelocity, velocity;
     private float speedMultiplier;
     private boolean hasAccess;
+    private int health;
 
     private boolean noclip;
 
@@ -26,6 +27,7 @@ public class LocalPlayer extends Player {
         hasAccess = false;
         velocity = new Vector2();
         noclip = false;
+        this.health = 100;
     }
 
     public void handlePhysics() {
@@ -264,4 +266,11 @@ public class LocalPlayer extends Player {
         return noclip;
     }
 
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getHealth() {
+        return health;
+    }
 }

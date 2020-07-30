@@ -5,6 +5,7 @@ import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
 import com.projectwild.shared.packets.player.UpdatePositionPacket;
+import com.projectwild.shared.packets.player.local.UpdateHealthPacket;
 import com.projectwild.shared.packets.player.local.UpdateNoclipPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.utils.Vector2;
@@ -19,6 +20,7 @@ public class Player {
 
     private boolean override;
     private boolean noclip;
+    private int health;
 
     public Player(Client client, World world, Vector2 position) {
         this.client = client;
@@ -27,6 +29,7 @@ public class Player {
         this.override = false;
         this.noclip = false;
         speedMultiplier = 1.0f;
+        this.health = 100;
     }
 
     public void updateSpeedMultiplier(float speedMultiplier) {
@@ -92,8 +95,6 @@ public class Player {
         } else if(getClient().getRank() == Rank.MOD) {
             nametag = String.format("[YELLOW][Mod] %s", nametag);
         }
-
-
         return nametag;
     }
 
@@ -114,4 +115,25 @@ public class Player {
         return noclip;
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+        client.sendTCP(new UpdateHealthPacket(health));
+        if (health <= 0){
+            respawn();
+        }
+    }
+
+    public void changeHealth(int amount){
+        setHealth(getHealth() + amount);
+    }
+
+    public void respawn() {
+        updatePosition(world.getSpawnPosition(), true);
+        setHealth(100);
+    }
 }
+

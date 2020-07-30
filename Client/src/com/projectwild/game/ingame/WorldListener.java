@@ -13,6 +13,7 @@ import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
 import com.projectwild.shared.packets.player.*;
 import com.projectwild.shared.packets.player.local.UpdateHasAccessPacket;
+import com.projectwild.shared.packets.player.local.UpdateHealthPacket;
 import com.projectwild.shared.packets.player.local.UpdateNoclipPacket;
 import com.projectwild.shared.packets.player.local.UpdateSpeedMultiplierPacket;
 import com.projectwild.shared.packets.world.UpdateBlockPacket;
@@ -31,6 +32,7 @@ public class WorldListener extends Listener {
 
     @Override
     public void received(Connection connection, Object obj) {
+
         if(obj instanceof WorldDataPacket) {
             WorldDataPacket packet = (WorldDataPacket) obj;
 
@@ -157,6 +159,10 @@ public class WorldListener extends Listener {
 
             worldState.getWorld().getLocalPlayer().getVelocity().set(0);
             worldState.getWorld().getLocalPlayer().setNoclip(packet.isActive());
+        }
+        if (obj instanceof UpdateHealthPacket) {
+            UpdateHealthPacket packet = (UpdateHealthPacket) obj;
+            worldState.getWorld().localPlayer.setHealth(packet.getHealth());
         }
     }
 
