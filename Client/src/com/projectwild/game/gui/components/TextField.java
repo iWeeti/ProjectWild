@@ -34,6 +34,16 @@ public class TextField extends GUIComponent {
         this.maxCharacters = maxCharacters;
     }
 
+    public TextField(Vector2 position, int length, String placeholder, Color bgColor, int maxCharacters, String text) {
+        super(position, new Vector2());
+        this.originalPosition = position.copy();
+        this.placeholder = placeholder;
+        this.text = text;
+        this.bgColor = bgColor;
+        this.length = length;
+        this.maxCharacters = maxCharacters;
+    }
+
     @Override
     public void render(SpriteBatch sb, ShapeRenderer sr) {
         BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_32");

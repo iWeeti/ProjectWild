@@ -1,6 +1,7 @@
 package com.projectwild.game.pregame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
@@ -11,6 +12,10 @@ import com.projectwild.game.gui.components.Image;
 import com.projectwild.game.gui.components.TextField;
 import com.projectwild.shared.packets.LoginDataPacket;
 import com.projectwild.shared.utils.Vector2;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.FileHandler;
 
 public class LoginState implements GameState {
 
@@ -60,15 +65,26 @@ public class LoginState implements GameState {
     }
 
     private void createPage2() {
-        TextField username = new TextField(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 400), 200, "Username", Color.valueOf("56569c"), 8);
+        String _username = "";
+        String _password = "";
+        FileHandle file = Gdx.files.external("KodamaStudios\\ProjectWild\\login.txt");
+        if (file.exists()){
+            String[] data = file.readString().split("\n");
+            if (data.length == 2){
+                _username = data[0];
+                _password = data[1];
+            }
+        }
+        TextField username = new TextField(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 400), 200, "Username", Color.valueOf("56569c"), 8, _username);
         guiParent.addComponent(username);
 
-        TextField password = new TextField(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 500), 200, "Password", Color.valueOf("56569c"), 16);
+        TextField password = new TextField(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 500), 200, "Password", Color.valueOf("56569c"), 16, _password);
         password.setSecret(true);
         guiParent.addComponent(password);
 
         Button submit = new Button(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 600), "Submit", Color.valueOf("56569c"));
         submit.setCallback(() -> {
+            file.writeString(String.format("%s\n%s", username.getText(), password.getText()), false);
             WildGame.getClient().sendTCP(new LoginDataPacket(username.getText(), password.getText(), isRegistering));
         });
         guiParent.addComponent(submit);
@@ -83,12 +99,12 @@ public class LoginState implements GameState {
         });
         guiParent.addComponent(back);
     }
-    
+
     @Override
     public void update() {
 
     }
-    
+
     @Override
     public void render() {
         guiParent.render();
