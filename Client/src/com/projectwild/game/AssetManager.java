@@ -23,6 +23,18 @@ public class AssetManager {
         itemIcons = loadTilesets("data/assets/items", 20);
         fonts = loadFonts("data/assets/fonts");
     }
+
+    private void fixBleeding(TextureRegion region) {
+        float fix = 0.01f;
+
+        float x = region.getRegionX();
+        float y = region.getRegionY();
+        float width = region.getRegionWidth();
+        float height = region.getRegionHeight();
+        float invTexWidth = 1f / region.getTexture().getWidth();
+        float invTexHeight = 1f / region.getTexture().getHeight();
+        region.setRegion((x + fix) * invTexWidth, (y + fix) * invTexHeight, (x + width - fix) * invTexWidth, (y + height - fix) * invTexHeight); // Trims
+    }
     
     private HashMap<String, TextureRegion[][]> loadTilesets(String path, int tileSize){
         HashMap<String, TextureRegion[][]> tilesets = new HashMap<>();
@@ -34,6 +46,14 @@ public class AssetManager {
         for(File f : files){
             Texture texture = new Texture(f.getPath());
             TextureRegion[][] ts = TextureRegion.split(texture, tileSize, tileSize);
+
+            // Fix Texture Bleeding For Tiles
+            for (TextureRegion[] array : ts) {
+                for (TextureRegion t : array) {
+                    fixBleeding(t);
+                }
+            }
+
             tilesets.put(f.getName().replace(".png", "").toLowerCase(), ts);
         }
         return tilesets;
