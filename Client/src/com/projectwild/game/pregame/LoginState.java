@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.gui.GUIParent;
-import com.projectwild.game.gui.components.Background;
-import com.projectwild.game.gui.components.Button;
-import com.projectwild.game.gui.components.Image;
-import com.projectwild.game.gui.components.TextField;
+import com.projectwild.game.gui.components.*;
 import com.projectwild.shared.packets.LoginDataPacket;
 import com.projectwild.shared.utils.Vector2;
 
@@ -24,14 +21,15 @@ public class LoginState implements GameState {
 
     @Override
     public void initialize() {
-        loginListener = new LoginListener();
-        WildGame.getClient().addListener(loginListener);
-
-        WildGame.getDiscordIntegration().setPresence("In Main Menu");
-
         // Creating The GUIParent
         guiParent = new GUIParent();
         Gdx.input.setInputProcessor(guiParent.getInputAdapter());
+
+        // Setting Up The State
+        loginListener = new LoginListener(guiParent);
+        WildGame.getClient().addListener(loginListener);
+
+        WildGame.getDiscordIntegration().setPresence("In Main Menu");
 
         // BG & Logo
         guiParent.addComponent(new Background(Color.valueOf("2a2a4d")));

@@ -26,15 +26,16 @@ public class WorldSelectionState implements GameState {
     
     @Override
     public void initialize() {
-        worldSelectionListener = new WorldSelectionListener();
-        WildGame.getClient().addListener(worldSelectionListener);
-
-        WildGame.getDiscordIntegration().setPresence("In World Selection");
-
         // Creating GUI Parent
         guiParent = new GUIParent();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(guiParent.getInputAdapter());
+
+        // Setting Up State
+        worldSelectionListener = new WorldSelectionListener(guiParent);
+        WildGame.getClient().addListener(worldSelectionListener);
+
+        WildGame.getDiscordIntegration().setPresence("In World Selection");
 
         // BG & Logo
         guiParent.addComponent(new Background(Color.valueOf("2a2a4d")));

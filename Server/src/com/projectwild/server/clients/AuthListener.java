@@ -104,7 +104,7 @@ public class AuthListener extends Listener {
                     if(!new StrongPasswordEncryptor().checkPassword(password, rs.getString("password"))) {
                         connection.sendTCP(new LoginResponsePacket(false, "Wrong password! Try again."));
                     }else{
-                        connection.sendTCP(new LoginResponsePacket(true, "Successfully logged in! Now loading you in..."));
+                        connection.sendTCP(new LoginResponsePacket(true, "Successfully logged in!"));
                         WildServer.getClientHandler().loginClient(new Client(connection.getID(), rs.getInt("id")));
                     }
                 }

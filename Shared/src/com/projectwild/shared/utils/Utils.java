@@ -10,4 +10,9 @@ public class Utils {
         return Math.max(min, Math.min(max, value));
     }
 
+    public static double lerp(double a, double b, double f)
+    {
+        return a + f * (b - a);
+    }
+
 }
