@@ -1,0 +1,37 @@
+[
+  {
+    "id": 0,
+    "name": "Brown Boots",
+    "asset": "brown_boots",
+    "slot": 1,
+    "renderType": 0
+  },
+  {
+    "id": 1,
+    "name": "White Shirt",
+    "asset": "white_shirt",
+    "slot": 3,
+    "renderType": 0
+  },
+  {
+    "id": 2,
+    "name": "Black Shirt",
+    "asset": "black_shirt",
+    "slot": 3,
+    "renderType": 0
+  },
+  {
+    "id": 3,
+    "name": "Blue Shirt",
+    "asset": "blue_shirt",
+    "slot": 3,
+    "renderType": 0
+  },
+  {
+    "id": 4,
+    "name": "Pants",
+    "asset": "pants",
+    "slot": 2,
+    "renderType": 0
+  }
+]
