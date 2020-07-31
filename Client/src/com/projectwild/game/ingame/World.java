@@ -1,5 +1,6 @@
 package com.projectwild.game.ingame;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.projectwild.game.WildGame;
@@ -58,9 +59,10 @@ public class World {
     }
 
     public void renderWorld(SpriteBatch sb) {
-        //TODO: Background
-//        Texture bgTexture = WildGame.getAssetManager().getAsset(background);
-//        sb.draw(bgTexture, 0, 0, getWidth() * 32, getHeight() * 32);
+        {
+            //Texture bgTexture = WildGame.getAssetManager().getAsset(background);
+            //TODO: render the fokin background mate
+        }
 
         // Render Blocks
         for(int y = 0; y < getHeight(); y++) {
