@@ -12,7 +12,7 @@ public class GiveCommand implements Command {
 
         ItemPreset itemPreset = null;
         for(ItemPreset preset : ItemPreset.getItemPresets()) {
-            if(preset.getName().toLowerCase().equals(((String) args[0]).toLowerCase()))
+            if(preset.getName().toLowerCase().startsWith(((String) args[0]).toLowerCase()))
                 itemPreset = preset;
         }
 

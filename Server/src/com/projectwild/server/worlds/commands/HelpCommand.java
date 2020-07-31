@@ -20,8 +20,8 @@ public class HelpCommand implements Command{
                 continue;
 
             builder.append("[GREEN]/");
-            builder.append(names[i].substring(0, 1).toUpperCase());
-            builder.append(names[i].substring(1));
+//            builder.append(names[i].substring(0, 1).toUpperCase());
+            builder.append(names[i]);//.substring(1));
             builder.append(": [WHITE]");
             builder.append(commands[i].help());
 
