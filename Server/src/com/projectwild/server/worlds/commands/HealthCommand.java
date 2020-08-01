@@ -7,7 +7,7 @@ import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.packets.player.local.UpdateHealthPacket;
 import com.projectwild.shared.utils.Utils;
 
-public class SetHealthCommand implements Command{
+public class HealthCommand implements Command{
 
     @Override
     public void execute(Client client, World world, Object[] args) {

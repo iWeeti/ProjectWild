@@ -27,15 +27,15 @@ public class CommandHandler {
         commands.put("speed", new SpeedCommand());
         commands.put("bring", new BringCommand());
         commands.put("kick", new KickCommand());
-        commands.put("rank", new SetRankCommand());
+        commands.put("setrank", new SetRankCommand());
         commands.put("online", new OnlineCommand());
         commands.put("teleport", new TeleportCommand());
         commands.put("bc", new BroadcastCommand());
         commands.put("world", new WorldCommand());
         commands.put("override", new OverrideCommand());
         commands.put("noclip", new NoclipCommand());
-        commands.put("health", new SetHealthCommand());
-        commands.put("inventorysize", new SetInventorySizeCommand());
+        commands.put("health", new HealthCommand());
+        commands.put("inventorysize", new InventorySizeCommand());
         commands.put("name", new NameCommand());
     }
 

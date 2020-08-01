@@ -1,5 +1,6 @@
 package com.projectwild.game.ingame;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,6 +11,7 @@ import com.projectwild.game.ingame.player.LocalPlayer;
 import com.projectwild.game.ingame.player.Player;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.world.WorldDataPacket;
+import com.projectwild.shared.utils.Utils;
 import com.projectwild.shared.utils.Vector2;
 
 import java.lang.reflect.InvocationTargetException;
@@ -58,10 +60,34 @@ public class World {
         }
     }
 
-    public void renderWorld(SpriteBatch sb) {
+    public void renderWorld(SpriteBatch sb, OrthographicCamera camera) {
+        // Render Background TODO: look this over / rewrite it
         {
-            //Texture bgTexture = WildGame.getAssetManager().getAsset(background);
-            //TODO: render the fokin background mate
+            Texture bg = WildGame.getAssetManager().getAsset("background");
+            Texture bgTexture = WildGame.getAssetManager().getAsset(background);
+
+            float scrollAmount = 1.5f;
+
+            float textureWidth = camera.viewportWidth * scrollAmount;
+            float textureHeight = camera.viewportHeight * scrollAmount;
+
+            int wX = getWidth() * 16;
+            int wY = getHeight() * 16;
+
+            double cX = camera.position.x;
+            double cY = camera.position.y;
+
+            double rX = (wX - cX) / wX;
+            double rY = (wY - cY) / wY;
+
+            double offsetX = rX * (camera.viewportWidth / scrollAmount / 2);
+            double offsetY = rY * (camera.viewportHeight / scrollAmount / 2);
+
+            double x = (cX - textureWidth / 2) + offsetX;
+            double y = (cY - textureHeight / 2) + offsetY;
+
+            sb.draw(bg, (float) x, (float) y, textureWidth, textureHeight);
+            sb.draw(bgTexture, (float) x, (float) y, textureWidth, textureHeight);
         }
 
         // Render Blocks

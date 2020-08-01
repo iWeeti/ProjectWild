@@ -4,7 +4,7 @@ import com.projectwild.server.clients.Client;
 import com.projectwild.server.clients.Rank;
 import com.projectwild.server.worlds.World;
 
-public class SetInventorySizeCommand implements Command {
+public class InventorySizeCommand implements Command {
 
     @Override
     public void execute(Client client, World world, Object[] args) {
