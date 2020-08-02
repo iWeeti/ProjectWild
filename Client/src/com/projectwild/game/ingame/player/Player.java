@@ -45,7 +45,8 @@ public class Player {
         if(frame >= animation.getLength())
             frame = 0;
 
-        BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_10");
+        BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_32");
+        font.getData().setScale(0.3f);
         font.getData().markupEnabled = true;
         GlyphLayout layout = new GlyphLayout(font, nametag);
         font.draw(sb, layout, (int) position.getX() + 17 - layout.width / 2, (int) position.getY() + 40);

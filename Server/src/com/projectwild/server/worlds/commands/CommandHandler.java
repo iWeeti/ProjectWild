@@ -113,7 +113,7 @@ public class CommandHandler {
                                 builder.append(args[j]);
                                 builder.append(" ");
                             }
-                            convertedArgs[i] = builder.toString();
+                            convertedArgs[i] = builder.toString().substring(0, builder.toString().length() -1);
                             stopLoop = true;
                             break;
                     }

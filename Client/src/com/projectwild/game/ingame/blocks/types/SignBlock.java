@@ -18,7 +18,8 @@ public class SignBlock extends Block {
 
     public SignBlock(BlockPreset blockPreset, byte[] data, int x, int y, int z) {
         super(blockPreset, data, x, y, z);
-        font = WildGame.getAssetManager().getFont("vcr_osd_12");
+        font = WildGame.getAssetManager().getFont("vcr_osd_32");
+        font.getData().setScale(0.35f);
         onSign = false;
     }
 
