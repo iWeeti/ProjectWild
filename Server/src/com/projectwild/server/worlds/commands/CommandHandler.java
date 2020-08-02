@@ -37,6 +37,7 @@ public class CommandHandler {
         commands.put("health", new HealthCommand());
         commands.put("inventorysize", new InventorySizeCommand());
         commands.put("name", new NameCommand());
+        commands.put("invisible", new InvisibleCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {

@@ -1,5 +1,7 @@
 package com.projectwild.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,6 +17,7 @@ public class AssetManager {
     private HashMap<String, TextureRegion[][]> clothingAssets;
     private HashMap<String, TextureRegion[][]> itemIcons;
     private HashMap<String, BitmapFont> fonts;
+    private HashMap<String, Sound> sounds;
     
     public AssetManager(){
         assets = loadAssets("data/assets");
@@ -22,6 +25,7 @@ public class AssetManager {
         clothingAssets = loadTilesets("data/assets/clothing",32);
         itemIcons = loadTilesets("data/assets/items", 20);
         fonts = loadFonts("data/assets/fonts");
+        sounds = loadSounds("data/assets/sounds");
     }
 
     private void fixBleeding(TextureRegion region) {
@@ -98,6 +102,26 @@ public class AssetManager {
         return fonts;
     }
 
+    private HashMap<String, Sound> loadSounds(String path) {
+        HashMap<String, Sound> sounds = new HashMap<>();
+        File[] files = new File(path).listFiles();
+
+        if (files == null)
+            return sounds;
+
+        for (File f : files) {
+            if (f.isDirectory())
+                continue;
+
+            if (f.getName().contains(".mp3") || f.getName().contains(".wav") || f.getName().contains(".ogg")) {
+                FileHandle fileHandle = new FileHandle(f);
+                Sound sound = Gdx.audio.newSound(fileHandle);
+                sounds.put(f.getName().split("\\.")[0].toLowerCase(), sound);
+            }
+        }
+        return sounds;
+    }
+
     public TextureRegion getTile(String tileset, int x, int y){
         if(tilesets.containsKey(tileset.toLowerCase()))
             return tilesets.get(tileset.toLowerCase())[y][x];
@@ -127,5 +151,11 @@ public class AssetManager {
             return fonts.get(font.toLowerCase());
         return null;
     }
-    
+
+    public Sound getSound(String sound){
+        if (sounds.containsKey(sound.toLowerCase()))
+            return sounds.get(sound.toLowerCase());
+        return null;
+    }
+
 }

@@ -141,34 +141,43 @@ public class World {
         // Sending Local Player To Client
         PlayerSpawnPacket playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), player.getNametag(), spawnPosition, true);
         client.sendTCP(playerSpawnPacket);
-
         UpdateHasAccessPacket hasAccessPacket = new UpdateHasAccessPacket(hasAccess(client));
         client.sendTCP(hasAccessPacket);
 
         // Sending All Players To Client
-        for(Player ply : players) {
+        for (Player ply : players) {
             playerSpawnPacket = new PlayerSpawnPacket(ply.getClient().getUserId(), ply.getNametag(), ply.getPosition(), false);
-            client.sendTCP(playerSpawnPacket);
+            if (!player.getClient().isInvisible())
+                client.sendTCP(playerSpawnPacket);
         }
 
-        // Broadcasting New Player With All Clients In The World
-        playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), player.getNametag(), spawnPosition, false);
-        for(Player ply : players)
-            ply.getClient().sendTCP(playerSpawnPacket);
+        if (!client.isInvisible()) {
+            // Broadcasting New Player With All Clients In The World
+            playerSpawnPacket = new PlayerSpawnPacket(client.getUserId(), player.getNametag(), spawnPosition, false);
+            for (Player ply : players) {
+                ply.getClient().sendChatMessage("%s [WHITE]has joined the world.", player.getNametag());
+                ply.getClient().sendTCP(playerSpawnPacket);
+            }
+
+            UpdateEquippedPacket equippedPacket = new UpdateEquippedPacket(client.getUserId(), client.getEquipped());
+            for(Player ply : players)
+                ply.getClient().sendTCP(equippedPacket);
+        }
 
         players.add(player);
-
-        UpdateEquippedPacket equippedPacket = new UpdateEquippedPacket(client.getUserId(), client.getEquipped());
-        for(Player ply : players)
-            ply.getClient().sendTCP(equippedPacket);
+        client.sendTCP(new UpdateEquippedPacket(client.getUserId(), client.getEquipped()));
+        client.sendChatMessage("Welcome to [YELLOW]%s[WHITE]!", getName().toUpperCase());
 
         return player;
     }
 
     public void destroyPlayer(Player player) {
-        PlayerRemovePacket playerRemovePacket = new PlayerRemovePacket(player.getClient().getUserId());
-        for(Player ply : players) {
-            ply.getClient().sendTCP(playerRemovePacket);
+        if (!player.getClient().isInvisible()){
+            PlayerRemovePacket playerRemovePacket = new PlayerRemovePacket(player.getClient().getUserId());
+            for(Player ply : players) {
+                ply.getClient().sendChatMessage("[YELLOW]%s [WHITE]has left the world.", player.getNametag());
+                ply.getClient().sendTCP(playerRemovePacket);
+            }
         }
         players.remove(player);
 

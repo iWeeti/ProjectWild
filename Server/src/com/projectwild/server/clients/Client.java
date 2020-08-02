@@ -20,6 +20,7 @@ public class Client {
     private String username;
 
     private Rank rank;
+    private boolean invisible;
 
     private Player player;
     private ItemStack[] inventory;
@@ -67,6 +68,7 @@ public class Client {
                 e.printStackTrace();
             }
         }
+        this.invisible = false;
     }
 
     public void sendTCP(Object packet) {
@@ -250,4 +252,11 @@ public class Client {
         return equipped;
     }
 
+    public boolean isInvisible() {
+        return invisible;
+    }
+
+    public void setInvisible(boolean invisible) {
+        this.invisible = invisible;
+    }
 }

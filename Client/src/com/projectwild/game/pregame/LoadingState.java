@@ -21,6 +21,7 @@ public class LoadingState implements GameState {
 
     @Override
     public void initialize() {
+        WildGame.getAssetManager().getSound("whoosh").play();
         sb = new SpriteBatch();
         sr = new ShapeRenderer();
         start = System.currentTimeMillis();
