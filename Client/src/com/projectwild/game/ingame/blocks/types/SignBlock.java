@@ -41,11 +41,11 @@ public class SignBlock extends Block {
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             sr.begin(ShapeRenderer.ShapeType.Filled);
             sr.setColor(0, 0, 0, 0.5f);
-            sr.rect((int) position.getX() * 32 - layout.width / 2 + 11 , (int) position.getY() * 32 + 38 + 10, layout.width + 10, layout.height/2 + 10);
+            sr.rect((int) position.getX() * 32 - layout.width / 2 + 11 , (int) position.getY() * 32 + 38 + 5, layout.width + 10, layout.height/2 + 10);
             sr.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             sb.begin();
-            font.draw(sb, layout, (int) position.getX() * 32 - layout.width / 2 + 16 , (int) position.getY() * 32 + 38 + 20);
+            font.draw(sb, layout, (int) position.getX() * 32 - layout.width / 2 + 16 , (int) position.getY() * 32 + 38 + 15);
         }
         onSign = false;
     }
