@@ -19,6 +19,7 @@ public class SetTextCommand implements Command {
         }
 
         Vector2 position = client.getPlayer().getPosition();
+        position.changeX(16);
         Block block = world.pointCollisionBlock(position);
 
         if (block.getBlockPreset().getBlockType() == BlockTypes.SIGN.getId()){
