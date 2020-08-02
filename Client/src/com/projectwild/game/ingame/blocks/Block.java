@@ -1,6 +1,7 @@
 package com.projectwild.game.ingame.blocks;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.player.LocalPlayer;
 import com.projectwild.shared.BlockPreset;
@@ -52,7 +53,7 @@ public abstract class Block {
         }
     }
 
-    public void render(SpriteBatch sb, Vector2 position) {}
+    public void render(SpriteBatch sb, ShapeRenderer sr, Vector2 position) {}
 
     public boolean collide() {
         return true;

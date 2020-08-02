@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.blocks.Block;
 import com.projectwild.game.ingame.blocks.BlockTypes;
@@ -60,7 +61,7 @@ public class World {
         }
     }
 
-    public void renderWorld(SpriteBatch sb, OrthographicCamera camera) {
+    public void renderWorld(SpriteBatch sb, ShapeRenderer sr, OrthographicCamera camera) {
         // Render Background TODO: look this over / rewrite it
         {
             Texture bg = WildGame.getAssetManager().getAsset("background");
@@ -110,7 +111,7 @@ public class World {
 
                             break;
                         case 4:
-                            blocks[y][x][z].render(sb, new Vector2(x, y));
+                            blocks[y][x][z].render(sb, sr, new Vector2(x, y));
                             continue;
                         case 5:
                             boolean hasLeft = false;

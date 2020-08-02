@@ -2,6 +2,7 @@ package com.projectwild.game.ingame.blocks.types;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.World;
 import com.projectwild.game.ingame.WorldState;
@@ -17,7 +18,7 @@ public class EntranceBlock extends Block {
     }
 
     @Override
-    public void render(SpriteBatch sb, Vector2 position) {
+    public void render(SpriteBatch sb, ShapeRenderer sr, Vector2 position) {
         BlockPreset preset = getBlockPreset();
         TextureRegion texture;
         if(getNWBool("open")) {

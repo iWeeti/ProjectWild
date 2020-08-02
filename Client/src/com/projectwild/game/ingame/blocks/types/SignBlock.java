@@ -1,9 +1,12 @@
 package com.projectwild.game.ingame.blocks.types;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.WorldState;
 import com.projectwild.game.ingame.blocks.Block;
@@ -24,7 +27,7 @@ public class SignBlock extends Block {
     }
 
     @Override
-    public void render(SpriteBatch sb, Vector2 position) {
+    public void render(SpriteBatch sb, ShapeRenderer sr, Vector2 position) {
         TextureRegion tex = WildGame.getAssetManager().getTile(getBlockPreset().getTileset(), getBlockPreset().getTilesetX(), getBlockPreset().getTilesetY());
         sb.draw(tex, (int) position.getX() * 32, (int) position.getY() * 32);
         if (onSign){
@@ -33,7 +36,16 @@ public class SignBlock extends Block {
                 text = "/settext <text>";
             }
             GlyphLayout layout = new GlyphLayout(font, text);
-            font.draw(sb, layout, (int) position.getX() * 32 - layout.width / 2 + 16 , (int) position.getY() * 32 + 38);
+            sb.end();
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+            sr.setColor(0, 0, 0, 0.5f);
+            sr.rect((int) position.getX() * 32 - layout.width / 2 + 11 , (int) position.getY() * 32 + 38 + 10, layout.width + 10, layout.height/2 + 10);
+            sr.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+            sb.begin();
+            font.draw(sb, layout, (int) position.getX() * 32 - layout.width / 2 + 16 , (int) position.getY() * 32 + 38 + 20);
         }
         onSign = false;
     }

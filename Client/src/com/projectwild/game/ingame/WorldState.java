@@ -212,7 +212,8 @@ public class WorldState implements GameState {
 
         // Render World
         sb.setProjectionMatrix(camera.combined);
-        world.renderWorld(sb, camera);
+        sr.setProjectionMatrix(camera.combined);
+        world.renderWorld(sb, sr, camera);
 
         // Render HUD
         sr.setProjectionMatrix(hudCamera.combined);
