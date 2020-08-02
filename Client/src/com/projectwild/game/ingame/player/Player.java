@@ -45,7 +45,7 @@ public class Player {
         if(frame >= animation.getLength())
             frame = 0;
 
-        BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_32");
+        BitmapFont font = WildGame.getAssetManager().getFont("player_name");
         font.getData().setScale(0.3f);
         font.getData().markupEnabled = true;
         GlyphLayout layout = new GlyphLayout(font, nametag);
