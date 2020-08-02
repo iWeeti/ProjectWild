@@ -53,7 +53,7 @@ public class AuthListener extends Listener {
                 return;
             }
         
-            if(username.length() > 8 || username.length() < 3 || password.length() > 16 || password.length() < 3) {
+            if(username.length() > 12 || username.length() < 3 || password.length() > 16 || password.length() < 3) {
                 connection.sendTCP(new LoginResponsePacket(false, "Zzz. Something is way too long or too short."));
                 return;
             }
