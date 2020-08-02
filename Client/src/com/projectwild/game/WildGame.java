@@ -86,7 +86,7 @@ public class WildGame extends ApplicationAdapter {
         if (currentState.getClass() == LoginState.class || currentState.getClass() == WorldSelectionState.class){
             if (menuMusic == null){
                 menuMusic = assetManager.getSound("menu");
-                menuMusic.loop(0.5f);
+                menuMusic.loop(0.25f);
             } else {
                 menuMusic.resume();
             }

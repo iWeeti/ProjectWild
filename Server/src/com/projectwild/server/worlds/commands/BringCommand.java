@@ -11,6 +11,7 @@ public class BringCommand implements Command {
     public void execute(Client client, World world, Object[] args) {
         Player ply = (Player) args[0];
         ply.updatePosition(client.getPlayer().getPosition(), true);
+        world.playSoundForAll("whoosh_1");
         client.sendChatMessage(String.format("[GREEN]Success! [WHITE]Brought %s", ply.getClient().getUsername()));
     }
 

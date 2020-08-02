@@ -10,6 +10,7 @@ import com.projectwild.game.ingame.player.Player;
 import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.ChatMessagePacket;
+import com.projectwild.shared.packets.PlaySoundPacket;
 import com.projectwild.shared.packets.clothing.UpdateEquippedPacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
@@ -173,8 +174,6 @@ public class WorldListener extends Listener {
         }
         if (obj instanceof UpdateHealthPacket) {
             UpdateHealthPacket packet = (UpdateHealthPacket) obj;
-            if (packet.getHealth() < worldState.getWorld().localPlayer.getHealth())
-                WildGame.getAssetManager().getSound("ow").play();
             worldState.getWorld().localPlayer.setHealth(packet.getHealth());
         }
 
@@ -187,6 +186,11 @@ public class WorldListener extends Listener {
 
             if (ply != null)
                 ply.setEquipped(packet.getEquipped());
+        }
+
+        if (obj instanceof PlaySoundPacket) {
+            PlaySoundPacket packet = (PlaySoundPacket) obj;
+            WildGame.getAssetManager().getSound(packet.getSound()).play();
         }
 
     }

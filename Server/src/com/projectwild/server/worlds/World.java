@@ -8,6 +8,7 @@ import com.projectwild.server.worlds.blocks.types.StaticBlock;
 import com.projectwild.server.worlds.blocks.types.UnbreakableBlock;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
+import com.projectwild.shared.packets.PlaySoundPacket;
 import com.projectwild.shared.packets.clothing.UpdateEquippedPacket;
 import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
@@ -183,6 +184,15 @@ public class World {
 
         if(players.size() <= 0)
             WildServer.getWorldHandler().unloadWorld(this);
+        else
+            playSoundForAll("close_door");
+    }
+
+    public void playSoundForAll(String sound) {
+        PlaySoundPacket packet = new PlaySoundPacket(sound);
+        for (Player p : players){
+            p.getClient().sendTCP(packet);
+        }
     }
 
     public int pointCollisionType(Vector2 point) {

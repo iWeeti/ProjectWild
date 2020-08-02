@@ -7,6 +7,7 @@ import com.projectwild.server.clients.Client;
 import com.projectwild.server.worlds.blocks.Block;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.packets.ChatMessagePacket;
+import com.projectwild.shared.packets.PlaySoundPacket;
 import com.projectwild.shared.packets.clothing.UpdateEquippedPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
 import com.projectwild.shared.packets.world.*;
@@ -66,6 +67,8 @@ public class WorldListener extends Listener {
             client.setPlayer(world.createPlayer(client));
 
             connection.sendTCP(new LoadInventoryPacket(client.getInventory()));
+
+            world.playSoundForAll("whoosh_1");
         }
 
         if(obj instanceof LeaveWorldPacket) {

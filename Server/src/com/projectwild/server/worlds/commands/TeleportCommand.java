@@ -11,6 +11,7 @@ public class TeleportCommand implements Command {
     public void execute(Client client, World world, Object[] args) {
         Player player = (Player) args[0];
 
+        world.playSoundForAll("whoosh_1");
         client.getPlayer().updatePosition(player.getPosition(), true);
         client.sendChatMessage(String.format("[GREEN]Success! [WHITE]Teleported you to %s.", player.getClient().getUsername()));
     }

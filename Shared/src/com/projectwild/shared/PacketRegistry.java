@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.projectwild.shared.packets.ChatMessagePacket;
 import com.projectwild.shared.packets.LoginDataPacket;
 import com.projectwild.shared.packets.LoginResponsePacket;
+import com.projectwild.shared.packets.PlaySoundPacket;
 import com.projectwild.shared.packets.clothing.EquipPacket;
 import com.projectwild.shared.packets.clothing.UpdateEquippedPacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
@@ -57,6 +58,7 @@ public class PacketRegistry {
         kryo.register(UpdateHealthPacket.class);
         kryo.register(UpdateEquippedPacket.class);
         kryo.register(EquipPacket.class);
+        kryo.register(PlaySoundPacket.class);
 
     }
     

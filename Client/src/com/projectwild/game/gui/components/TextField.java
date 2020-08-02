@@ -81,6 +81,7 @@ public class TextField extends GUIComponent {
     @Override
     public void typed(char character) {
         if(!isSelected()) return;
+        WildGame.getAssetManager().getSound("key" + (int) Math.round(Math.random() * 3)).play();
         String input = Character.toString(character);
         String regex = "^[a-zA-Z0-9\b]+$";
         Pattern pattern = Pattern.compile(regex);

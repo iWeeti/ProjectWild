@@ -33,7 +33,6 @@ public class WorldState implements GameState {
 
     @Override
     public void initialize() {
-        WildGame.getAssetManager().getSound("whoosh_1").play();
         backgroundSound = WildGame.getAssetManager().getSound("birds_forest");
         backgroundSound.loop(0.35f);
         // Setting Up Handlers & Listeners
