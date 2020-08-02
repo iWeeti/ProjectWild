@@ -167,7 +167,7 @@ public class World {
 
         players.add(player);
         client.sendTCP(new UpdateEquippedPacket(client.getUserId(), client.getEquipped()));
-        client.sendChatMessage("Welcome to [YELLOW]%s[WHITE]!", getName().toUpperCase());
+        client.sendChatMessage("Welcome to [YELLOW]%s[WHITE]", getName().toUpperCase());
 
         return player;
     }

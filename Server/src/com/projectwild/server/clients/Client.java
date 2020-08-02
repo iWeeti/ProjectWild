@@ -10,6 +10,7 @@ import com.projectwild.shared.packets.ChatMessagePacket;
 import com.projectwild.shared.packets.clothing.UpdateEquippedPacket;
 import com.projectwild.shared.packets.items.ChangeInventoryItemPacket;
 import com.projectwild.shared.packets.items.LoadInventoryPacket;
+import com.projectwild.shared.packets.player.UpdateNameTagPacket;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +21,7 @@ public class Client {
     private String username;
 
     private Rank rank;
+    private boolean hideRank;
     private boolean invisible;
 
     private Player player;
@@ -224,6 +226,39 @@ public class Client {
         WildServer.getDatabaseController().update(sql, rank.getIdentifier(), userId);
     }
 
+    public boolean setUsername(String username) {
+        if(WildServer.getClientHandler().getClientByUsername(username) != null)
+            return false;
+        this.username = username;
+
+        if(player != null) {
+            UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(userId, player.getNametag());
+            for(Player ply : player.getWorld().getPlayers()) {
+                ply.getClient().sendTCP(nameTagPacket);
+            }
+        }
+        return true;
+    }
+
+    public void resetUsername() {
+        String sql = "SELECT username FROM Users WHERE id = ?";
+        ResultSet rs = WildServer.getDatabaseController().query(sql, userId);
+        try {
+            if(!rs.next())
+                return;
+
+            username = rs.getString("username");
+            if(player != null) {
+                UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(userId, player.getNametag());
+                for(Player ply : player.getWorld().getPlayers()) {
+                    ply.getClient().sendTCP(nameTagPacket);
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public Rank getRank() {
         return rank;
     }
@@ -258,5 +293,19 @@ public class Client {
 
     public void setInvisible(boolean invisible) {
         this.invisible = invisible;
+    }
+
+    public boolean isHideRank() {
+        return hideRank;
+    }
+
+    public void setHideRank(boolean hideRank) {
+        this.hideRank = hideRank;
+        if(player != null) {
+            UpdateNameTagPacket nameTagPacket = new UpdateNameTagPacket(userId, player.getNametag());
+            for(Player ply : player.getWorld().getPlayers()) {
+                ply.getClient().sendTCP(nameTagPacket);
+            }
+        }
     }
 }

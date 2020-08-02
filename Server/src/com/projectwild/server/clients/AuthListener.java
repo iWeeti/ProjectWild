@@ -70,7 +70,7 @@ public class AuthListener extends Listener {
             try {
                 if(packet.isRegistering()) {
                     // Tries to register client
-                    if(getAccount(username) != null){
+                    if(getAccount(username) != null) {
                         connection.sendTCP(new LoginResponsePacket(false, "Ooops. Looks like an account by that name already exists."));
                         return;
                     }
@@ -81,7 +81,7 @@ public class AuthListener extends Listener {
                     connection.sendTCP(new LoginResponsePacket(true, String.format("Successfully registered! Welcome to Project Wild %s.", username)));
                 
                     ResultSet rs = getAccount(username);
-                    if(rs == null){
+                    if(rs == null) {
                         connection.sendTCP(new LoginResponsePacket(false, "Uh oh. Something went wrong. Try registering again."));
                         return;
                     }
@@ -96,14 +96,14 @@ public class AuthListener extends Listener {
                         return;
                     }
                 
-                    if(WildServer.getClientHandler().getClientByUserId(rs.getInt("id")) != null){
+                    if(WildServer.getClientHandler().getClientByUserId(rs.getInt("id")) != null) {
                         connection.sendTCP(new LoginResponsePacket(false, "Sorry, looks like that account is already logged in."));
                         return;
                     }
                 
                     if(!new StrongPasswordEncryptor().checkPassword(password, rs.getString("password"))) {
                         connection.sendTCP(new LoginResponsePacket(false, "Wrong password! Try again."));
-                    }else{
+                    } else {
                         connection.sendTCP(new LoginResponsePacket(true, "Successfully logged in!"));
                         WildServer.getClientHandler().loginClient(new Client(connection.getID(), rs.getInt("id")));
                     }

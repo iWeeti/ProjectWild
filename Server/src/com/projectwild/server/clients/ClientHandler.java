@@ -1,5 +1,7 @@
 package com.projectwild.server.clients;
 
+import com.projectwild.server.WildServer;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ClientHandler {
@@ -11,6 +13,13 @@ public class ClientHandler {
     }
     
     public void loginClient(Client client) {
+        // In Case A Mod Changed Their Name
+        Client c = WildServer.getClientHandler().getClientByUsername(client.getUsername());
+        if(c != null) {
+            c.resetUsername();
+            c.sendChatMessage("[RED]Your Username Was Reset");
+        }
+
         clients.add(client);
     }
     

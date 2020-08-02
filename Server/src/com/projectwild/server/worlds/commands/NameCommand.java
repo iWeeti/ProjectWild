@@ -10,15 +10,22 @@ public class NameCommand implements Command {
 
     @Override
     public void execute(Client client, World world, Object[] args) {
-
-        for (Player player: world.getPlayers()) {
-            player.getClient().sendTCP(new UpdateNameTagPacket(client.getUserId(), ((String) args[0])));
+        String name = (String) args[0];
+        if(name.isEmpty()) {
+            client.resetUsername();
+            client.sendChatMessage("[GREEN]Success! [WHITE]Reset Username");
+        } else {
+            if(client.setUsername(name)) {
+                client.sendChatMessage("[GREEN]Success! [WHITE]Set Username To %s", name);
+            } else {
+                client.sendChatMessage("[RED]Failed! [WHITE]Someones With That Username Is Logged In", name);
+            }
         }
     }
 
     @Override
     public String help() {
-        return "Change your nametag";
+        return "Change your username";
     }
 
     @Override
