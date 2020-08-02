@@ -205,6 +205,16 @@ public class World {
         return blocks[blockY][blockX][1].getBlockPreset().getCollisionType();
     }
 
+    public Block pointCollisionBlock(Vector2 point) {
+        int blockX = (int) Math.floor((point.getX()) / 32.0f) ;
+        int blockY = (int) Math.floor((point.getY()) / 32.0f);
+
+        if(blockX >= blocks[0].length || blockX < 0 || blockY >= blocks.length || blockY < 0)
+            return null;
+
+        return blocks[blockY][blockX][1];
+    }
+
     public void setBlock(int x, int y, int z, int blockId) {
         BlockPreset blockPreset = BlockPreset.getPreset(blockId);
         try {

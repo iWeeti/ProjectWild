@@ -5,21 +5,23 @@ import com.projectwild.server.worlds.blocks.Block;
 import com.projectwild.server.worlds.players.Player;
 import com.projectwild.shared.BlockPreset;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 public class SignBlock extends Block {
 
     public SignBlock(BlockPreset preset, World world, int x, int y, int z) {
         super(preset, world, x, y, z);
-        setNWString("text", "Empty");
     }
 
     @Override
     public void deserialize(byte[] data) {
-
+        setText(new String(data));
     }
 
     @Override
     public byte[] serialize() {
-        return new byte[0];
+        return getNWString("text").getBytes();
     }
 
     @Override
@@ -30,5 +32,9 @@ public class SignBlock extends Block {
     @Override
     public void update() {
 
+    }
+
+    public void setText(String text){
+        setNWString("text", text);
     }
 }

@@ -38,6 +38,7 @@ public class CommandHandler {
         commands.put("inventorysize", new InventorySizeCommand());
         commands.put("name", new NameCommand());
         commands.put("invisible", new InvisibleCommand());
+        commands.put("settext", new SetTextCommand());
     }
 
     public void executeCommand(String command, Client client, String[] args) {
