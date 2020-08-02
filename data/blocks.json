@@ -212,7 +212,7 @@
 	{
 		"id": 21,
 		"name": "Cactus",
-		"blockType": 0,
+		"blockType": 1,
 		"collisionType": 0,
 		"renderType": 3,
 		"tileset": "blocks1",

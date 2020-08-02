@@ -3,10 +3,10 @@ package com.projectwild.game.pregame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.projectwild.game.GameState;
-import com.projectwild.game.gui.GUIParent;
-import com.projectwild.game.gui.components.Background;
-import com.projectwild.game.gui.components.Image;
-import com.projectwild.game.gui.components.Text;
+import com.projectwild.game.gui.pregame.GUIParent;
+import com.projectwild.game.gui.pregame.components.Background;
+import com.projectwild.game.gui.pregame.components.Image;
+import com.projectwild.game.gui.pregame.components.Text;
 import com.projectwild.shared.utils.Vector2;
 
 import java.time.Clock;

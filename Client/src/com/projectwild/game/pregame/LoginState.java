@@ -6,8 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.gui.GUIParent;
-import com.projectwild.game.gui.components.*;
+import com.projectwild.game.gui.pregame.GUIParent;
+import com.projectwild.game.gui.pregame.components.*;
 import com.projectwild.shared.packets.LoginDataPacket;
 import com.projectwild.shared.utils.Vector2;
 
