@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -28,9 +29,13 @@ public class WorldState implements GameState {
     private ShapeRenderer sr;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
+    private Sound backgroundSound;
 
     @Override
     public void initialize() {
+        WildGame.getAssetManager().getSound("whoosh_1").play();
+        backgroundSound = WildGame.getAssetManager().getSound("birds_forest");
+        backgroundSound.loop(0.35f);
         // Setting Up Handlers & Listeners
         inventoryHandler = new InventoryHandler();
         chatHandler = new ChatHandler();
@@ -233,6 +238,7 @@ public class WorldState implements GameState {
     public void dispose() {
         WildGame.getClient().removeListener(listener);
         Gdx.input.setInputProcessor(null);
+        backgroundSound.stop();
     }
 
     public void setWorld(World world) {

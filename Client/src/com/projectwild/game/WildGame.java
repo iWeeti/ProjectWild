@@ -3,12 +3,14 @@ package com.projectwild.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.esotericsoftware.kryonet.Client;
 import com.projectwild.game.pregame.LoadingState;
 import com.projectwild.game.pregame.LoginState;
+import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.PacketRegistry;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class WildGame extends ApplicationAdapter {
     private static GameState tempState, currentState;
     private static AssetManager assetManager;
     private static DiscordIntegration discordIntegration;
+    private static Sound menuMusic;
     
     public static void main(String[] args) throws IOException {
         discordIntegration = new DiscordIntegration();
@@ -78,6 +81,18 @@ public class WildGame extends ApplicationAdapter {
             currentState = tempState;
             tempState = null;
             currentState.initialize();
+        }
+
+        if (currentState.getClass() == LoginState.class || currentState.getClass() == WorldSelectionState.class){
+            if (menuMusic == null){
+                menuMusic = assetManager.getSound("menu");
+                menuMusic.loop(0.5f);
+            } else {
+                menuMusic.resume();
+            }
+        } else {
+            if (menuMusic != null)
+                menuMusic.pause();
         }
         
         currentState.update();

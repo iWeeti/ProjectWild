@@ -49,6 +49,7 @@ public class Button extends GUIComponent {
 
     @Override
     public void clicked(int x, int y) {
+        WildGame.getAssetManager().getSound("select").play();
         if(callback != null)
             callback.callback();
     }

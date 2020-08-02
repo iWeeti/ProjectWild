@@ -173,6 +173,8 @@ public class WorldListener extends Listener {
         }
         if (obj instanceof UpdateHealthPacket) {
             UpdateHealthPacket packet = (UpdateHealthPacket) obj;
+            if (packet.getHealth() < worldState.getWorld().localPlayer.getHealth())
+                WildGame.getAssetManager().getSound("ow").play();
             worldState.getWorld().localPlayer.setHealth(packet.getHealth());
         }
 
