@@ -17,17 +17,18 @@ public class InvisibleCommand implements Command {
             PlayerRemovePacket playerRemovePacket = new PlayerRemovePacket(client.getUserId());
             for (Player player : world.getPlayers()) {
                 if (player.getClient().getUserId() != client.getUserId()){
-                    player.getClient().sendChatMessage("[YELLOW]%s [WHITE]has left the world.", player.getNametag());
+                    player.getClient().sendChatMessage("[YELLOW]%s [WHITE]has left the world.", client.getPlayer().getNametag());
                     player.getClient().sendTCP(playerRemovePacket);
                 }
             }
         } else {
             client.sendChatMessage("[GREEN]Success! [WHITE]You're now [RED]visible[WHITE].");
             UpdateEquippedPacket equippedPacket = new UpdateEquippedPacket(client.getUserId(), client.getEquipped());
+            PlayerSpawnPacket spawnPacket = new PlayerSpawnPacket(client.getUserId(), client.getPlayer().getNametag(), client.getPlayer().getPosition(), false);
             for (Player player : world.getPlayers()){
                 if (player.getClient().getUserId() != client.getUserId()){
-                    player.getClient().sendChatMessage("[YELLOW]%s [WHITE]has joined the world.", player.getNametag());
-                    player.getClient().sendTCP(new PlayerSpawnPacket(client.getUserId(), client.getPlayer().getNametag(), client.getPlayer().getPosition(), false));
+                    player.getClient().sendChatMessage("[YELLOW]%s [WHITE]has joined the world.", client.getPlayer().getNametag());
+                    player.getClient().sendTCP(spawnPacket);
                     player.getClient().sendTCP(equippedPacket);
                 }
             }
