@@ -137,6 +137,10 @@ public class World {
     }
 
     public Player createPlayer(Client client) {
+        // Check If Client Is In World & Destroy
+        if(client.getPlayer() != null)
+            client.getPlayer().getWorld().destroyPlayer(client.getPlayer());
+
         Player player = new Player(client, this, spawnPosition);
 
         // Sending Local Player To Client
@@ -148,7 +152,7 @@ public class World {
         // Sending All Players To Client
         for (Player ply : players) {
             playerSpawnPacket = new PlayerSpawnPacket(ply.getClient().getUserId(), ply.getNametag(), ply.getPosition(), false);
-            if (!player.getClient().isInvisible())
+            if(!player.getClient().isInvisible())
                 client.sendTCP(playerSpawnPacket);
         }
 

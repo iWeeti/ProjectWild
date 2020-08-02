@@ -93,9 +93,9 @@ public class Player {
             return nametag;
 
         if(getClient().getRank() == Rank.DEVELOPER) {
-            nametag = String.format("[RED]Dev | %s", nametag);
+            nametag = String.format("[RED]Dev| %s", nametag);
         } else if(getClient().getRank() == Rank.MOD) {
-            nametag = String.format("[YELLOW]Mod | %s", nametag);
+            nametag = String.format("[YELLOW]Mod| %s", nametag);
         }
         return nametag;
     }
