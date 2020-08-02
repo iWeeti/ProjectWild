@@ -135,7 +135,7 @@ public class ChatHandler {
         public boolean keyTyped(char character) {
             if (!chatHandler.isChatOpen()) return true;
             String input = Character.toString(character);
-            String regex = "^[a-zA-Z0-9öäåÖÄÅ/!?#$%^&*()_\\-{}|'\\[\\].,\b\\s\"]+$";
+            String regex = "^[a-zA-Z0-9öäåÖÄÅ/!?#$%^&*()_\\-{}|'\\[\\].,\b\\s\":;]+$";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(input);
             if(matcher.matches()) {

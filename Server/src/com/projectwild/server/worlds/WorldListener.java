@@ -106,7 +106,7 @@ public class WorldListener extends Listener {
                 return;
 
             // Make World Name Only Alphanumeric Characters
-            String regex = "^[a-zA-Z0-9öäåÖÄÅ/!?#$%^&*()_\\-{}|'\\[\\].,\b\\s\"]+$";
+            String regex = "^[a-zA-Z0-9öäåÖÄÅ/!?#$%^&*()_\\-{}|'\\[\\].,\b\\s\":;]+$";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(packet.getMessage());
             if(!matcher.matches()) {
