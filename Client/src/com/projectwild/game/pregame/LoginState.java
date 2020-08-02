@@ -120,5 +120,9 @@ public class LoginState implements GameState {
         Gdx.input.setInputProcessor(null);
         guiParent.destroy();
     }
+
+    public void addNotification(String text) {
+        guiParent.addComponent(new Notification(3500, text, Color.valueOf("56569c")));
+    }
     
 }

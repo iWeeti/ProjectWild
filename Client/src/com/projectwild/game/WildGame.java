@@ -8,12 +8,15 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.minlog.Log;
+import com.projectwild.game.pregame.ConnectingState;
 import com.projectwild.game.pregame.LoadingState;
 import com.projectwild.game.pregame.LoginState;
 import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.PacketRegistry;
 
 import java.io.IOException;
+import java.time.Clock;
 
 public class WildGame extends ApplicationAdapter {
 
@@ -29,12 +32,9 @@ public class WildGame extends ApplicationAdapter {
         client = new Client(10000000, 10000000);
         PacketRegistry.register(client.getKryo());
         client.start();
-        String address = System.getenv("address");
-        if (address == null)
-            address =  "104.248.65.87";
-        client.connect(5000, address, 7707, 7707);
-        
-        changeState(new LoadingState());
+
+        connectLoop();
+
         
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 1280;
@@ -43,6 +43,43 @@ public class WildGame extends ApplicationAdapter {
         config.vSyncEnabled = true;
         config.addIcon("data/assets/logo32.png", Files.FileType.Internal);
         new LwjglApplication(new WildGame(), config);
+    }
+
+    private static void connectLoop(){
+        String address = System.getenv("address");
+        if (address == null)
+            address =  "104.248.65.87";
+
+        // always try to reconnect if the client is disconnected.
+        String finalAddress = address;
+        Thread reconnectThread = new Thread(() -> {
+            // loop indefinitely
+            while (true){
+                // client disconnected
+                if (!client.isConnected()) {
+                    try {
+                        // connect
+                        client.connect(5000, finalAddress, 7707, 7707);
+                        // if connected switch to loading state
+                        changeState(new LoadingState());
+                    } catch (IOException e) {
+                        changeState(new ConnectingState());
+                        // failed to connect so wait 5 seconds and retry
+                        System.out.println("Failed to connect, trying again in 5 seconds.");
+                        if (currentState instanceof LoginState){
+                            LoginState state = (LoginState) currentState;
+                            state.addNotification("Failed to connect, trying again in 5 seconds.");
+                        }
+                    }
+                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+            }
+        });
+        reconnectThread.start();
     }
     
     public static void changeState(GameState state) {
@@ -83,7 +120,7 @@ public class WildGame extends ApplicationAdapter {
             currentState.initialize();
         }
 
-        if (currentState.getClass() == LoginState.class || currentState.getClass() == WorldSelectionState.class){
+        if (currentState != null && (currentState.getClass() == LoginState.class || currentState.getClass() == WorldSelectionState.class)){
             if (menuMusic == null){
                 menuMusic = assetManager.getSound("menu");
                 menuMusic.loop(0.25f);
@@ -94,9 +131,11 @@ public class WildGame extends ApplicationAdapter {
             if (menuMusic != null)
                 menuMusic.pause();
         }
-        
-        currentState.update();
-        currentState.render();
+
+        if (currentState != null){
+            currentState.update();
+            currentState.render();
+        }
     }
 
 
@@ -104,6 +143,10 @@ public class WildGame extends ApplicationAdapter {
     @Override
     public void dispose() {
         currentState.dispose();
+    }
+
+    public static boolean isConnected() {
+        return client.isConnected();
     }
     
 }
