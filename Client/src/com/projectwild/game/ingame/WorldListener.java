@@ -25,13 +25,16 @@ import com.projectwild.shared.packets.world.UpdateNetworkedVariablePacket;
 import com.projectwild.shared.packets.world.WorldDataPacket;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Clock;
 
 public class WorldListener extends Listener {
 
     private WorldState worldState;
+    private long lastOwSound;
 
     public WorldListener(WorldState worldState) {
         this.worldState = worldState;
+        lastOwSound = -1;
     }
 
     @Override
@@ -190,7 +193,12 @@ public class WorldListener extends Listener {
 
         if (obj instanceof PlaySoundPacket) {
             PlaySoundPacket packet = (PlaySoundPacket) obj;
-            WildGame.getAssetManager().getSound(packet.getSound()).play();
+            if (packet.getSound().equals("ow") && (lastOwSound == -1 || lastOwSound + 1000 < Clock.systemUTC().millis())){
+                WildGame.getAssetManager().getSound(packet.getSound()).play();
+                lastOwSound = Clock.systemUTC().millis();
+            } else {
+                WildGame.getAssetManager().getSound(packet.getSound()).play();
+            }
         }
 
     }

@@ -4,12 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.gui.GUIParent;
-import com.projectwild.game.gui.components.Notification;
+import com.projectwild.game.gui.pregame.GUIParent;
+import com.projectwild.game.gui.pregame.components.Notification;
 import com.projectwild.game.ingame.WorldState;
 import com.projectwild.shared.packets.world.RequestWorldResponsePacket;
-
-import javax.swing.*;
 
 public class WorldSelectionListener extends Listener {
 

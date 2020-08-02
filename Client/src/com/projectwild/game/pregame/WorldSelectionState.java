@@ -7,16 +7,13 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.gui.GUIParent;
-import com.projectwild.game.gui.components.Background;
-import com.projectwild.game.gui.components.Button;
-import com.projectwild.game.gui.components.Image;
-import com.projectwild.game.gui.components.TextField;
-import com.projectwild.shared.packets.LoginDataPacket;
+import com.projectwild.game.gui.pregame.GUIParent;
+import com.projectwild.game.gui.pregame.components.Background;
+import com.projectwild.game.gui.pregame.components.Button;
+import com.projectwild.game.gui.pregame.components.Image;
+import com.projectwild.game.gui.pregame.components.TextField;
 import com.projectwild.shared.packets.world.RequestWorldPacket;
 import com.projectwild.shared.utils.Vector2;
-
-import javax.swing.*;
 
 public class WorldSelectionState implements GameState {
 
