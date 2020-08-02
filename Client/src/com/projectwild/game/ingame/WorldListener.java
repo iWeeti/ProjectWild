@@ -193,12 +193,13 @@ public class WorldListener extends Listener {
 
         if (obj instanceof PlaySoundPacket) {
             PlaySoundPacket packet = (PlaySoundPacket) obj;
-            if (packet.getSound().equals("ow") && (lastOwSound == -1 || lastOwSound + 1000 < Clock.systemUTC().millis())){
-                WildGame.getAssetManager().getSound(packet.getSound()).play();
+            if (packet.getSound().equals("ow") && (lastOwSound == -1 || lastOwSound + 200 < Clock.systemUTC().millis())){
                 lastOwSound = Clock.systemUTC().millis();
-            } else {
                 WildGame.getAssetManager().getSound(packet.getSound()).play();
+            } else {
+                return;
             }
+            WildGame.getAssetManager().getSound(packet.getSound()).play();
         }
 
     }
