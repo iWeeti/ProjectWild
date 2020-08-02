@@ -49,7 +49,7 @@ public class Player {
         font.getData().setScale(0.3f);
         font.getData().markupEnabled = true;
         GlyphLayout layout = new GlyphLayout(font, nametag);
-        font.draw(sb, layout, (int) position.getX() + 17 - layout.width / 2, (int) position.getY() + 40);
+        font.draw(sb, layout, (int) position.getX() + 17 - layout.width / 2, (int) position.getY() + 37);
 
         for(ItemStack itemStack : equipped) {
             if(itemStack == null)
