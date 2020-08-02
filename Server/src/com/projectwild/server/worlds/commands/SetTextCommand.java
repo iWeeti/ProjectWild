@@ -18,7 +18,7 @@ public class SetTextCommand implements Command {
             return;
         }
 
-        Vector2 position = client.getPlayer().getPosition();
+        Vector2 position = client.getPlayer().getPosition().copy();
         position.changeX(16);
         Block block = world.pointCollisionBlock(position);
 
