@@ -154,6 +154,9 @@ public class World {
             playerSpawnPacket = new PlayerSpawnPacket(ply.getClient().getUserId(), ply.getNametag(), ply.getPosition(), false);
             if(!player.getClient().isInvisible())
                 client.sendTCP(playerSpawnPacket);
+
+            UpdateEquippedPacket equippedPacket = new UpdateEquippedPacket(ply.getClient().getUserId(), ply.getClient().getEquipped());
+            client.sendTCP(equippedPacket);
         }
 
         if (!client.isInvisible()) {
