@@ -77,7 +77,7 @@ public class LoginState implements GameState {
             }
         }
 
-        TextField username = new TextField(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 400), 200, "Username", Color.valueOf("56569c"), 8, _username);
+        TextField username = new TextField(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 400), 200, "Username", Color.valueOf("56569c"), 12, _username);
         guiParent.addComponent(username);
 
         TextField password = new TextField(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 500), 200, "Password", Color.valueOf("56569c"), 16, _password);

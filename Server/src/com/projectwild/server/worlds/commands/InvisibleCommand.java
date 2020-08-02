@@ -9,6 +9,7 @@ import com.projectwild.shared.packets.player.PlayerRemovePacket;
 import com.projectwild.shared.packets.player.PlayerSpawnPacket;
 
 public class InvisibleCommand implements Command {
+
     @Override
     public void execute(Client client, World world, Object[] args) {
         client.setInvisible(!client.isInvisible());
@@ -54,4 +55,5 @@ public class InvisibleCommand implements Command {
     public CommandHandler.ArgType[] arguments() {
         return new CommandHandler.ArgType[0];
     }
+
 }
