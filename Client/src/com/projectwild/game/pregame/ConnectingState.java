@@ -26,7 +26,7 @@ public class ConnectingState implements GameState {
 
         // layout
         guiParent.addComponent(new Background(Color.valueOf("2a2a4d")));
-        guiParent.addComponent(new Image(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 275), new Vector2(200), "logo128"));
+        guiParent.addComponent(new Image(new Vector2(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - 275), new Vector2(200), "logo128"));
         text = getText();
         guiParent.addComponent(text);
     }
@@ -44,7 +44,14 @@ public class ConnectingState implements GameState {
     }
 
     private Text getText() {
-        return new Text(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 475), Color.valueOf("56569c"), String.format("Reconnecting in %s seconds.", (int) Math.floor((lastConnected - System.currentTimeMillis())/1000) +5));
+        int secondsLeft = (int) Math.max(0, Math.floor((lastConnected - System.currentTimeMillis())/1000f) +5);
+        String _text;
+        if (secondsLeft > 0)
+            _text = String.format("Retrying connection in %s seconds.", secondsLeft);
+        else
+            _text = "Reconnecting...";
+
+        return new Text(new Vector2(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - 475), Color.valueOf("56569c"), _text);
     }
 
     @Override
