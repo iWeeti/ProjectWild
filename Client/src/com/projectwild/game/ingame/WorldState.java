@@ -5,15 +5,22 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
+import com.projectwild.game.gui.ingame.GuiComponent;
+import com.projectwild.game.gui.ingame.components.GuiBackground;
+import com.projectwild.game.gui.ingame.components.GuiButton;
+import com.projectwild.game.gui.ingame.components.GuiHolder;
+import com.projectwild.game.gui.ingame.components.GuiText;
 import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.packets.world.LeaveWorldPacket;
+import com.projectwild.shared.utils.Vector2;
 
 public class WorldState implements GameState {
 
@@ -22,6 +29,7 @@ public class WorldState implements GameState {
 
     private World world;
     private WorldListener listener;
+    private GuiHolder guiHolder;
 
     private InputMultiplexer inputMultiplexer;
 
@@ -52,8 +60,30 @@ public class WorldState implements GameState {
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false);
 
+        Vector2 escapeMenuSize = new Vector2(250, 500);
+
+        guiHolder = new GuiHolder(Gdx.graphics.getWidth() / 2f - escapeMenuSize.getX() / 2, Gdx.graphics.getHeight() / 2f - escapeMenuSize.getY() / 2);
+        GuiBackground guiBackground = new GuiBackground(guiHolder.getPosition().copy(), guiHolder, escapeMenuSize, Color.valueOf("2a2a4d"), 10);
+        Vector2 relPos = guiHolder.getPosition().copy();
+        relPos.changeX(escapeMenuSize.getX() / 2);
+        relPos.changeY(25);
+        GuiText reeeeText = new GuiText(relPos.copy(), guiBackground, "Escape Menu", "vcr_osd_32");
+        reeeeText.setLinearCentered(true);
+        relPos.changeY(reeeeText.getSize().getY() + 25);
+        GuiButton exitButton = new GuiButton(relPos.copy(), guiBackground, "Exit World", "vcr_osd_32", Color.valueOf("56569c"), 5) {
+            @Override
+            public void onClick() {
+                System.out.println("clicked");
+                LeaveWorldPacket leaveWorldPacket = new LeaveWorldPacket();
+                WildGame.getClient().sendTCP(leaveWorldPacket);
+                WildGame.changeState(new WorldSelectionState());
+            }
+        };
+        exitButton.setLinearCentered(true);
+
         // Setting Up Input Stuff
         inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(guiHolder.getInputAdapter());
         inputMultiplexer.addProcessor(new InputAdapter() {
             @Override
             public boolean scrolled(int amount) {
@@ -69,6 +99,10 @@ public class WorldState implements GameState {
 
                 if(inventoryHandler.mouseDown(screenX, screenY))
                     return false;
+
+                if (guiHolder.isVisible()){
+                    return false;
+                }
 
                 // Handle Block Input
                 Vector3 pos = camera.unproject(new Vector3(screenX, screenY, 0));
@@ -96,9 +130,7 @@ public class WorldState implements GameState {
                     if(chatHandler.isChatOpen()) {
                         chatHandler.toggleChat();
                     } else {
-                        LeaveWorldPacket leaveWorldPacket = new LeaveWorldPacket();
-                        WildGame.getClient().sendTCP(leaveWorldPacket);
-                        WildGame.changeState(new WorldSelectionState());
+                        guiHolder.toggleVisibility();
                     }
                 }
 
@@ -189,6 +221,7 @@ public class WorldState implements GameState {
 
         world.getLocalPlayer().handlePhysics();
         world.getLocalPlayer().handleAnimation();
+        guiHolder.update();
     }
     
     @Override
@@ -220,6 +253,9 @@ public class WorldState implements GameState {
         sb.setProjectionMatrix(hudCamera.combined);
         inventoryHandler.render(sb, sr);
         chatHandler.render(sb);
+        sb.end();
+        guiHolder.render(sb, sr);
+        sb.begin();
 
         // Render Health
         {

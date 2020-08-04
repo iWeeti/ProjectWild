@@ -32,10 +32,8 @@ public class WildGame extends ApplicationAdapter {
         client = new Client(10000000, 10000000);
         PacketRegistry.register(client.getKryo());
         client.start();
-
         connectLoop();
 
-        
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 1280;
         config.height = 720;
@@ -48,7 +46,7 @@ public class WildGame extends ApplicationAdapter {
     private static void connectLoop(){
         String address = System.getenv("address");
         if (address == null)
-            address =  "104.248.65.87";
+            address =  "ssh.weetisoft.xyz"; //"104.248.65.87";
 
         // always try to reconnect if the client is disconnected.
         String finalAddress = address;

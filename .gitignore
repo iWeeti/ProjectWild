@@ -4,3 +4,4 @@ data/projectwild.db
 Server/Server.iml
 Client/Client.iml
 *.world
+.gradle
