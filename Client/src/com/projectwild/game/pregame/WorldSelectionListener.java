@@ -22,6 +22,7 @@ public class WorldSelectionListener extends Listener {
         if(obj instanceof RequestWorldResponsePacket) {
             RequestWorldResponsePacket packet = (RequestWorldResponsePacket) obj;
             if(packet.isSuccess()) {
+                WildGame.getAssetManager().getSound("menu").pause();
                 WildGame.changeState(new WorldState());
             } else {
                 guiParent.addComponent(new Notification(2, packet.getMessage(), Color.valueOf("56569c")));

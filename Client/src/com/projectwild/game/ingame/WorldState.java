@@ -35,6 +35,7 @@ public class WorldState implements GameState {
     public void initialize() {
         backgroundSound = WildGame.getAssetManager().getSound("birds_forest");
         backgroundSound.loop(0.35f);
+        
         // Setting Up Handlers & Listeners
         inventoryHandler = new InventoryHandler();
         chatHandler = new ChatHandler();

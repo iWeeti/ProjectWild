@@ -23,6 +23,9 @@ public class WorldSelectionState implements GameState {
     
     @Override
     public void initialize() {
+        // Playing Music
+        WildGame.getAssetManager().getSound("menu").resume();
+        
         // Creating GUI Parent
         guiParent = new GUIParent();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();

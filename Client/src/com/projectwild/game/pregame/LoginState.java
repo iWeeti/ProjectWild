@@ -21,6 +21,9 @@ public class LoginState implements GameState {
 
     @Override
     public void initialize() {
+        // Playing Music
+        WildGame.getAssetManager().getSound("menu").loop(0.35f);
+        
         // Creating The GUIParent
         guiParent = new GUIParent();
         Gdx.input.setInputProcessor(guiParent.getInputAdapter());

@@ -24,7 +24,6 @@ public class WildGame extends ApplicationAdapter {
     private static GameState tempState, currentState;
     private static AssetManager assetManager;
     private static DiscordIntegration discordIntegration;
-    private static Sound menuMusic;
     
     public static void main(String[] args) throws IOException {
         discordIntegration = new DiscordIntegration();
@@ -34,11 +33,10 @@ public class WildGame extends ApplicationAdapter {
         client.start();
 
         connectLoop();
-
         
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 1280;
-        config.height = 720;
+        config.width = 1920;
+        config.height = 1080;
         config.resizable = false;
         config.vSyncEnabled = true;
         config.addIcon("data/assets/logo32.png", Files.FileType.Internal);
@@ -118,18 +116,6 @@ public class WildGame extends ApplicationAdapter {
             currentState = tempState;
             tempState = null;
             currentState.initialize();
-        }
-
-        if (currentState != null && (currentState.getClass() == LoginState.class || currentState.getClass() == WorldSelectionState.class)){
-            if (menuMusic == null){
-                menuMusic = assetManager.getSound("menu");
-                menuMusic.loop(0.25f);
-            } else {
-                menuMusic.resume();
-            }
-        } else {
-            if (menuMusic != null)
-                menuMusic.pause();
         }
 
         if (currentState != null){
