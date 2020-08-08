@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.ingame.WorldState;
 import com.projectwild.game.ingame.blocks.Block;
-import com.projectwild.game.ingame.player.LocalPlayer;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.utils.Vector2;
 

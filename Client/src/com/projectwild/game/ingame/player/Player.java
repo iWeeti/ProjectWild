@@ -1,13 +1,11 @@
 package com.projectwild.game.ingame.player;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.projectwild.game.WildGame;
 import com.projectwild.shared.ClothingPreset;
-import com.projectwild.shared.ItemPreset;
 import com.projectwild.shared.ItemStack;
 import com.projectwild.shared.utils.Vector2;
 

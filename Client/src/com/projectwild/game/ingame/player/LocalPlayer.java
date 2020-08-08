@@ -1,18 +1,23 @@
 package com.projectwild.game.ingame.player;
 
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.World;
 import com.projectwild.game.ingame.WorldState;
 import com.projectwild.game.ingame.blocks.Block;
+import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
+import com.projectwild.shared.packets.world.LeaveWorldPacket;
 import com.projectwild.shared.utils.Utils;
 import com.projectwild.shared.utils.Vector2;
 
 public class LocalPlayer extends Player {
-
-    public boolean KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT;
-    public long KEY_UP_TIME;
+    
+    private PlayerInputAdapter inputAdapter;
+    private boolean KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT;
+    private long KEY_UP_TIME;
 
     private Vector2 oldVelocity, velocity;
     private float speedMultiplier;
@@ -23,11 +28,12 @@ public class LocalPlayer extends Player {
 
     public LocalPlayer(int userId, String username) {
         super(userId, username);
+        inputAdapter = new PlayerInputAdapter();
         speedMultiplier = 1.0f;
         hasAccess = false;
         velocity = new Vector2();
         noclip = false;
-        this.health = 100;
+        health = 100;
     }
 
     public void handlePhysics() {
@@ -277,5 +283,65 @@ public class LocalPlayer extends Player {
 
     public int getHealth() {
         return health;
+    }
+    
+    public PlayerInputAdapter getInputAdapter() {
+        return inputAdapter;
+    }
+    
+    public class PlayerInputAdapter extends InputAdapter {
+        @Override
+        public boolean keyDown(int keycode) {
+            switch(keycode) {
+                case Input.Keys.W:
+                case Input.Keys.UP:
+                case Input.Keys.SPACE:
+                    if(isOnGround()) {
+                        getVelocity().setY(4.0);
+                       KEY_UP_TIME = System.currentTimeMillis();
+                    }
+                    KEY_UP = true;
+                    break;
+                case Input.Keys.S:
+                case Input.Keys.DOWN:
+                    KEY_DOWN = true;
+                    break;
+                case Input.Keys.A:
+                case Input.Keys.LEFT:
+                    KEY_LEFT = true;
+                    break;
+                case Input.Keys.D:
+                case Input.Keys.RIGHT:
+                    KEY_RIGHT = true;
+                    break;
+            }
+        
+            return false;
+        }
+    
+        @Override
+        public boolean keyUp(int keycode) {
+            switch(keycode) {
+                case Input.Keys.W:
+                case Input.Keys.UP:
+                case Input.Keys.SPACE:
+                    KEY_UP = false;
+                    KEY_UP_TIME = -1;
+                    break;
+                case Input.Keys.S:
+                case Input.Keys.DOWN:
+                    KEY_DOWN = false;
+                    break;
+                case Input.Keys.A:
+                case Input.Keys.LEFT:
+                    KEY_LEFT = false;
+                    break;
+                case Input.Keys.D:
+                case Input.Keys.RIGHT:
+                    KEY_RIGHT = false;
+                    break;
+            }
+            return false;
+        }
     }
 }

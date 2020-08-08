@@ -1,7 +1,6 @@
 package com.projectwild.game.ingame.blocks.types;
 
 import com.projectwild.game.ingame.blocks.Block;
-import com.projectwild.game.ingame.player.LocalPlayer;
 import com.projectwild.shared.BlockPreset;
 
 public class HurtingBlock extends Block {

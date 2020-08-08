@@ -29,6 +29,7 @@ public class WorldState implements GameState {
     private ShapeRenderer sr;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
+    
     private Sound backgroundSound;
 
     @Override
@@ -55,6 +56,8 @@ public class WorldState implements GameState {
 
         // Setting Up Input Stuff
         inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(chatHandler.getTypeListener());
+        inputMultiplexer.addProcessor(inventoryHandler.getInputAdapter());
         inputMultiplexer.addProcessor(new InputAdapter() {
             @Override
             public boolean scrolled(int amount) {
@@ -67,10 +70,7 @@ public class WorldState implements GameState {
                 // Check For HUD Interaction
                 if(chatHandler.isChatOpen())
                     return false;
-
-                if(inventoryHandler.mouseDown(screenX, screenY))
-                    return false;
-
+                
                 // Handle Block Input
                 Vector3 pos = camera.unproject(new Vector3(screenX, screenY, 0));
 
@@ -81,102 +81,21 @@ public class WorldState implements GameState {
                 WildGame.getClient().sendTCP(packet);
                 return false;
             }
-
-            @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                // Check For HUD Interaction
-                if(inventoryHandler.mouseUp(screenX, screenY))
-                    return false;
-
-                return false;
-            }
-
+    
             @Override
             public boolean keyDown(int keycode) {
-                if(keycode == Input.Keys.ESCAPE) {
-                    if(chatHandler.isChatOpen()) {
-                        chatHandler.toggleChat();
-                    } else {
-                        LeaveWorldPacket leaveWorldPacket = new LeaveWorldPacket();
-                        WildGame.getClient().sendTCP(leaveWorldPacket);
-                        WildGame.changeState(new WorldSelectionState());
-                    }
+                if(keycode != Input.Keys.ESCAPE)
+                    return false;
+                if(chatHandler.isChatOpen()) {
+                    chatHandler.toggleChat();
+                } else {
+                    LeaveWorldPacket leaveWorldPacket = new LeaveWorldPacket();
+                    WildGame.getClient().sendTCP(leaveWorldPacket);
+                    WildGame.changeState(new WorldSelectionState());
                 }
-
-                if(world == null)
-                    return false;
-
-                if(world.getLocalPlayer() == null)
-                    return false;
-
-                if(chatHandler.isChatOpen())
-                    return false;
-
-                switch(keycode) {
-                    case Input.Keys.W:
-                    case Input.Keys.UP:
-                    case Input.Keys.SPACE:
-                        if(world.getLocalPlayer().isOnGround()) {
-                            world.getLocalPlayer().getVelocity().setY(4.0);
-                            world.getLocalPlayer().KEY_UP_TIME = System.currentTimeMillis();
-                        }
-                        world.getLocalPlayer().KEY_UP = true;
-                        break;
-                    case Input.Keys.S:
-                    case Input.Keys.DOWN:
-                        world.getLocalPlayer().KEY_DOWN = true;
-                        break;
-                    case Input.Keys.A:
-                    case Input.Keys.LEFT:
-                        world.getLocalPlayer().KEY_LEFT = true;
-                        break;
-                    case Input.Keys.D:
-                    case Input.Keys.RIGHT:
-                        world.getLocalPlayer().KEY_RIGHT = true;
-                        break;
-                }
-
-                if(chatHandler.isChatOpen())
-                    return false;
-
-                if(inventoryHandler.handleKeyInput(keycode))
-                    return false;
-
-                return false;
-            }
-
-            @Override
-            public boolean keyUp(int keycode) {
-                if(world == null)
-                    return false;
-
-                if(world.getLocalPlayer() == null)
-                    return false;
-
-                switch(keycode) {
-                    case Input.Keys.W:
-                    case Input.Keys.UP:
-                    case Input.Keys.SPACE:
-                        world.getLocalPlayer().KEY_UP = false;
-                        world.getLocalPlayer().KEY_UP_TIME = -1;
-                        break;
-                    case Input.Keys.S:
-                    case Input.Keys.DOWN:
-                        world.getLocalPlayer().KEY_DOWN = false;
-                        break;
-                    case Input.Keys.A:
-                    case Input.Keys.LEFT:
-                        world.getLocalPlayer().KEY_LEFT = false;
-                        break;
-                    case Input.Keys.D:
-                    case Input.Keys.RIGHT:
-                        world.getLocalPlayer().KEY_RIGHT = false;
-                        break;
-                }
-                return false;
+                return true;
             }
         });
-        inputMultiplexer.addProcessor(chatHandler.getTypeListener());
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
     
@@ -224,11 +143,12 @@ public class WorldState implements GameState {
 
         // Render Health
         {
+            int size = (int) (24 * WildGame.getGUIScale());
             int hearts = (int) Math.floor(world.localPlayer.getHealth() / 10f);
-            int x = 8;
+            int x = size / 5;
             for(int i = 0; i < hearts; i++) {
-                sb.draw(WildGame.getAssetManager().getAsset("heart"), x, Gdx.graphics.getHeight() - 32, 24, 24);
-                x += 28;
+                sb.draw(WildGame.getAssetManager().getAsset("heart"), x, Gdx.graphics.getHeight() - size * 1.2f, size, size);
+                x += size * 1.1f;
             }
         }
 
@@ -249,7 +169,11 @@ public class WorldState implements GameState {
     public World getWorld() {
         return world;
     }
-
+    
+    public InputMultiplexer getInputMultiplexer() {
+        return inputMultiplexer;
+    }
+    
     public InventoryHandler getInventoryHandler() {
         return inventoryHandler;
     }

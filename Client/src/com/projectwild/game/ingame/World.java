@@ -12,7 +12,6 @@ import com.projectwild.game.ingame.player.LocalPlayer;
 import com.projectwild.game.ingame.player.Player;
 import com.projectwild.shared.BlockPreset;
 import com.projectwild.shared.packets.world.WorldDataPacket;
-import com.projectwild.shared.utils.Utils;
 import com.projectwild.shared.utils.Vector2;
 
 import java.lang.reflect.InvocationTargetException;
@@ -62,7 +61,7 @@ public class World {
     }
 
     public void renderWorld(SpriteBatch sb, ShapeRenderer sr, OrthographicCamera camera) {
-        // Render Background TODO: look this over / rewrite it
+        // Render Background
         {
             Texture bg = WildGame.getAssetManager().getAsset("background");
             Texture bgTexture = WildGame.getAssetManager().getAsset(background);
@@ -199,6 +198,7 @@ public class World {
 
     public LocalPlayer createLocalPlayer(int userId, String username) {
         localPlayer = new LocalPlayer(userId, username);
+        ((WorldState) WildGame.getState()).getInputMultiplexer().addProcessor(localPlayer.getInputAdapter());
         return localPlayer;
     }
 

@@ -5,7 +5,6 @@ import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.blocks.Block;
 import com.projectwild.game.ingame.blocks.BlockTypes;
-import com.projectwild.game.ingame.player.LocalPlayer;
 import com.projectwild.game.ingame.player.Player;
 import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.BlockPreset;
