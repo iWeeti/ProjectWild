@@ -3,10 +3,10 @@ package com.projectwild.game.pregame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.projectwild.game.GameState;
-import com.projectwild.game.gui.pregame.GUIParent;
-import com.projectwild.game.gui.pregame.components.Background;
-import com.projectwild.game.gui.pregame.components.Image;
-import com.projectwild.game.gui.pregame.components.Text;
+import com.projectwild.game.pregame.gui.PGUIParent;
+import com.projectwild.game.pregame.gui.components.Background;
+import com.projectwild.game.pregame.gui.components.Image;
+import com.projectwild.game.pregame.gui.components.Text;
 import com.projectwild.shared.utils.Vector2;
 
 import java.time.Clock;
@@ -14,14 +14,14 @@ import java.time.Clock;
 public class ConnectingState implements GameState {
 
     private long lastConnected;
-    GUIParent guiParent;
+    PGUIParent guiParent;
     Text text;
 
     @Override
     public void initialize() {
         lastConnected = Clock.systemUTC().millis();
 
-        guiParent = new GUIParent();
+        guiParent = new PGUIParent();
         Gdx.input.setInputProcessor(guiParent.getInputAdapter());
 
         // layout

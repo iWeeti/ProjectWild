@@ -21,12 +21,11 @@ public class WildGame extends ApplicationAdapter {
     private static DiscordIntegration discordIntegration;
     
     public static void main(String[] args) {
-        // Only Done On Desktop
         discordIntegration = new DiscordIntegration();
         
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = 1920;
-        config.height = 1080;
+        config.width = (int) (1500);
+        config.height = (int) (800);
         config.resizable = false;
         config.vSyncEnabled = true;
         config.addIcon("data/assets/logo32.png", Files.FileType.Internal);

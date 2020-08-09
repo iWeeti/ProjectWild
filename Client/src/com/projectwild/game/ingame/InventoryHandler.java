@@ -67,8 +67,8 @@ public class InventoryHandler {
 
             // Draw Equipped slots
             for(int i = 0; i < 9; i++) {
-                if(getEquipped()[i] == null && i > 0) {
-                    sb.draw(TextureRegion.split(WildGame.getAssetManager().getAsset("inventory_slot_equip"), 40, 40)[0][i-1], 20 + 6 * slotSize + 20, 20 + i * slotSize, slotSize, slotSize);
+                if(getEquipped()[i] == null) {
+                    sb.draw(TextureRegion.split(WildGame.getAssetManager().getAsset("inventory_slot_equip"), 40, 40)[0][i], 20 + 6 * slotSize + 20, 20 + i * slotSize, slotSize, slotSize);
                 } else {
                     sb.draw(WildGame.getAssetManager().getAsset("inventory_slot"), 20 + 6 * slotSize + 20, 20 + i * slotSize, slotSize, slotSize);
                     
@@ -76,7 +76,7 @@ public class InventoryHandler {
                         continue;
                     
                     if(getEquipped()[i] != null)
-                        drawItemStack(sb, getEquipped()[i], 20 + 6 * slotSize + 20 + slotSize / 4, 30 + i * slotSize);
+                        drawItemStack(sb, getEquipped()[i], 40 + 6 * slotSize + slotSize / 4, 20 + i * slotSize + slotSize / 4);
                 }
             }
         }

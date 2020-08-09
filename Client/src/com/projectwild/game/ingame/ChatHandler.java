@@ -49,16 +49,15 @@ public class ChatHandler {
 
         GlyphLayout msgLayout = new GlyphLayout(font, (typeListener.getString().startsWith("/") ? "[RED]CMD >> [WHITE]" : "[YELLOW]MSG >> [WHITE]")  + typeListener.getString());
 
-        if (chatOpen)
-            font.draw(sb, msgLayout, 50, 50);
+        if(chatOpen)
+            font.draw(sb, msgLayout, 50, 50 + msgLayout.height);
 
         float y = chatOpen ? msgLayout.height + 50 : 50;
         for (Message message : messages) {
-            if (chatOpen || message.time + 5000 >  Clock.systemUTC().millis()) {
+            if (chatOpen || message.time + 5000 > Clock.systemUTC().millis()) {
                 GlyphLayout layout = new GlyphLayout(font, message.content);
-                y += layout.height;
+                y += layout.height + 15;
                 font.draw(sb, layout, 50, y);
-                y += 15;
             }
         }
     }
