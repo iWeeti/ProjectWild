@@ -9,7 +9,6 @@ import com.projectwild.game.WildGame;
 import com.projectwild.shared.packets.ChatMessagePacket;
 
 import java.time.Clock;
-import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,19 +45,19 @@ public class ChatHandler {
 
         BitmapFont font = WildGame.getAssetManager().getFont("vcr_osd_16");
         font.getData().markupEnabled = true;
+        font.getData().setScale(WildGame.getGUIScale());
 
         GlyphLayout msgLayout = new GlyphLayout(font, (typeListener.getString().startsWith("/") ? "[RED]CMD >> [WHITE]" : "[YELLOW]MSG >> [WHITE]")  + typeListener.getString());
 
-        if (chatOpen)
-            font.draw(sb, msgLayout, 50, 50);
+        if(chatOpen)
+            font.draw(sb, msgLayout, 50, 50 + msgLayout.height);
 
         float y = chatOpen ? msgLayout.height + 50 : 50;
         for (Message message : messages) {
-            if (chatOpen || message.time + 5000 >  Clock.systemUTC().millis()) {
+            if (chatOpen || message.time + 5000 > Clock.systemUTC().millis()) {
                 GlyphLayout layout = new GlyphLayout(font, message.content);
-                y += layout.height;
+                y += layout.height + 15;
                 font.draw(sb, layout, 50, y);
-                y += 15;
             }
         }
     }
@@ -110,30 +109,30 @@ public class ChatHandler {
                 chatHandler.toggleChat();
                 clear();
             }
-
+            
+            if(!chatHandler.isChatOpen())
+                return false;
+            
             if(keycode == Input.Keys.UP) {
-                if(chatHandler.isChatOpen()) {
-                    if(chatHandler.localMessages.size() - 1 > chatHandler.localCounter)
-                        string = chatHandler.localMessages.get(++chatHandler.localCounter);
-                }
+                if(chatHandler.localMessages.size() - 1 > chatHandler.localCounter)
+                    string = chatHandler.localMessages.get(++chatHandler.localCounter);
             }
 
             if(keycode == Input.Keys.DOWN) {
-                if(chatHandler.isChatOpen()) {
-                    if(chatHandler.localCounter == 0)
-                        string = "";
+                if(chatHandler.localCounter == 0)
+                    string = "";
 
-                    if(0 < chatHandler.localCounter)
-                        string = chatHandler.localMessages.get(--chatHandler.localCounter);
-                }
+                if(0 < chatHandler.localCounter)
+                    string = chatHandler.localMessages.get(--chatHandler.localCounter);
             }
 
-            return false;
+            return true;
         }
 
         @Override
         public boolean keyTyped(char character) {
-            if (!chatHandler.isChatOpen()) return true;
+            if (!chatHandler.isChatOpen()) return false;
+            
             String input = Character.toString(character);
             String regex = "^[a-zA-Z0-9öäåÖÄÅ/!?#$%^&*()_\\-{}|'\\[\\].,\b\\s\":;]+$";
             Pattern pattern = Pattern.compile(regex);

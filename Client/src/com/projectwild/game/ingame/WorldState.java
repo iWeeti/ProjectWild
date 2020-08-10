@@ -5,12 +5,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
+import com.projectwild.game.ingame.gui.GUIHandler;
+import com.projectwild.game.ingame.gui.GUIUtils;
+import com.projectwild.game.ingame.gui.components.ButtonComponent;
+import com.projectwild.game.ingame.gui.GUIWindow;
 import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.packets.world.LeaveWorldPacket;
@@ -19,6 +24,7 @@ public class WorldState implements GameState {
 
     private InventoryHandler inventoryHandler;
     private ChatHandler chatHandler;
+    private GUIHandler guiHandler;
 
     private World world;
     private WorldListener listener;
@@ -29,15 +35,19 @@ public class WorldState implements GameState {
     private ShapeRenderer sr;
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
+    private OrthographicCamera guiCamera;
+    
     private Sound backgroundSound;
-
+    
     @Override
     public void initialize() {
         backgroundSound = WildGame.getAssetManager().getSound("birds_forest");
         backgroundSound.loop(0.35f);
+        
         // Setting Up Handlers & Listeners
         inventoryHandler = new InventoryHandler();
         chatHandler = new ChatHandler();
+        guiHandler = new GUIHandler();
 
         listener = new WorldListener(this);
         WildGame.getClient().addListener(listener);
@@ -51,9 +61,15 @@ public class WorldState implements GameState {
 
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false);
+        
+        guiCamera = new OrthographicCamera();
+        guiCamera.setToOrtho(true);
 
         // Setting Up Input Stuff
         inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(guiHandler.getInputAdapter());
+        inputMultiplexer.addProcessor(chatHandler.getTypeListener());
+        inputMultiplexer.addProcessor(inventoryHandler.getInputAdapter());
         inputMultiplexer.addProcessor(new InputAdapter() {
             @Override
             public boolean scrolled(int amount) {
@@ -66,10 +82,7 @@ public class WorldState implements GameState {
                 // Check For HUD Interaction
                 if(chatHandler.isChatOpen())
                     return false;
-
-                if(inventoryHandler.mouseDown(screenX, screenY))
-                    return false;
-
+                
                 // Handle Block Input
                 Vector3 pos = camera.unproject(new Vector3(screenX, screenY, 0));
 
@@ -80,102 +93,37 @@ public class WorldState implements GameState {
                 WildGame.getClient().sendTCP(packet);
                 return false;
             }
-
-            @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                // Check For HUD Interaction
-                if(inventoryHandler.mouseUp(screenX, screenY))
-                    return false;
-
-                return false;
-            }
-
+    
             @Override
             public boolean keyDown(int keycode) {
-                if(keycode == Input.Keys.ESCAPE) {
-                    if(chatHandler.isChatOpen()) {
-                        chatHandler.toggleChat();
+                if(keycode != Input.Keys.ESCAPE)
+                    return false;
+                
+                if(chatHandler.isChatOpen()) {
+                    chatHandler.toggleChat();
+                } else {
+                    if(guiHandler.getWindow("pause") == null) {
+                        GUIWindow pauseWindow = guiHandler.createWindow("pause", Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 5 * 4);
+                        ButtonComponent exitButton = new ButtonComponent("Exit World", new Color(244f / 255f, 85f / 255f, 85f / 255f, 1f));
+                        exitButton.setCallback(() -> {
+                            LeaveWorldPacket leaveWorldPacket = new LeaveWorldPacket();
+                            WildGame.getClient().sendTCP(leaveWorldPacket);
+                            WildGame.changeState(new WorldSelectionState());
+                        });
+                        pauseWindow.addComponent(exitButton, GUIUtils.Align.CENTER);
+                        ButtonComponent settingsButton = new ButtonComponent("Settings");
+                        settingsButton.setCallback(() -> {
+                            guiHandler.destroyWindow("pause");
+                            guiHandler.createWindow("settings", Gdx.graphics.getWidth() / 5 * 4, Gdx.graphics.getHeight() / 5 * 4);
+                        });
+                        pauseWindow.addComponent(settingsButton, GUIUtils.Align.CENTER);
                     } else {
-                        LeaveWorldPacket leaveWorldPacket = new LeaveWorldPacket();
-                        WildGame.getClient().sendTCP(leaveWorldPacket);
-                        WildGame.changeState(new WorldSelectionState());
+                        guiHandler.destroyWindow("pause");
                     }
                 }
-
-                if(world == null)
-                    return false;
-
-                if(world.getLocalPlayer() == null)
-                    return false;
-
-                if(chatHandler.isChatOpen())
-                    return false;
-
-                switch(keycode) {
-                    case Input.Keys.W:
-                    case Input.Keys.UP:
-                    case Input.Keys.SPACE:
-                        if(world.getLocalPlayer().isOnGround()) {
-                            world.getLocalPlayer().getVelocity().setY(4.0);
-                            world.getLocalPlayer().KEY_UP_TIME = System.currentTimeMillis();
-                        }
-                        world.getLocalPlayer().KEY_UP = true;
-                        break;
-                    case Input.Keys.S:
-                    case Input.Keys.DOWN:
-                        world.getLocalPlayer().KEY_DOWN = true;
-                        break;
-                    case Input.Keys.A:
-                    case Input.Keys.LEFT:
-                        world.getLocalPlayer().KEY_LEFT = true;
-                        break;
-                    case Input.Keys.D:
-                    case Input.Keys.RIGHT:
-                        world.getLocalPlayer().KEY_RIGHT = true;
-                        break;
-                }
-
-                if(chatHandler.isChatOpen())
-                    return false;
-
-                if(inventoryHandler.handleKeyInput(keycode))
-                    return false;
-
-                return false;
-            }
-
-            @Override
-            public boolean keyUp(int keycode) {
-                if(world == null)
-                    return false;
-
-                if(world.getLocalPlayer() == null)
-                    return false;
-
-                switch(keycode) {
-                    case Input.Keys.W:
-                    case Input.Keys.UP:
-                    case Input.Keys.SPACE:
-                        world.getLocalPlayer().KEY_UP = false;
-                        world.getLocalPlayer().KEY_UP_TIME = -1;
-                        break;
-                    case Input.Keys.S:
-                    case Input.Keys.DOWN:
-                        world.getLocalPlayer().KEY_DOWN = false;
-                        break;
-                    case Input.Keys.A:
-                    case Input.Keys.LEFT:
-                        world.getLocalPlayer().KEY_LEFT = false;
-                        break;
-                    case Input.Keys.D:
-                    case Input.Keys.RIGHT:
-                        world.getLocalPlayer().KEY_RIGHT = false;
-                        break;
-                }
-                return false;
+                return true;
             }
         });
-        inputMultiplexer.addProcessor(chatHandler.getTypeListener());
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
     
@@ -193,10 +141,7 @@ public class WorldState implements GameState {
     
     @Override
     public void render() {
-        if(world == null)
-            return;
-
-        if(world.getLocalPlayer() == null)
+        if(world == null || world.getLocalPlayer() == null)
             return;
 
         // Update camera position
@@ -220,17 +165,23 @@ public class WorldState implements GameState {
         sb.setProjectionMatrix(hudCamera.combined);
         inventoryHandler.render(sb, sr);
         chatHandler.render(sb);
-
-        // Render Health
+        
         {
+            // Health Rendering
+            int size = (int) (24 * WildGame.getGUIScale());
             int hearts = (int) Math.floor(world.localPlayer.getHealth() / 10f);
-            int x = 8;
+            int x = size / 5;
             for(int i = 0; i < hearts; i++) {
-                sb.draw(WildGame.getAssetManager().getAsset("heart"), x, Gdx.graphics.getHeight() - 32, 24, 24);
-                x += 28;
+                sb.draw(WildGame.getAssetManager().getAsset("heart"), x, Gdx.graphics.getHeight() - size * 1.2f, size, size);
+                x += size * 1.1f;
             }
         }
-
+        
+        // Render GUI
+        sr.setProjectionMatrix(guiCamera.combined);
+        sb.setProjectionMatrix(guiCamera.combined);
+        guiHandler.render(sb, sr);
+        
         sb.end();
     }
     
@@ -248,7 +199,11 @@ public class WorldState implements GameState {
     public World getWorld() {
         return world;
     }
-
+    
+    public InputMultiplexer getInputMultiplexer() {
+        return inputMultiplexer;
+    }
+    
     public InventoryHandler getInventoryHandler() {
         return inventoryHandler;
     }
@@ -256,5 +211,9 @@ public class WorldState implements GameState {
     public ChatHandler getChatHandler() {
         return chatHandler;
     }
-
+    
+    public GUIHandler getGuiHandler() {
+        return guiHandler;
+    }
+    
 }

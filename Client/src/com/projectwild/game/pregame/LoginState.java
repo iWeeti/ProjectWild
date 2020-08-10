@@ -4,16 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.gui.pregame.GUIParent;
-import com.projectwild.game.gui.pregame.components.*;
+import com.projectwild.game.pregame.gui.PGUIParent;
+import com.projectwild.game.pregame.gui.components.*;
 import com.projectwild.shared.packets.LoginDataPacket;
+import com.projectwild.shared.packets.LoginResponsePacket;
 import com.projectwild.shared.utils.Vector2;
 
 public class LoginState implements GameState {
 
-    private GUIParent guiParent;
+    private PGUIParent guiParent;
     private boolean isRegistering;
 
     private LoginListener loginListener;
@@ -21,12 +24,15 @@ public class LoginState implements GameState {
 
     @Override
     public void initialize() {
+        // Playing Music
+        WildGame.getAssetManager().getSound("menu").loop(0.35f);
+        
         // Creating The GUIParent
-        guiParent = new GUIParent();
+        guiParent = new PGUIParent();
         Gdx.input.setInputProcessor(guiParent.getInputAdapter());
 
         // Setting Up The State
-        loginListener = new LoginListener(guiParent);
+        loginListener = new LoginListener();
         WildGame.getClient().addListener(loginListener);
 
         WildGame.getDiscordIntegration().setPresence("In Main Menu");
@@ -120,9 +126,21 @@ public class LoginState implements GameState {
         Gdx.input.setInputProcessor(null);
         guiParent.destroy();
     }
-
-    public void addNotification(String text) {
-        guiParent.addComponent(new Notification(3500, text, Color.valueOf("56569c")));
+    
+    public class LoginListener extends Listener {
+        
+        @Override
+        public void received(Connection connection, Object obj) {
+            if(obj instanceof LoginResponsePacket) {
+                LoginResponsePacket packet = (LoginResponsePacket) obj;
+                if(!packet.isSuccess()) {
+                    guiParent.addComponent(new Notification(2, packet.getMessage(), Color.valueOf("56569c")));
+                } else {
+                    WildGame.changeState(new WorldSelectionState());
+                }
+            }
+        }
+        
     }
     
 }

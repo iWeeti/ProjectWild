@@ -10,9 +10,8 @@
     <orderEntry type="library" name="jasypt-1.9.2" level="project" />
     <orderEntry type="library" name="sqlite-jdbc-3.23.1" level="project" />
     <orderEntry type="module" module-name="Shared" />
-    <orderEntry type="library" name="kryonet" level="project" />
     <orderEntry type="library" name="gson-2.8.6" level="project" />
     <orderEntry type="library" name="kryonet-2.21-all" level="project" />
-    <orderEntry type="library" name="libs" level="project" />
+    <orderEntry type="library" name="java-discord-rpc-2.0.1-all" level="project" />
   </component>
 </module>

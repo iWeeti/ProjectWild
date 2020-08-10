@@ -63,18 +63,18 @@ public class AssetManager {
         return tilesets;
     }
     
-    private HashMap<String, Texture> loadAssets(String path){
+    private HashMap<String, Texture> loadAssets(String path) {
         HashMap<String, Texture> assets = new HashMap<>();
         File[] files = new File(path).listFiles();
-
-        if(files == null)
+    
+        if (files == null)
             return assets;
-        
-        for(File f : files){
-            if(f.isDirectory()) {
+    
+        for (File f : files) {
+            if (f.isDirectory()) {
                 continue;
             }
-
+        
             Texture texture = new Texture(f.getPath());
             assets.put(f.getName().replace(".png", "").toLowerCase(), texture);
         }
@@ -95,8 +95,8 @@ public class AssetManager {
             if(f.getName().contains(".fnt")){
                 FileHandle fileHandle = new FileHandle(f);
                 
-                BitmapFont font = new BitmapFont(fileHandle);
-                fonts.put(f.getName().replace(".fnt", "").toLowerCase(), font);
+                fonts.put(f.getName().replace(".fnt", "").toLowerCase(), new BitmapFont(fileHandle));
+                fonts.put(f.getName().replace(".fnt", "").toLowerCase()+"_flipped", new BitmapFont(fileHandle, true));
             }
         }
         return fonts;

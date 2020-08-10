@@ -5,31 +5,35 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
-import com.projectwild.game.gui.pregame.GUIParent;
-import com.projectwild.game.gui.pregame.components.Background;
-import com.projectwild.game.gui.pregame.components.Button;
-import com.projectwild.game.gui.pregame.components.Image;
-import com.projectwild.game.gui.pregame.components.TextField;
+import com.projectwild.game.pregame.gui.PGUIParent;
+import com.projectwild.game.pregame.gui.components.*;
+import com.projectwild.game.ingame.WorldState;
 import com.projectwild.shared.packets.world.RequestWorldPacket;
+import com.projectwild.shared.packets.world.RequestWorldResponsePacket;
 import com.projectwild.shared.utils.Vector2;
 
 public class WorldSelectionState implements GameState {
 
-    private GUIParent guiParent;
+    private PGUIParent guiParent;
     
     private WorldSelectionListener worldSelectionListener;
     
     @Override
     public void initialize() {
+        // Playing Music
+        WildGame.getAssetManager().getSound("menu").resume();
+        
         // Creating GUI Parent
-        guiParent = new GUIParent();
+        guiParent = new PGUIParent();
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(guiParent.getInputAdapter());
 
         // Setting Up State
-        worldSelectionListener = new WorldSelectionListener(guiParent);
+        worldSelectionListener = new WorldSelectionListener();
         WildGame.getClient().addListener(worldSelectionListener);
 
         WildGame.getDiscordIntegration().setPresence("In World Selection");
@@ -75,6 +79,23 @@ public class WorldSelectionState implements GameState {
         WildGame.getClient().removeListener(worldSelectionListener);
         Gdx.input.setInputProcessor(null);
         guiParent.destroy();
+    }
+    
+    public class WorldSelectionListener extends Listener {
+        
+        @Override
+        public void received(Connection connection, Object obj) {
+            if(obj instanceof RequestWorldResponsePacket) {
+                RequestWorldResponsePacket packet = (RequestWorldResponsePacket) obj;
+                if(packet.isSuccess()) {
+                    WildGame.getAssetManager().getSound("menu").pause();
+                    WildGame.changeState(new WorldState());
+                } else {
+                    guiParent.addComponent(new Notification(2, packet.getMessage(), Color.valueOf("56569c")));
+                }
+            }
+        }
+        
     }
     
 }

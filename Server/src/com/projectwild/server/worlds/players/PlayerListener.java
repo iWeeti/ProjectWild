@@ -69,9 +69,6 @@ public class PlayerListener extends Listener {
                 }
             }
 
-            if(!player.isOverride() && isColliding)
-                return;
-
             // checks world border
             if(packet.getY() < 0 || packet.getX() < 0 || packet.getZ() < 0)
                 return;
@@ -89,9 +86,10 @@ public class PlayerListener extends Listener {
             if(!player.isOverride() && player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getBlockType() == BlockTypes.UNBREAKABLE.getId())
                 return;
 
-            // Perform Interaction
+            // Perform Interaction for placing
             if(player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getId() == 0) {
                 // Doing Inventory Stuff
+
                 if(packet.getSlot() >= 8 || packet.getSlot() < 0)
                     return;
 
@@ -102,11 +100,16 @@ public class PlayerListener extends Listener {
                 if(itemStack.getItemPreset().getItemType() != ItemTypes.BLOCK.getId())
                     return;
 
+                if(!player.isOverride() && isColliding) // TODO: check if the collision type is 1 so you can place blocks you can walkthrough on yourself and others.
+                    return;
+
                 player.getClient().setInventorySlot(packet.getSlot(), new ItemStack(itemStack.getItemPreset(), itemStack.getAmount()-1));
 
                 // Placing Block
                 player.getWorld().setBlock(packet.getX(), packet.getY(), packet.getZ(), itemStack.getItemPreset().getBlockId());
-            } else {
+            }
+            // Perform interaction for breaking
+            else {
                 // Doing Inventory Stuff
                 int blockId = player.getWorld().getBlocks()[packet.getY()][packet.getX()][packet.getZ()].getBlockPreset().getId();
                 for(ItemPreset preset : ItemPreset.getItemPresets()) {
