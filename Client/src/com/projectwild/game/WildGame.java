@@ -55,7 +55,7 @@ public class WildGame extends ApplicationAdapter {
     @Override
     public void create() {
         assetManager = new AssetManager();
-        
+
         // Creating / Setting Up Network Client
         client = new Client(10000000, 10000000);
         PacketRegistry.register(client.getKryo());

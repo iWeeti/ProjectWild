@@ -225,7 +225,7 @@ public class InventoryHandler {
                 if(slot.isEquipped() ? getEquipped()[slot.getSlot()] != null : inventory[slot.getSlot()] != null)
                     draggingSlot = slot;
             
-            if(!inventoryOpen && slot.getSlot() < 8) {
+            if(!inventoryOpen && slot.getSlot() < 8 && !slot.isEquipped()) {
                 activeSlot = slot.getSlot();
                 return true;
             }

@@ -16,8 +16,12 @@ public abstract class GUIComponent {
     
     protected abstract void render(SpriteBatch sb, ShapeRenderer sr);
     
-    protected abstract void clicked(int x, int y);
-    
+    protected abstract void mouseDown(int x, int y);
+
+    protected abstract void mouseUp(int x, int y);
+
+    protected abstract void typed(char character);
+
     public void setWidth(int width) {
         this.width = width;
     }
@@ -45,5 +49,5 @@ public abstract class GUIComponent {
     public int getHeight() {
         return height;
     }
-    
+
 }

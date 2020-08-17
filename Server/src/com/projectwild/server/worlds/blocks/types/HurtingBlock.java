@@ -11,7 +11,7 @@ public class HurtingBlock extends Block {
         super(preset, world, x, y, z);
         setNWCallback("collision", (client, data) -> {
             if(client.getPlayer() != null){
-                client.getPlayer().changeHealth(-1);
+                client.getPlayer().addHealth(-1);
                 world.playSoundForAll("ow");
             }
         });

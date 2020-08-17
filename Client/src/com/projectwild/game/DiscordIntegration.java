@@ -8,7 +8,6 @@ import com.projectwild.game.pregame.WorldSelectionState;
 import com.projectwild.shared.packets.world.LeaveWorldPacket;
 import com.projectwild.shared.packets.world.RequestWorldPacket;
 
-import javax.swing.*;
 import java.nio.charset.Charset;
 import java.time.Clock;
 import java.util.Base64;
@@ -24,17 +23,6 @@ public class DiscordIntegration {
     public DiscordIntegration() {
         rpc = DiscordRPC.INSTANCE;
         DiscordEventHandlers handlers = new DiscordEventHandlers();
-
-        handlers.joinRequest = (user) -> {
-            int result = JOptionPane.showConfirmDialog(null, String.format("%s#%s is requesting to join you through Discord!", user.username, user.discriminator));
-            if (result == JOptionPane.YES_OPTION) {
-                rpc.Discord_Respond(user.userId, DiscordRPC.DISCORD_REPLY_YES);
-            } else if (result == JOptionPane.NO_OPTION) {
-                rpc.Discord_Respond(user.userId, DiscordRPC.DISCORD_REPLY_NO);
-            } else {
-                rpc.Discord_Respond(user.userId, DiscordRPC.DISCORD_REPLY_IGNORE);
-            }
-        };
 
         handlers.joinGame = (worldName) -> {
             if(!(WildGame.getState() instanceof WorldState) && !(WildGame.getState() instanceof WorldSelectionState))

@@ -129,7 +129,7 @@ public class Player {
         }
     }
 
-    public void changeHealth(int amount){
+    public void addHealth(int amount){
         setHealth(getHealth() + amount);
     }
 

@@ -11,6 +11,7 @@ import com.projectwild.shared.ItemTypes;
 import com.projectwild.shared.packets.clothing.EquipPacket;
 import com.projectwild.shared.packets.player.PlayerAnimationPacket;
 import com.projectwild.shared.packets.items.MoveItemSlotsPacket;
+import com.projectwild.shared.packets.player.RequestRespawnPacket;
 import com.projectwild.shared.packets.player.local.MovePacket;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.utils.Vector2;
@@ -145,6 +146,12 @@ public class PlayerListener extends Listener {
             Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
 
             client.equip(packet.getInvSlot(), packet.getClothingSlot());
+        }
+
+        if(obj instanceof RequestRespawnPacket) {
+            Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
+            if(client.getPlayer() != null)
+                client.getPlayer().respawn();
         }
 
     }

@@ -13,10 +13,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.gui.GUIHandler;
-import com.projectwild.game.ingame.gui.GUIUtils;
-import com.projectwild.game.ingame.gui.components.ButtonComponent;
 import com.projectwild.game.ingame.gui.GUIWindow;
+import com.projectwild.game.ingame.gui.components.GUIButtonComponent;
+import com.projectwild.game.ingame.gui.components.GUIInputComponent;
 import com.projectwild.game.pregame.WorldSelectionState;
+import com.projectwild.shared.packets.player.RequestRespawnPacket;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.packets.world.LeaveWorldPacket;
 
@@ -36,14 +37,14 @@ public class WorldState implements GameState {
     private OrthographicCamera camera;
     private OrthographicCamera hudCamera;
     private OrthographicCamera guiCamera;
-    
+
     private Sound backgroundSound;
-    
+
     @Override
     public void initialize() {
         backgroundSound = WildGame.getAssetManager().getSound("birds_forest");
         backgroundSound.loop(0.35f);
-        
+
         // Setting Up Handlers & Listeners
         inventoryHandler = new InventoryHandler();
         chatHandler = new ChatHandler();
@@ -61,12 +62,30 @@ public class WorldState implements GameState {
 
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false);
-        
+
         guiCamera = new OrthographicCamera();
-        guiCamera.setToOrtho(true);
+        guiCamera.setToOrtho(true); // This Is Why This Camera Exists
 
         // Setting Up Input Stuff
         inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if(keycode != Input.Keys.ESCAPE)
+                    return false;
+
+                if(chatHandler.isChatOpen()) {
+                    chatHandler.toggleChat();
+                } else {
+                    if(guiHandler.getWindow("pause") == null) {
+                        guiHandler.createFromPreset("pause");
+                    } else {
+                        guiHandler.destroyWindow("pause");
+                    }
+                }
+                return true;
+            }
+        });
         inputMultiplexer.addProcessor(guiHandler.getInputAdapter());
         inputMultiplexer.addProcessor(chatHandler.getTypeListener());
         inputMultiplexer.addProcessor(inventoryHandler.getInputAdapter());
@@ -82,7 +101,7 @@ public class WorldState implements GameState {
                 // Check For HUD Interaction
                 if(chatHandler.isChatOpen())
                     return false;
-                
+
                 // Handle Block Input
                 Vector3 pos = camera.unproject(new Vector3(screenX, screenY, 0));
 
@@ -93,40 +112,60 @@ public class WorldState implements GameState {
                 WildGame.getClient().sendTCP(packet);
                 return false;
             }
-    
-            @Override
-            public boolean keyDown(int keycode) {
-                if(keycode != Input.Keys.ESCAPE)
-                    return false;
-                
-                if(chatHandler.isChatOpen()) {
-                    chatHandler.toggleChat();
-                } else {
-                    if(guiHandler.getWindow("pause") == null) {
-                        GUIWindow pauseWindow = guiHandler.createWindow("pause", Gdx.graphics.getWidth() / 5, Gdx.graphics.getHeight() / 5 * 4);
-                        ButtonComponent exitButton = new ButtonComponent("Exit World", new Color(244f / 255f, 85f / 255f, 85f / 255f, 1f));
-                        exitButton.setCallback(() -> {
-                            LeaveWorldPacket leaveWorldPacket = new LeaveWorldPacket();
-                            WildGame.getClient().sendTCP(leaveWorldPacket);
-                            WildGame.changeState(new WorldSelectionState());
-                        });
-                        pauseWindow.addComponent(exitButton, GUIUtils.Align.CENTER);
-                        ButtonComponent settingsButton = new ButtonComponent("Settings");
-                        settingsButton.setCallback(() -> {
-                            guiHandler.destroyWindow("pause");
-                            guiHandler.createWindow("settings", Gdx.graphics.getWidth() / 5 * 4, Gdx.graphics.getHeight() / 5 * 4);
-                        });
-                        pauseWindow.addComponent(settingsButton, GUIUtils.Align.CENTER);
-                    } else {
-                        guiHandler.destroyWindow("pause");
-                    }
-                }
-                return true;
-            }
         });
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        // Registering Pause GUI Window
+        guiHandler.registerPresetConstructor(() -> {
+            GUIButtonComponent backButton = new GUIButtonComponent("Back");
+            backButton.setCallback(() -> {
+                guiHandler.destroyWindow("pause");
+            });
+
+            GUIButtonComponent respawnButton = new GUIButtonComponent("Respawn");
+            respawnButton.setCallback(() -> {
+                WildGame.getClient().sendTCP(new RequestRespawnPacket());
+                guiHandler.destroyWindow("pause");
+            });
+
+            GUIButtonComponent settingsButton = new GUIButtonComponent("Settings");
+            settingsButton.setCallback(() -> {
+                guiHandler.destroyWindow("pause");
+                guiHandler.createFromPreset("settings");
+            });
+
+            GUIButtonComponent exitButton = new GUIButtonComponent("Exit", new Color(244f / 255f, 85f / 255f, 85f / 255f, 1f));
+            exitButton.setCallback(() -> {
+                LeaveWorldPacket leaveWorldPacket = new LeaveWorldPacket();
+                WildGame.getClient().sendTCP(leaveWorldPacket);
+                WildGame.changeState(new WorldSelectionState());
+            });
+
+            return new GUIWindow.Builder("pause")
+                    .add(false, backButton)
+                    .add(true, respawnButton)
+                    .add(true, settingsButton)
+                    .add(true, exitButton)
+                    .build();
+        });
+
+        // Registering Settings GUI Window
+        guiHandler.registerPresetConstructor(() -> {
+            GUIButtonComponent backButton = new GUIButtonComponent("Back");
+            backButton.setCallback(() -> {
+                guiHandler.destroyWindow("settings");
+                guiHandler.createFromPreset("pause");
+            });
+
+            GUIInputComponent testInput = new GUIInputComponent("Epic Epicz", 10);
+
+            return new GUIWindow.Builder("settings")
+                    .add(false, backButton)
+                    .add(false, testInput)
+                    .build();
+        });
     }
-    
+
     @Override
     public void update() {
         if(world == null)
@@ -138,7 +177,7 @@ public class WorldState implements GameState {
         world.getLocalPlayer().handlePhysics();
         world.getLocalPlayer().handleAnimation();
     }
-    
+
     @Override
     public void render() {
         if(world == null || world.getLocalPlayer() == null)
@@ -165,7 +204,7 @@ public class WorldState implements GameState {
         sb.setProjectionMatrix(hudCamera.combined);
         inventoryHandler.render(sb, sr);
         chatHandler.render(sb);
-        
+
         {
             // Health Rendering
             int size = (int) (24 * WildGame.getGUIScale());
@@ -176,15 +215,15 @@ public class WorldState implements GameState {
                 x += size * 1.1f;
             }
         }
-        
+
         // Render GUI
         sr.setProjectionMatrix(guiCamera.combined);
         sb.setProjectionMatrix(guiCamera.combined);
         guiHandler.render(sb, sr);
-        
+
         sb.end();
     }
-    
+
     @Override
     public void dispose() {
         WildGame.getClient().removeListener(listener);
@@ -199,11 +238,11 @@ public class WorldState implements GameState {
     public World getWorld() {
         return world;
     }
-    
+
     public InputMultiplexer getInputMultiplexer() {
         return inputMultiplexer;
     }
-    
+
     public InventoryHandler getInventoryHandler() {
         return inventoryHandler;
     }
@@ -211,9 +250,9 @@ public class WorldState implements GameState {
     public ChatHandler getChatHandler() {
         return chatHandler;
     }
-    
+
     public GUIHandler getGuiHandler() {
         return guiHandler;
     }
-    
+
 }

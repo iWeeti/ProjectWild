@@ -59,6 +59,7 @@ public class PacketRegistry {
         kryo.register(UpdateEquippedPacket.class);
         kryo.register(EquipPacket.class);
         kryo.register(PlaySoundPacket.class);
+        kryo.register(RequestRespawnPacket.class);
 
     }
     

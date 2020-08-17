@@ -1,6 +1,5 @@
 package com.projectwild.game.ingame.gui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -8,32 +7,56 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.HashMap;
 
 public class GUIHandler {
+
+    private GUIWindow activeWindow;
     
     private GUIInputAdapter guiInputAdapter;
     private HashMap<String, GUIWindow> windows;
+    private HashMap<String, PresetConstructor> presetWindows;
     
     public GUIHandler() {
         guiInputAdapter = new GUIInputAdapter();
         windows = new HashMap<>();
+        presetWindows = new HashMap<>();
     }
     
     public void render(SpriteBatch sb, ShapeRenderer sr) {
         for(GUIWindow window : windows.values())
-            window.render(sb, sr);
+            if(window != activeWindow)
+                window.render(sb, sr);
+
+        if(activeWindow != null)
+            activeWindow.render(sb, sr);
     }
-    
-    public GUIWindow createWindow(String key, int width, int height) {
-        return createWindow(key, Gdx.graphics.getWidth() / 2 - width / 2, Gdx.graphics.getHeight() / 2 - height / 2, width, height);
+
+    public void registerPresetConstructor(PresetConstructor windowCallback) {
+        presetWindows.put(windowCallback.constructorFunction().getName().toLowerCase(), windowCallback);
     }
-    
-    public GUIWindow createWindow(String key, int x, int y, int width, int height) {
-        GUIWindow window = new GUIWindow(x, y, width, height);
-        windows.put(key, window);
-        return window;
+
+    public void createFromPreset(String preset) {
+        if(presetWindows.containsKey(preset.toLowerCase()))
+            registerWindow(presetWindows.get(preset.toLowerCase()).constructorFunction());
+    }
+
+    public void registerWindow(GUIWindow window) {
+        windows.put(window.getName().toLowerCase(), window);
+        window.setParent(this);
+        activeWindow = window;
+    }
+
+    public void destroyWindow(GUIWindow window) {
+        destroyWindow(window.getName());
     }
     
     public void destroyWindow(String key) {
-        windows.remove(key);
+        if(windows.containsKey(key.toLowerCase())) {
+            if(windows.get(key.toLowerCase()) == activeWindow)
+                activeWindow = null;
+
+            if(windows.values().size() > 0)
+                activeWindow = (GUIWindow) windows.values().toArray()[0];
+        }
+        windows.remove(key.toLowerCase());
     }
     
     public GUIWindow getWindow(String key) {
@@ -45,7 +68,11 @@ public class GUIHandler {
     public GUIInputAdapter getInputAdapter() {
         return guiInputAdapter;
     }
-    
+
+    public GUIWindow getActiveWindow() {
+        return activeWindow;
+    }
+
     public class GUIInputAdapter extends InputAdapter {
     
         @Override
@@ -56,14 +83,61 @@ public class GUIHandler {
                 
                 if(screenY < window.getY() || screenY > window.getY() + window.getHeight())
                     continue;
-    
-                window.clicked(screenX, screenY);
+
+                activeWindow = window;
+
+                window.clicked(false, screenX, screenY);
                 return true;
             }
             
+            return activeWindow != null;
+        }
+
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            for(GUIWindow window : windows.values()) {
+                if(screenX < window.getX() || screenX > window.getX() + window.getWidth())
+                    continue;
+
+                if(screenY < window.getY() || screenY > window.getY() + window.getHeight())
+                    continue;
+
+                window.clicked(true, screenX, screenY);
+                return true;
+            }
+
+            return activeWindow != null;
+        }
+
+        @Override
+        public boolean keyTyped(char character) {
+            if(activeWindow != null) {
+                activeWindow.keyTyped(character);
+                return true;
+            }
             return false;
         }
-        
+
+        @Override
+        public boolean keyDown(int keycode) {
+            if(activeWindow != null)
+                return true;
+            return false;
+        }
+
+        @Override
+        public boolean keyUp(int keycode) {
+            if(activeWindow != null)
+                return true;
+            return false;
+        }
+
+    }
+
+    public interface PresetConstructor {
+
+        GUIWindow constructorFunction();
+
     }
     
 }
