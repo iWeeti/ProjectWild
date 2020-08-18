@@ -89,6 +89,70 @@ public class World {
             sb.draw(bg, (float) x, (float) y, textureWidth, textureHeight);
             sb.draw(bgTexture, (float) x, (float) y, textureWidth, textureHeight);
         }
+        
+        // Render Shadows
+        for(int y = 0; y < getHeight(); y++) {
+            for(int x = 0; x < getWidth(); x++) {
+                for(int z = 0; z < 2; z++) {
+                    BlockPreset preset = blocks[y][x][z].getBlockPreset();
+                
+                    TextureRegion tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX(), preset.getTilesetY());
+                    switch(preset.getRenderType()) {
+                        case 0:
+                            break;
+                        case 1:
+                            if(y == blocks.length-1)
+                                break;
+                            if(blocks[y+1][x][z].getBlockPreset().getId() == preset.getId())
+                                tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX()+1, preset.getTilesetY());
+                            break;
+                        case 2:
+                        
+                            break;
+                        case 4:
+                            blocks[y][x][z].render(sb, sr, new Vector2(x, y));
+                            continue;
+                        case 5:
+                            boolean hasLeft = false;
+                            boolean hasRight = false;
+                            if(x > 0)
+                                hasLeft = blocks[y][x-1][z].getBlockPreset().getId() == preset.getId();
+                        
+                            if(x < getBlocks()[0].length-1)
+                                hasRight = blocks[y][x+1][z].getBlockPreset().getId() == preset.getId();
+                        
+                            if(hasLeft && hasRight) {
+                                tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 2, preset.getTilesetY());
+                            } else {
+                                if (hasLeft)
+                                    tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 3, preset.getTilesetY());
+                                if (hasRight)
+                                    tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 1, preset.getTilesetY());
+                            }
+                            break;
+                        case 6:
+                            if(y == blocks.length-1)
+                                break;
+                            if(blocks[y+1][x][z].getBlockPreset().getId() == preset.getId()) {
+                                tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 1, preset.getTilesetY());
+                            } else {
+                                break;
+                            }
+                        
+                            if(y == blocks.length-2)
+                                break;
+                            if(blocks[y+2][x][z].getBlockPreset().getId() == preset.getId())
+                                tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX()+2, preset.getTilesetY());
+                            break;
+                        default:
+                            continue;
+                    }
+                    sb.setColor(0, 0, 0, 0.3f);
+                    sb.draw(tex, x*32 + 2, y*32 - 2);
+                    sb.setColor(1, 1, 1, 1);
+                }
+            }
+        }
 
         // Render Blocks
         for(int y = 0; y < getHeight(); y++) {
