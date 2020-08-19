@@ -3,8 +3,8 @@ package com.projectwild.server.clients;
 public enum Rank {
 
     USER(0, "user", null),
-    MOD(1, "mod", "[YELLOW][M]"),
-    DEVELOPER(100, "dev", "[RED][D]");
+    MOD(1, "mod", "[YELLOW]<Mod>"),
+    DEVELOPER(100, "dev", "[RED]<Dev>");
 
     private int power;
     private String identifier;

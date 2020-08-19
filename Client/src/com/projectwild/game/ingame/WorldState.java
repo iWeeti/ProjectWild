@@ -16,11 +16,10 @@ import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.gui.GUIHandler;
 import com.projectwild.game.ingame.gui.GUIWindow;
-import com.projectwild.game.ingame.gui.components.GUIButtonComponent;
-import com.projectwild.game.ingame.gui.components.GUIInputComponent;
-import com.projectwild.game.ingame.gui.components.GUISpacerComponent;
-import com.projectwild.game.ingame.gui.components.GUITextComponent;
+import com.projectwild.game.ingame.gui.components.*;
 import com.projectwild.game.pregame.WorldSelectionState;
+import com.projectwild.shared.ItemPreset;
+import com.projectwild.shared.ItemStack;
 import com.projectwild.shared.packets.ChangePasswordResponsePacket;
 import com.projectwild.shared.packets.RequestPasswordChangePacket;
 import com.projectwild.shared.packets.player.RequestRespawnPacket;
@@ -172,9 +171,13 @@ public class WorldState implements GameState {
                 guiHandler.destroyWindow("settings");
                 guiHandler.createFromPreset("pause");
             });
-            
+
+
+            GUIItemFrameComponent itemFrame = new GUIItemFrameComponent(new ItemStack(ItemPreset.getPreset(4), 10));
+
             return new GUIWindow.Builder("settings")
                     .add(false, backButton)
+                    .add(true, itemFrame)
                     .build();
         });
         
