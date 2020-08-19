@@ -34,7 +34,7 @@ public class GUIHandler {
     }
     
     public void registerPresetConstructor(String name, PresetConstructor windowCallback) {
-        presetWindows.put(windowCallback.constructorFunction(new Object[0]).getName().toLowerCase(), windowCallback);
+        presetWindows.put(name, windowCallback);
     }
 
     public void createFromPreset(String preset, Object... args) {

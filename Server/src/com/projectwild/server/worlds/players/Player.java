@@ -92,11 +92,10 @@ public class Player {
         if(getClient().isHideRank())
             return nametag;
 
-        if(getClient().getRank() == Rank.DEVELOPER) {
-            nametag = String.format("[RED]Dev %s", nametag);
-        } else if(getClient().getRank() == Rank.MOD) {
-            nametag = String.format("[YELLOW]Mod %s", nametag);
-        }
+        Rank rank = getClient().getRank();
+        if(rank.getTag() != null)
+            nametag = String.format("%s %s", rank.getTag(), nametag);
+
         return nametag;
     }
 
