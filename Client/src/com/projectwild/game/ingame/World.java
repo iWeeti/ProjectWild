@@ -91,6 +91,7 @@ public class World {
         }
         
         // Render Shadows
+        sb.setColor(0, 0, 0, 0.3f);
         for(int y = 0; y < getHeight(); y++) {
             for(int x = 0; x < getWidth(); x++) {
                 for(int z = 0; z < 2; z++) {
@@ -99,6 +100,7 @@ public class World {
                     TextureRegion tex = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX(), preset.getTilesetY());
                     switch(preset.getRenderType()) {
                         case 0:
+                        case 3:
                             break;
                         case 1:
                             if(y == blocks.length-1)
@@ -110,7 +112,7 @@ public class World {
                         
                             break;
                         case 4:
-                            blocks[y][x][z].render(sb, sr, new Vector2(x, y));
+                            blocks[y][x][z].renderShadow(sb, sr);
                             continue;
                         case 5:
                             boolean hasLeft = false;
@@ -147,13 +149,12 @@ public class World {
                         default:
                             continue;
                     }
-                    sb.setColor(0, 0, 0, 0.3f);
                     sb.draw(tex, x*32 + 2, y*32 - 2);
-                    sb.setColor(1, 1, 1, 1);
                 }
             }
         }
-
+        sb.setColor(1, 1, 1, 1);
+    
         // Render Blocks
         for(int y = 0; y < getHeight(); y++) {
             for(int x = 0; x < getWidth(); x++) {
@@ -174,7 +175,7 @@ public class World {
 
                             break;
                         case 4:
-                            blocks[y][x][z].render(sb, sr, new Vector2(x, y));
+                            blocks[y][x][z].render(sb, sr);
                             continue;
                         case 5:
                             boolean hasLeft = false;

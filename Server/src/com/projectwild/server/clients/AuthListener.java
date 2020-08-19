@@ -3,8 +3,10 @@ package com.projectwild.server.clients;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.server.WildServer;
+import com.projectwild.shared.packets.ChangePasswordResponsePacket;
 import com.projectwild.shared.packets.LoginDataPacket;
 import com.projectwild.shared.packets.LoginResponsePacket;
+import com.projectwild.shared.packets.RequestPasswordChangePacket;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import java.sql.ResultSet;
@@ -113,6 +115,41 @@ public class AuthListener extends Listener {
                 connection.sendTCP(new LoginResponsePacket(false, "Unknown Error. Try again."));
             }
         }
+        
+        if(obj instanceof RequestPasswordChangePacket) {
+            RequestPasswordChangePacket packet = (RequestPasswordChangePacket) obj;
+    
+            Client client = WildServer.getClientHandler().getClientBySocket(connection.getID());
+            if(client == null)
+                return;
+    
+            String sql = "SELECT password FROM Users WHERE id = ?";
+    
+            ResultSet rs = WildServer.getDatabaseController().query(sql, client.getUserId());
+            try {
+                if(rs.isClosed()) {
+                    WildServer.getClientHandler().disconnectClient(client);
+                    return;
+                }
+    
+                if(!new StrongPasswordEncryptor().checkPassword(packet.getCurrentPassword(), rs.getString("password"))) {
+                    connection.sendTCP(new ChangePasswordResponsePacket(false, "Wrong Current Password. Try Again."));
+                } else {
+                    if(packet.getPassword().length() > 16 || packet.getPassword().length() < 3) {
+                        connection.sendTCP(new LoginResponsePacket(false, "Password Needs To Be Within 3-16 Characters Long."));
+                        return;
+                    }
+                    
+                    sql = "UPDATE Users SET password = ? WHERE id = ?";
+                    WildServer.getDatabaseController().update(sql, new StrongPasswordEncryptor().encryptPassword(packet.getPassword()), client.getUserId());
+                    connection.sendTCP(new LoginResponsePacket(true, "Successfully Changed Your Password."));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+    
+        }
+        
     }
 
     private ResultSet getAccount(String username) {

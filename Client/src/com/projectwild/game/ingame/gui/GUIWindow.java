@@ -12,14 +12,16 @@ public class GUIWindow {
     private static final Color backgroundColor = new Color(71f / 255f, 71f / 255f, 71f / 255f, 1f);
 
     private GUIHandler parent;
+    private DisposeCallback disposeCallback;
 
     private String name;
     private ArrayList<GUIComponent> components;
     private int x, y, width, height;
     private GUIComponent activeComponent;
 
-    public GUIWindow(String name, int x, int y, int width, int height) {
+    public GUIWindow(String name, DisposeCallback disposeCallback, int x, int y, int width, int height) {
         this.name = name;
+        this.disposeCallback = disposeCallback;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -59,6 +61,11 @@ public class GUIWindow {
         if(activeComponent != null)
             activeComponent.typed(character);
     }
+    
+    public void dispose() {
+        if(disposeCallback != null)
+            disposeCallback.onDispose();
+    }
 
     public String getName() {
         return name;
@@ -91,6 +98,7 @@ public class GUIWindow {
     public static class Builder {
 
         private String name;
+        private DisposeCallback disposeCallback;
         private int x, y;
         private int padding;
         private ArrayList<ArrayList<ComponentAlign>> builderComponents;
@@ -109,6 +117,8 @@ public class GUIWindow {
         }
 
         public Builder add(boolean nextRow, GUIComponent component, GUIWindow.Builder.Align align) {
+            if(component == null)
+                return this;
             if(nextRow)
                 builderComponents.add(new ArrayList<>());
             builderComponents.get(builderComponents.size()-1).add(new ComponentAlign(component, align));
@@ -127,6 +137,11 @@ public class GUIWindow {
 
         public Builder setPadding(int padding) {
             this.padding = padding;
+            return this;
+        }
+        
+        public Builder onDispose(DisposeCallback disposeCallback) {
+            this.disposeCallback = disposeCallback;
             return this;
         }
 
@@ -158,7 +173,7 @@ public class GUIWindow {
                 y = Gdx.graphics.getHeight() / 2 - height / 2;
             }
 
-            GUIWindow window = new GUIWindow(name, x, y, width, height);
+            GUIWindow window = new GUIWindow(name, disposeCallback, x, y, width, height);
 
             // Add The Components
             int currentHeight = padding;
@@ -256,5 +271,9 @@ public class GUIWindow {
         }
 
     }
-
+    
+    public interface DisposeCallback {
+        void onDispose();
+    }
+    
 }

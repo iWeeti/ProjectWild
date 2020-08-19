@@ -10,13 +10,19 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.projectwild.game.GameState;
 import com.projectwild.game.WildGame;
 import com.projectwild.game.ingame.gui.GUIHandler;
 import com.projectwild.game.ingame.gui.GUIWindow;
 import com.projectwild.game.ingame.gui.components.GUIButtonComponent;
 import com.projectwild.game.ingame.gui.components.GUIInputComponent;
+import com.projectwild.game.ingame.gui.components.GUISpacerComponent;
+import com.projectwild.game.ingame.gui.components.GUITextComponent;
 import com.projectwild.game.pregame.WorldSelectionState;
+import com.projectwild.shared.packets.ChangePasswordResponsePacket;
+import com.projectwild.shared.packets.RequestPasswordChangePacket;
 import com.projectwild.shared.packets.player.RequestRespawnPacket;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.packets.world.LeaveWorldPacket;
@@ -116,7 +122,7 @@ public class WorldState implements GameState {
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         // Registering Pause GUI Window
-        guiHandler.registerPresetConstructor(() -> {
+        guiHandler.registerPresetConstructor((args) -> {
             GUIButtonComponent backButton = new GUIButtonComponent("Back");
             backButton.setCallback(() -> {
                 guiHandler.destroyWindow("pause");
@@ -126,6 +132,11 @@ public class WorldState implements GameState {
             respawnButton.setCallback(() -> {
                 WildGame.getClient().sendTCP(new RequestRespawnPacket());
                 guiHandler.destroyWindow("pause");
+            });
+            
+            GUIButtonComponent changePassword = new GUIButtonComponent("Change Password");
+            changePassword.setCallback(() -> {
+                guiHandler.createFromPreset("changepassword");
             });
 
             GUIButtonComponent settingsButton = new GUIButtonComponent("Settings");
@@ -144,24 +155,72 @@ public class WorldState implements GameState {
             return new GUIWindow.Builder("pause")
                     .add(false, backButton)
                     .add(true, respawnButton)
+                    .add(true, changePassword)
                     .add(true, settingsButton)
                     .add(true, exitButton)
                     .build();
         });
 
         // Registering Settings GUI Window
-        guiHandler.registerPresetConstructor(() -> {
+        guiHandler.registerPresetConstructor((args) -> {
             GUIButtonComponent backButton = new GUIButtonComponent("Back");
             backButton.setCallback(() -> {
                 guiHandler.destroyWindow("settings");
                 guiHandler.createFromPreset("pause");
             });
-
-            GUIInputComponent testInput = new GUIInputComponent("Epic Epicz", 10);
-
+            
             return new GUIWindow.Builder("settings")
                     .add(false, backButton)
-                    .add(false, testInput)
+                    .build();
+        });
+        
+        // Registering Change Password GUI Window
+        guiHandler.registerPresetConstructor((args) -> {
+            Listener responseListener = new Listener() {
+                @Override
+                public void received(Connection connection, Object obj) {
+                    if(obj instanceof ChangePasswordResponsePacket) {
+                        ChangePasswordResponsePacket packet = (ChangePasswordResponsePacket) obj;
+                        if(!packet.isSuccess()) {
+                            guiHandler.createFromPreset("changepassword", "[RED]"+packet.getMessage());
+                        }
+                    }
+                }
+            };
+            
+            GUITextComponent header = new GUITextComponent("Change Password", GUITextComponent.Fonts.HEADER);
+            
+            GUIInputComponent oldPassword = new GUIInputComponent("Old Password", 16, true);
+            GUIInputComponent newPassword = new GUIInputComponent("New Password", 16, true);
+            GUIInputComponent newPasswordConfirm = new GUIInputComponent("Repeat Password", 16, true);
+            
+            GUIButtonComponent confirmButton = new GUIButtonComponent("Change Password");
+            confirmButton.setCallback(() -> {
+                if(!newPassword.getValue().equals(newPasswordConfirm.getValue())) {
+                    guiHandler.createFromPreset("changepassword", "[RED]Passwords Don't Match.");
+                    return;
+                }
+                WildGame.getClient().addListener(responseListener);
+                WildGame.getClient().sendTCP(new RequestPasswordChangePacket(oldPassword.getValue(), newPassword.getValue()));
+            });
+            
+            GUIButtonComponent cancelButton = new GUIButtonComponent("Cancel");
+            cancelButton.setCallback(() -> {
+                guiHandler.destroyWindow("changepassword");
+            });
+            
+            return new GUIWindow.Builder("changepassword")
+                    .add(false, header, GUIWindow.Builder.Align.LEFT)
+                    .add(true, args.length > 0 ? new GUITextComponent((String) args[0]): null, GUIWindow.Builder.Align.LEFT)
+                    .add(true, oldPassword, GUIWindow.Builder.Align.LEFT)
+                    .add(true, new GUISpacerComponent(10, 1), GUIWindow.Builder.Align.LEFT)
+                    .add(true, newPassword, GUIWindow.Builder.Align.LEFT)
+                    .add(true, newPasswordConfirm, GUIWindow.Builder.Align.LEFT)
+                    .add(true, confirmButton, GUIWindow.Builder.Align.LEFT)
+                    .add(false, cancelButton, GUIWindow.Builder.Align.LEFT)
+                    .onDispose(() -> {
+                        WildGame.getClient().removeListener(responseListener);
+                    })
                     .build();
         });
     }

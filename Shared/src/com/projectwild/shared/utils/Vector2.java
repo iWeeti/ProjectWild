@@ -57,15 +57,7 @@ public class Vector2 {
     public double getY() {
         return y;
     }
-
-    public int getXInt() {
-        return (int) x;
-    }
-
-    public int getYInt() {
-        return (int) y;
-    }
-
+    
     public Vector2 copy() {
         return new Vector2(x, y);
     }

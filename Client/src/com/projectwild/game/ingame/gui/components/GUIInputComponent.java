@@ -18,12 +18,18 @@ public class GUIInputComponent extends GUIComponent {
 
     private String placeholder;
     private int maxSize;
+    private boolean secret;
 
     private BitmapFont font;
-
+    
     public GUIInputComponent(String placeholder, int maxSize) {
+        this(placeholder, maxSize, false);
+    }
+
+    public GUIInputComponent(String placeholder, int maxSize, boolean secret) {
         this.placeholder = placeholder;
         this.maxSize = maxSize;
+        this.secret = secret;
         font = WildGame.getAssetManager().getFont("vcr_osd_32_flipped");
         value = "";
         setWidth(maxSize * 19 + 40 + GUIDraw.getRectBorderWidth());
@@ -35,9 +41,18 @@ public class GUIInputComponent extends GUIComponent {
         GUIDraw.drawRect(sb, sr, new Color(71f / 255f, 71f / 255f, 71f / 255f, 1f), getX(), getY(), getWidth(), getHeight());
 
         if(value.equals("") && getParent().getActiveComponent() != this) {
+            font.setColor(0.7f, 0.7f, 0.7f, 1);
             font.draw(sb, placeholder, getX() + 20 + GUIDraw.getRectBorderWidth() / 2f, getY() + 22 + GUIDraw.getRectBorderWidth() / 2f);
+            font.setColor(1, 1, 1, 1);
         } else {
-            font.draw(sb, value, getX() + 20 + GUIDraw.getRectBorderWidth() / 2f, getY() + 22 + GUIDraw.getRectBorderWidth() / 2f);
+            if(secret) {
+                StringBuilder builder = new StringBuilder();
+                for(int i = 0; i < value.length(); i++)
+                    builder.append("*");
+                font.draw(sb, builder.toString(), getX() + 20 + GUIDraw.getRectBorderWidth() / 2f, getY() + 22 + GUIDraw.getRectBorderWidth() / 2f);
+            } else {
+                font.draw(sb, value, getX() + 20 + GUIDraw.getRectBorderWidth() / 2f, getY() + 22 + GUIDraw.getRectBorderWidth() / 2f);
+            }
         }
     }
 
@@ -68,5 +83,8 @@ public class GUIInputComponent extends GUIComponent {
             }
         }
     }
-
+    
+    public String getValue() {
+        return value;
+    }
 }

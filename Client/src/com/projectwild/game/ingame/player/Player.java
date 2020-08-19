@@ -35,7 +35,7 @@ public class Player {
 
     public void render(SpriteBatch sb) {
         TextureRegion[][] texture = TextureRegion.split(WildGame.getAssetManager().getAsset("player"), 32, 32);
-        sb.draw(texture[animation.getId()][(int) Math.floor(frame)], position.getXInt(), position.getYInt());
+        sb.draw(texture[animation.getId()][(int) Math.floor(frame)], (int) position.getX(), (int) position.getY());
 
         if(animation.getSpeed() != 0)
             frame += animation.getSpeed() / 60.0f;
@@ -56,7 +56,7 @@ public class Player {
             ClothingPreset clothingPreset = ClothingPreset.getPreset(itemStack.getItemPreset().getClothingId());
 
             TextureRegion[][] clothingTexture = WildGame.getAssetManager().getClothingAsset(clothingPreset.getAsset());
-            sb.draw(clothingTexture[animation.getId()][(int) Math.floor(frame)], position.getXInt(), position.getYInt());
+            sb.draw(clothingTexture[animation.getId()][(int) Math.floor(frame)], (int) position.getX(), (int) position.getY());
         }
     }
 

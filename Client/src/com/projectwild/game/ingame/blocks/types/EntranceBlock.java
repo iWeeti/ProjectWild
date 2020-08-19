@@ -17,17 +17,19 @@ public class EntranceBlock extends Block {
     }
 
     @Override
-    public void render(SpriteBatch sb, ShapeRenderer sr, Vector2 position) {
+    public void render(SpriteBatch sb, ShapeRenderer sr) {
         BlockPreset preset = getBlockPreset();
-        TextureRegion texture;
-        if(getNWBool("open")) {
-            texture = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + 1, preset.getTilesetY());
-        } else {
-            texture = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX(), preset.getTilesetY());
-        }
-        sb.draw(texture, (int) position.getX() * 32, (int) position.getY() * 32);
+        TextureRegion texture = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + (getNWBool("open") ? 1 : 0), preset.getTilesetY());
+        sb.draw(texture, getX() * 32, getY() * 32);
     }
-
+    
+    @Override
+    public void renderShadow(SpriteBatch sb, ShapeRenderer sr) {
+        BlockPreset preset = getBlockPreset();
+        TextureRegion texture = WildGame.getAssetManager().getTile(preset.getTileset(), preset.getTilesetX() + (getNWBool("open") ? 1 : 0), preset.getTilesetY());
+        sb.draw(texture, getX() * 32 + 2, getY() * 32 - 2);
+    }
+    
     @Override
     public boolean collide() {
         LocalPlayer localPlayer = ((WorldState) WildGame.getState()).getWorld().getLocalPlayer();

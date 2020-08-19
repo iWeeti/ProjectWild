@@ -52,7 +52,9 @@ public abstract class Block {
         }
     }
 
-    public void render(SpriteBatch sb, ShapeRenderer sr, Vector2 position) {}
+    public void render(SpriteBatch sb, ShapeRenderer sr) {}
+    
+    public void renderShadow(SpriteBatch sb, ShapeRenderer sr) {}
 
     public boolean collide() {
         return true;
@@ -96,7 +98,19 @@ public abstract class Block {
     public boolean getNWBool(String key) {
         return (boolean) networkedVariables.get(key);
     }
-
+    
+    public int getX() {
+        return x;
+    }
+    
+    public int getY() {
+        return y;
+    }
+    
+    public int getZ() {
+        return z;
+    }
+    
     public interface Callback {
 
         void callback(Object[] data);

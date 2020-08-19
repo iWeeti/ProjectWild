@@ -68,7 +68,7 @@ public class GUIButtonComponent extends GUIComponent {
     protected void typed(char character) {
 
     }
-
+    
     public void setCallback(Callback callback) {
         this.callback = callback;
     }

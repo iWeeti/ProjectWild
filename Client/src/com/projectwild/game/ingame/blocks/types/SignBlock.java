@@ -25,9 +25,9 @@ public class SignBlock extends Block {
     }
 
     @Override
-    public void render(SpriteBatch sb, ShapeRenderer sr, Vector2 position) {
+    public void render(SpriteBatch sb, ShapeRenderer sr) {
         TextureRegion tex = WildGame.getAssetManager().getTile(getBlockPreset().getTileset(), getBlockPreset().getTilesetX(), getBlockPreset().getTilesetY());
-        sb.draw(tex, (int) position.getX() * 32, (int) position.getY() * 32);
+        sb.draw(tex, getX() * 32, getY() * 32);
         if (onSign){
             String text = getNWString("text");
             if (text == null || text.isEmpty()){
@@ -39,15 +39,21 @@ public class SignBlock extends Block {
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             sr.begin(ShapeRenderer.ShapeType.Filled);
             sr.setColor(0, 0, 0, 0.5f);
-            sr.rect((int) position.getX() * 32 - layout.width / 2 + 11 , (int) position.getY() * 32 + 38 + 5, layout.width + 10, layout.height/2 + 12);
+            sr.rect(getX() * 32 - layout.width / 2 + 11 , getY() * 32 + 38 + 5, layout.width + 10, layout.height/2 + 12);
             sr.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
             sb.begin();
-            font.draw(sb, layout, (int) position.getX() * 32 - layout.width / 2 + 16 , (int) position.getY() * 32 + 38 + 15);
+            font.draw(sb, layout, getX() * 32 - layout.width / 2 + 16 , getY() * 32 + 38 + 15);
         }
         onSign = false;
     }
-
+    
+    @Override
+    public void renderShadow(SpriteBatch sb, ShapeRenderer sr) {
+        TextureRegion tex = WildGame.getAssetManager().getTile(getBlockPreset().getTileset(), getBlockPreset().getTilesetX(), getBlockPreset().getTilesetY());
+        sb.draw(tex, getX() * 32 + 2, getY() * 32 - 2);
+    }
+    
     @Override
     public boolean collide() {
         onSign = true;

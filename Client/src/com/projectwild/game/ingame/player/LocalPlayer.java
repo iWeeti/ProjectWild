@@ -185,6 +185,9 @@ public class LocalPlayer extends Player {
     }
 
     public void handleAnimation() {
+        if(noclip)
+            return;
+        
         if(velocity.getX() > 0 && oldVelocity.getX() <= 0)
             changeAnimation(PlayerAnimations.WALK_RIGHT);
 

@@ -24,8 +24,8 @@ public class WildGame extends ApplicationAdapter {
         discordIntegration = new DiscordIntegration();
         
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = (int) (1500);
-        config.height = (int) (800);
+        config.width = (int) (1500 * 1.5f);
+        config.height = (int) (800 * 1.5f);
         config.resizable = false;
         config.vSyncEnabled = true;
         config.addIcon("data/assets/logo32.png", Files.FileType.Internal);
@@ -60,7 +60,7 @@ public class WildGame extends ApplicationAdapter {
         client = new Client(10000000, 10000000);
         PacketRegistry.register(client.getKryo());
         client.start();
-    
+        
         String address = System.getenv("address") == null ? "104.248.65.87" : System.getenv("address");
     
         // always try to reconnect if the client is disconnected.

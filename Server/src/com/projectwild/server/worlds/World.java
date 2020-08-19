@@ -116,8 +116,8 @@ public class World {
         }
         buffer.putInt(background.getBytes().length);
         buffer.put(background.getBytes());
-        buffer.putInt(spawnPosition.getXInt());
-        buffer.putInt(spawnPosition.getYInt());
+        buffer.putInt((int) spawnPosition.getX());
+        buffer.putInt((int) spawnPosition.getY());
         buffer.putInt(blocks.length);
         buffer.putInt(blocks[0].length);
         for(int y = 0; y < blocks.length; y++) {
@@ -152,8 +152,10 @@ public class World {
         // Sending All Players To Client
         for (Player ply : players) {
             playerSpawnPacket = new PlayerSpawnPacket(ply.getClient().getUserId(), ply.getNametag(), ply.getPosition(), false);
-            if(!player.getClient().isInvisible())
-                client.sendTCP(playerSpawnPacket);
+            if(ply.getClient().isInvisible())
+                continue;
+            
+            client.sendTCP(playerSpawnPacket);
 
             UpdateEquippedPacket equippedPacket = new UpdateEquippedPacket(ply.getClient().getUserId(), ply.getClient().getEquipped());
             client.sendTCP(equippedPacket);

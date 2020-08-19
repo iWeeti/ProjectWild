@@ -5,7 +5,7 @@ Block Rendering Types:
 	1 -> Blocks Under First Block Take Another Texture (Ex. Dirt)
 	2 -> Full Block Sheets (Ex. Fancy Block)
 	3 -> Infront Of Player (Ex. Flowers)
-	4 -> Block Specific (Ex. Entrance Blocks)
+	4 -> Custom (Ex. Door/Sign)
 	5 -> Sides Are Extended (Ex. Platform)
 	6 -> Like Type 1 But With One More Block (Ex. Sand)
 

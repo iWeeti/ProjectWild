@@ -30,15 +30,17 @@ public class GUIHandler {
     }
 
     public void registerPresetConstructor(PresetConstructor windowCallback) {
-        presetWindows.put(windowCallback.constructorFunction().getName().toLowerCase(), windowCallback);
+        presetWindows.put(windowCallback.constructorFunction(new Object[0]).getName().toLowerCase(), windowCallback);
     }
 
-    public void createFromPreset(String preset) {
+    public void createFromPreset(String preset, Object... args) {
         if(presetWindows.containsKey(preset.toLowerCase()))
-            registerWindow(presetWindows.get(preset.toLowerCase()).constructorFunction());
+            registerWindow(presetWindows.get(preset.toLowerCase()).constructorFunction(args));
     }
 
     public void registerWindow(GUIWindow window) {
+        if(windows.containsKey(window.getName().toLowerCase()))
+            destroyWindow(window.getName().toLowerCase());
         windows.put(window.getName().toLowerCase(), window);
         window.setParent(this);
         activeWindow = window;
@@ -52,11 +54,14 @@ public class GUIHandler {
         if(windows.containsKey(key.toLowerCase())) {
             if(windows.get(key.toLowerCase()) == activeWindow)
                 activeWindow = null;
-
+            
+            windows.get(key.toLowerCase()).dispose();
+    
+            windows.remove(key.toLowerCase());
+    
             if(windows.values().size() > 0)
                 activeWindow = (GUIWindow) windows.values().toArray()[0];
         }
-        windows.remove(key.toLowerCase());
     }
     
     public GUIWindow getWindow(String key) {
@@ -136,7 +141,7 @@ public class GUIHandler {
 
     public interface PresetConstructor {
 
-        GUIWindow constructorFunction();
+        GUIWindow constructorFunction(Object[] args);
 
     }
     
