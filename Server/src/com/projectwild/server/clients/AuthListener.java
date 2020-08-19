@@ -136,13 +136,13 @@ public class AuthListener extends Listener {
                     connection.sendTCP(new ChangePasswordResponsePacket(false, "Wrong Current Password. Try Again."));
                 } else {
                     if(packet.getPassword().length() > 16 || packet.getPassword().length() < 3) {
-                        connection.sendTCP(new LoginResponsePacket(false, "Password Needs To Be Within 3-16 Characters Long."));
+                        connection.sendTCP(new ChangePasswordResponsePacket(false, "Password Needs To Be Within 3-16 Characters Long."));
                         return;
                     }
                     
                     sql = "UPDATE Users SET password = ? WHERE id = ?";
                     WildServer.getDatabaseController().update(sql, new StrongPasswordEncryptor().encryptPassword(packet.getPassword()), client.getUserId());
-                    connection.sendTCP(new LoginResponsePacket(true, "Successfully Changed Your Password."));
+                    connection.sendTCP(new ChangePasswordResponsePacket(true, "Successfully Changed Your Password."));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

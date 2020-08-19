@@ -27,6 +27,10 @@ import com.projectwild.shared.packets.player.RequestRespawnPacket;
 import com.projectwild.shared.packets.world.InteractBlockPacket;
 import com.projectwild.shared.packets.world.LeaveWorldPacket;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
+
 public class WorldState implements GameState {
 
     private InventoryHandler inventoryHandler;
@@ -181,7 +185,10 @@ public class WorldState implements GameState {
                 public void received(Connection connection, Object obj) {
                     if(obj instanceof ChangePasswordResponsePacket) {
                         ChangePasswordResponsePacket packet = (ChangePasswordResponsePacket) obj;
-                        if(!packet.isSuccess()) {
+                        if(packet.isSuccess()) {
+                            guiHandler.destroyWindow("changepassword");
+                            guiHandler.createFromPreset("notification", "[GREEN]"+packet.getMessage());
+                        } else {
                             guiHandler.createFromPreset("changepassword", "[RED]"+packet.getMessage());
                         }
                     }
@@ -221,6 +228,29 @@ public class WorldState implements GameState {
                     .onDispose(() -> {
                         WildGame.getClient().removeListener(responseListener);
                     })
+                    .build();
+        });
+        
+        // Registering Notification Window
+        guiHandler.registerPresetConstructor("notification", (args) -> {
+            String text = "Empty Notification.";
+            if(args.length > 0)
+                text = (String) args[0];
+    
+            // Generates Random ID
+            byte[] array = new byte[7];
+            new Random().nextBytes(array);
+            String id = new String(array, StandardCharsets.UTF_8).toLowerCase();
+    
+            GUITextComponent message = new GUITextComponent(text);
+            GUIButtonComponent closeButton = new GUIButtonComponent("Close");
+            closeButton.setCallback(() -> {
+                guiHandler.destroyWindow(id+"_notification");
+            });
+    
+            return new GUIWindow.Builder(id+"_notification")
+                    .add(false, message)
+                    .add(true, closeButton)
                     .build();
         });
     }

@@ -30,6 +30,10 @@ public class GUIHandler {
     }
 
     public void registerPresetConstructor(PresetConstructor windowCallback) {
+        registerPresetConstructor(windowCallback.constructorFunction(new Object[0]).getName().toLowerCase(), windowCallback);
+    }
+    
+    public void registerPresetConstructor(String name, PresetConstructor windowCallback) {
         presetWindows.put(windowCallback.constructorFunction(new Object[0]).getName().toLowerCase(), windowCallback);
     }
 
