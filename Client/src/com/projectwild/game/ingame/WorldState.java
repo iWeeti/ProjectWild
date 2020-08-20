@@ -171,13 +171,9 @@ public class WorldState implements GameState {
                 guiHandler.destroyWindow("settings");
                 guiHandler.createFromPreset("pause");
             });
-
-
-            GUIItemFrameComponent itemFrame = new GUIItemFrameComponent(new ItemStack(ItemPreset.getPreset(4), 10));
-
+            
             return new GUIWindow.Builder("settings")
                     .add(false, backButton)
-                    .add(true, itemFrame)
                     .build();
         });
         

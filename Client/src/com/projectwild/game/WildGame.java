@@ -24,8 +24,8 @@ public class WildGame extends ApplicationAdapter {
         discordIntegration = new DiscordIntegration();
         
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.width = (int) (1500);
-        config.height = (int) (800);
+        config.width = (int) (1500 * 1.8f);
+        config.height = (int) (800 * 1.8f);
         config.resizable = false;
         config.vSyncEnabled = true;
         config.addIcon("data/assets/logo32.png", Files.FileType.Internal);
